@@ -1,0 +1,89 @@
+/*!
+ * angular-vertical-menu - v0.0.1 - 2015-09-04
+ * https://github.com/gnavarro77/angular-vertical-menu
+ * Copyright (c) 2015 ; Licensed MIT
+ */
+ .sidebar-menu,
+.sidebar-menu ul {
+  font-size: 14px;
+  list-style: none;
+  list-style-position: outside;
+}
+.vertical-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.vertical-menu a {
+  color: #555555;
+}
+.vertical-menu a:hover,
+.vertical-menu a:active,
+.vertical-menu a:focus {
+  outline: none;
+  text-decoration: none;
+  color: #222222;
+}
+.vertical-menu > li {
+  background-color: #f9f9f9;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  border-bottom: 1px solid #dbdbdb;
+  border-top: 1px solid #fff;
+}
+.vertical-menu > li .active {
+  background-color: #f9f9f9;
+}
+.vertical-menu > li i,
+.vertical-menu > li span,
+.vertical-menu > li a {
+  cursor: inehrit;
+}
+.vertical-menu > li > a {
+  padding: 12px 5px 12px 15px;
+  display: block;
+}
+.vertical-menu > li > a .fa,
+.vertical-menu > li > a .glyphicon,
+.vertical-menu > li > a .ion {
+  width: 20px;
+}
+.vertical-menu .treeview-menu {
+  height: 90px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.vertical-menu .treeview-menu > li {
+  margin-left: 10px;
+  cursor: pointer;
+}
+.vertical-menu .treeview-menu > li > a {
+  padding: 5px 5px 5px 15px;
+  display: block;
+  font-size: 14px;
+  margin: 0px 0px;
+  cursor: inherit;
+}
+.vertical-menu .treeview-menu > li > a .fa,
+.vertical-menu .treeview-menu > li > a .glyphicon,
+.vertical-menu .treeview-menu > li > a .ion {
+  width: 20px;
+}
+.badge-danger {
+  background-color: #d43f3a;
+}
+.badge-warning {
+  background-color: #d58512;
+}
+.badge-success {
+  background-color: #398439;
+}
+.badge-info {
+  background-color: #269abc;
+}
+.badge-inverse {
+  background-color: #333333;
+}
