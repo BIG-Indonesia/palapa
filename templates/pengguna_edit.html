@@ -1,0 +1,71 @@
+<!-- Modal -->
+<div id="pengguna_hapus" class="modal fade" role="dialog" ng-controller="PenggunaCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Pengguna</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 150px"><strong>Username</strong></td>
+                        <td>{{ model.item.name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Nama Lengkap</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.individualname"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Password</strong></td>
+                        <td><input class="form-control input-sm" type="password" style="width: 500" ng-model="model.item.password"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Grup</strong></td>
+                        <td>
+                            <select ng-model="model.selectedgrup" ng-options="obj.value as obj.text for obj in grup track by obj.value">
+                            </select>
+                        </td>
+                    </tr>
+                    <!--<tr>
+                        <td style="width: 150px"><strong>Role</strong></td>
+                        <td>
+                            <select ng-model="model.item.rolename" ng-options="r as r for r in roles">
+              </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Kelas</strong></td>
+                        <td><select ng-model="model.item.kelas" ng-init="Y">
+                <option value='admin'>ADMIN</option>
+                <option value='member'>MEMBER</option>
+              </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aktif</strong></td>
+                        <td><select ng-model="model.item.enabled" ng-init="Y">
+                <option value='Y'>Ya</option>
+                <option value='N'>TIdak</option>
+              </select>
+                        </td>
+                    </tr>-->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="editGSPengguna(model.selectedgrup)">Edit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+        <!-- rem -->
+    </div>
+</div>
+
+<!--<script>
+    $('#pengguna_hapus').on('hidden.bs.modal', function() {
+        angular.element($("#PenggunaView")).scope().reloadView();
+    });
+</script>-->

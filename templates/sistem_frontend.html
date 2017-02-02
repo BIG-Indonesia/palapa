@@ -1,0 +1,64 @@
+<div id="SisFrontView" ng-app="nodeManager" ng-controller="SisFrontCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Layer Default Jelajah Peta (Front-end)
+            <button type="button" class="btn btn-warning pull-right" ng-click="KosongLayer()"><span class="glyphicon glyphicon-erase"></span> Kosongkan</button>
+            <button type="button" class="btn btn-info pull-right" ng-click="SimpanLayer()"><span class="glyphicon glyphicon-floppy-save"></span> Simpan</button>
+        </div>
+        <div class="panel-body">
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariFitur">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Pilih</th>
+                        <th>Nama Layer</th>
+                        <th>Service Name</th>
+                        <th>Aktif/Non-Aktif</th </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="layer in wmslayer | orderBy:sortType:sortReverse | filter:cariFitur | startFrom:currentPage*pageSize | limitTo:pageSize">
+                        <td><input type="checkbox" ng-model="layer.pilih" ng-checked="ceklayer(layer.layer_nativename)"></td>
+                        <td>{{layer.layer_title}}</td>
+                        <td>{{layer.layer_nativename}}</td>
+                        <td><input type="checkbox" ng-model="layer.aktif" ng-checked="ceklayeraktif(layer.layer_nativename)"></td>
+                    </tr>
+                </tbody>
+
+
+        </div>
+        <!--<pre>{{selectedlayers}}</pre>-->
+
+    </div>
+</div>

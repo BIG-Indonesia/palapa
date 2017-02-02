@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html ng-app="nodeManager">
+
+<head>
+
+    <title>Manajemen PALAPA</title>
+    <!-- Custom CSS -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+    <link href="css/sb-admin.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
+    <link href="css/bootstrap-yeti.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/easyWizard.css">
+    <link rel="stylesheet" href="css/fileinput.min.css">
+    <link rel="stylesheet" href="css/angular-vertical-menu.css" />
+    <link rel="stylesheet" href="css/angular-list-group.css" />
+    <link rel="stylesheet" href="css/treasure-overlay-spinner.min.css">
+    <link rel="stylesheet" href="css/select.css">
+    <link rel="stylesheet" href="css/loading-bar.css">
+    <!--<link rel="stylesheet" href="css/prism.css">-->
+    <!--<link rel="stylesheet" href="css/ngeo.css">-->
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body ng-controller="ParentController">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+        </button>
+                <a class="navbar-brand" href="#">Manajemen PALAPA {{ simpul }}</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <!--<ul class="nav navbar-nav">
+                    <li ng-class="getClass('state1')"><a ui-sref="state1">Layers</a></li>
+                    <li ng-class="getClass('state2')"><a ui-sref="state2">Styles</a></li>
+                    <li ng-class="getClass('metalinks')"><a ui-sref="metalinks">Link Metadata</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Konfigurasi
+            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li ng-class="getClass('penggunaState')"><a ui-sref="penggunaState">Pengguna</a></li>
+                            <li ng-class="getClass('grupState')"><a ui-sref="grupState">Grup</a></li>
+                            <li ng-class="getClass('sistemState')"><a ui-sref="sistemState">Sistem</a></li>
+                            <li ng-class="getClass('logState')"><a ui-sref="logState">Log</a></li>
+                        </ul>
+                    </li>
+                </ul>-->
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;&nbsp;{{ currentUser.indiviualname }}</a></li>
+                    <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Sidebar -->
+    <!--   <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+              <a href="#"></a>
+          </li>
+          <li>
+              <a href="#">Layers</a>
+          </li>
+          <li>
+              <a href="#">Styles</a>
+          </li>
+          <li>
+              <a href="#">Bantuan</a>
+          </li>
+      </ul>
+  </div> -->
+    <!-- /#sidebar-wrapper -->
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="sidemenu" ng-controller="SideMenuController">
+                    <ul class="nav nav-stacked">
+                        <!--<li>
+                            <div ng-if="currentUser" style="color: white;padding-left: 10px;"><b>Welcome, {{ currentUser.user }}!</b></div>
+                        </li>-->
+                        <br>
+                        <li ng-repeat="menu in menus" ng-class="{dropdown: menu.menus}">
+                            <!--<a class="sidemenu_main" href="{{menu.action}}" data-toggle="dropdown" ng-class="{'dropdown-toggle': menu.menus}"> {{menu.title}}</a>-->
+                            <a class="sidemenu_main" data-toggle="dropdown" ng-class="{'dropdown-toggle': menu.menus}"> {{menu.title}}</a>
+                            <ul class="nav nav-stacked" ng-if="menu.menus">
+                                <li ng-repeat="submenu in menu.menus" ng-class="{dropdown: submenu.menus}">
+                                    <a ng-hide="currentUser.kelas != submenu.level && currentUser.kelas != 'admin'" href="{{submenu.action}}" id="sidemenu_text" data-toggle="dropdown" ng-class="{'dropdown-toggle': submenu.menus}">&nbsp; <i class="{{submenu.icons}}" aria-hidden="true" ></i>&nbsp; &nbsp; {{submenu.title}}</a>
+
+                                    <ul class="dropdown-menu" ng-if="submenu.menus">
+                                        <li ng-repeat="subsubmenu in submenu.menus">
+                                            <a href="{{subsubmenu.action}}">{{subsubmenu.title}}</a>
+                                        </li>
+                                    </ul>
+
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <treasure-overlay-spinner active='spinner.active'>
+
+                <div class="col-sm-9">
+                    <div class="row" style="margin-top: 75px;" ng-controller="LogCtrl">
+                        <!--<div id="flipup">Session Log</div>
+                        <div id="panelup">Hello world!</div>-->
+                    </div>
+                    <div ui-view class="frontsearch">
+                    </div>
+                </div>
+            </treasure-overlay-spinner>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://www.big.go.id">2016. Badan Informasi Geospasial</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <script src="js/libs/jquery/jquery-2.1.4.js"></script>
+    <script src="js/libs/jquery/jquery.fileDownload.js"></script>
+    <script src="js/libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/libs/angular/angular.min.js"></script>
+    <script src="js/libs/angular-ui-router.min.js"></script>
+    <script src="js/libs/ui-bootstrap-tpls-2.2.0.js"></script>
+    <script src="js/cfg.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/routing.js"></script>
+    <script src="js/globalFunctions.js"></script>
+    <script src="js/libs/ol/ol.js"></script>
+    <script src="js/libs/nemlogging/angular-simple-logger.js"></script>
+    <!--<script src="js/libs/leaflet/leaflet.js"></script>
+    <script src="js/libs/ui-leaflet/ui-leaflet.min.js"></script>
+    <script src="js/libs/ui-leaflet-layers/ui-leaflet-layers.min.js"></script>-->
+    <script src="js/libs/angular/angular-animate.min.js"></script>
+    <script src="js/libs/angular/angular-sanitize.min.js"></script>
+    <script src="js/libs/angular-openlayers-directive.js"></script>
+    <script src="js/libs/angular/angular-resource.js"></script>
+    <script src="js/libs/angular-base64.min.js"></script>
+    <script src="js/libs/angular-filter.min.js"></script>
+    <script src="js/libs/angular-list-group.js"></script>
+    <script src="js/libs/treasure-overlay-spinner.min.js"></script>
+    <script src="js/libs/easyWizard.js"></script>
+    <script src="js/libs/angular-vertical-menu.js"></script>
+    <script src="js/libs/bootbox.min.js"></script>
+    <script src="js/libs/checklist-model.js"></script>
+    <script src="js/libs/select.min.js"></script>
+    <script src="js/libs/dirPagination.js"></script>
+    <script src="js/libs/angular-upload/angular-file-upload-shim.js"></script>
+    <script src="js/libs/angular-upload/angular-file-upload.js"></script>
+    <script src="js/libs/loading-bar.js"></script>
+
+    <link rel="stylesheet" href="js/libs/ol/ol.css" />
+    <!--FACTORY -->
+    <script src="services/authInterceptor.js"></script>
+
+
+    <!--CONTROLLERS -->
+    <script src="controllers/parentController.js"></script>
+    <script src="controllers/login.js"></script>
+
+    <!--SERVICES -->
+    <script src="services/auth.js"></script>
+    <script src="services/session.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $("#flipup").click(function() {
+                $("#panelup").slideToggle("slow");
+            });
+        });
+    </script>
+
+</body>
+
+</html>

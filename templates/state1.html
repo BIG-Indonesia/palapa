@@ -1,0 +1,328 @@
+<div id="LayerView" ng-app="nodeManager" ng-controller="LayersCtrl">
+
+    <ul class="breadcrumb">
+        <li><a href="#">Beranda</a></li>
+        <li class="active">Layer Spasial</li>
+    </ul>
+
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Layers
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()" tooltip-placement="top" uib-tooltip="Refresh halaman ini."><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <!--<button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah ZIP (layer ter-arsip) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Tambah Layer</button>-->
+        </div>
+        <div class="panel-body">
+            <!--   <div class="alert alert-info">
+    <p>Sort Type: {{ sortType }}</p>
+    <p>Sort Reverse: {{ sortReverse }}</p>
+    <p>Search Query: {{ cariLayer }}</p>
+  </div> -->
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariLayer">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover">
+
+                <thead class="thead-default">
+                    <tr>
+                        <th>
+                            <a href="#/state1" ng-click="sortType = 'last_modified'; sortReverse = !sortReverse">
+                                Last Modified 
+                                <span ng-show="sortType == 'last_modified' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'last_modified' && sortReverse" class="fa fa-caret-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="#/state1" ng-click="sortType = 'workspace'; sortReverse = !sortReverse">
+            Workspace 
+            <span ng-show="sortType == 'workspace' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'workspace' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </th>
+                        <!--<th>
+                            <a href="#/state1" ng-click="sortType = 'layer_id'; sortReverse = !sortReverse">
+            Nama Layer 
+            <span ng-show="sortType == 'layer_id' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'layer_id' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </th>-->
+                        <th>
+                            <a href="#/state1" ng-click="sortType = 'layer_name'; sortReverse = !sortReverse">
+          Layer Titel 
+            <span ng-show="sortType == 'layer_name' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'layer_name' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </th>
+                        <th>
+                            <a href="#/state1" ng-click="sortType = 'layer_jenis'; sortReverse = !sortReverse">
+          Jenis
+            <span ng-show="sortType == 'layer_jenis' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'layer_jenis' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </th>
+                        <th>
+                            <a href="#/state1" ng-click="sortType = 'layer_aktif'; sortReverse = !sortReverse">
+          Aktif
+            <span ng-show="sortType == 'layer_enabled' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'layer_enabled' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </th>
+                        <th>
+                            <a href="#/state1" ng-click="sortType = 'layer_srs'; sortReverse = !sortReverse">
+          SRS
+            <span ng-show="sortType == 'layer_srs' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'layer_srs' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </th>
+                        <th style="width: 180px">Aksi</td>
+                        </th>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="layer in layers | orderBy:sortType:sortReverse | filter:cariLayer | startFrom:currentPage*pageSize | limitTo:pageSize">
+                        <td>{{ layer.last_modified }}</td>
+                        <td>{{ layer.workspace }}</td>
+                        <!--<td>{{ layer.layer_id }}</td>-->
+                        <td>{{ layer.layer_name }}</td>
+                        <td>{{ layer.layer_type }}</td>
+                        <td>
+                            <span ng-if="layer.layer_aktif==true" class="fa fa-check-square-o"></span>
+                            <span ng-if="layer.layer_aktif==false" class="fa fa-square-o"></span>
+                        </td>
+                        <td>{{ layer.layer_srs }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info" ng-click="infoLayer.open(layer)"><span class="glyphicon glyphicon-info-sign" tooltip-placement="left" uib-tooltip="Informasi"></span></button>
+                                <button ng-hide="cekgrup(layer.workspace)" type="button" class="btn btn-warning" ng-disabled="cekgrup(layer.workspace)" ng-click="editLayer.open(layer)" tooltip-placement="top" uib-tooltip="Edit"><span class="glyphicon glyphicon-edit"></span></button>
+                                <button ng-hide="cekadmin()" type="button" class="btn btn-warning" ng-disabled="cekadmin()" ng-click="advLayer.open(layer)" tooltip-placement="top" uib-tooltip="Publikasi"><span class="glyphicon glyphicon-check"></span></button>
+                                <button ng-hide="cekadmin()" type="button" class="btn btn-danger" ng-disabled="cekadmin()" ng-click="hapusLayer.open(layer)" tooltip-placement="right" uib-tooltip="Hapus"><span class="glyphicon glyphicon-remove"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <layer-info-dialog model="infoLayer"></layer-info-dialog>
+            <layer-edit-dialog model="editLayer"></layer-edit-dialog>
+            <layer-adv-dialog model="advLayer"></layer-adv-dialog>
+            <layer-hapus-dialog model="hapusLayer"></layer-hapus-dialog>
+            <layer-tambah-dialog model="tambahLayer"></layer-tambah-dialog>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<!-- Modal Wizard content-->
+
+<div class="modal fade" id="layer_wizard" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" ng-controller="LayersCtrl">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Tambah Layer</h4>
+            </div>
+            <div class="modal-body wizard-content">
+                <div class="wizard-step">
+                    <h5>Berkas Paket Data</h5> <br>
+                    <label class="control-label">Pilih Berkas (ZIP)</label>
+                    <input type="file" ng-file-select="FileSelect($files)" multiple required>
+                    <br>
+                    <div>
+                        <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                    </div>
+                    <!--<div><span ng-bind="response.MSG"></span></div>-->
+                </div>
+                <div class="wizard-step">
+                    <h5>Isi Informasi Dasar</h5> <br>
+                    <!--<tr>
+                        <pre>{{response}}</pre>
+                        <pre>{{model.layer}}</pre>
+                    </tr>-->
+                    <form class="form-horizontal" ng-submit="publish()">
+                        <fieldset>
+                            <table class="table table-hover">
+                                <tr>
+                                    <td style="width: 150px"><strong>Layer ID</strong></td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Layer Title</strong></td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_name" ng-value="response.TID"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Layer Abstract</strong></td>
+                                    <td><textarea class="form-control input-sm" rows="5" type="text" ng-model="model.layer.layer_abstract" ng-value="$parent.response.TID"></textarea></td>
+                                </tr>
+                                <!--<tr>
+                                    <td><strong>Aktif</strong></td>
+                                    <td>
+                                        <select class="form-control input-sm" id="sel1">
+                                <option>Ya</option>
+                                <option>Tidak</option>
+                              </select>
+                                    </td>
+                                </tr>-->
+                                <!--<tr>
+                                    <td><strong>Layer SRS</strong></td>
+                                    <td>
+                                        <select class="form-control input-sm" id="srs" ng-value="response.EPSG">
+                                <option>EPSG:4326</option>
+                                <option>EPSG:3587</option>
+                                <option>EPSG:32749</option>
+                                <option>EPSG:32750</option>
+                                <option>EPSG:900913</option>
+                              </select>
+                                    </td>
+                                </tr>-->
+                                <tr>
+                                    <td style="width: 150px"><strong>Kode EPSG</strong></td>
+                                    <td><input type="text" ng-model="model.layer.layer_epsg" ng-value="response.SEPSG" uib-typeahead="kode for kode in kodeepsg | filter:$viewValue | limitTo:8" class="form-control">
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--<span ng-bind="response.MSG"></span>-->
+                        </fieldset>
+                        <button ng-disabled="ingeoserver" class="btn btn-success" type="submit">Simpan Layer</button>
+                    </form>
+                </div>
+                <div class="wizard-step">
+                    <h5>Informasi Metadata</h5>
+                    <table class="table table-hover">
+                        <tr>
+                            <td style="width: 200px;">Tipe Metadata</td>
+                            <td>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" ng-value="{{minimalmeta}}" ng-model="minimalmeta" ng-click="minmeta(true)">
+                                        Minimal
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios2" ng-value="{{uploadxml}}" ng-model="minimalmeta" ng-click="minmeta(false)">
+                                        Unggah Metadata
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Identifier Layer</td>
+                            <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
+                        </tr>
+                        <tr>
+                            <td>Informasi Data Constraints</td>
+                            <td>
+                                <select ng-model="linkntry.akses" ng-init="">
+									<option value='PUBLIC'>PUBLIC</option>
+									<option value='GOVERNMENT'>GOVERNMENT</option>
+									<option value='PRIVATE'>PRIVATE</option>
+									<option value='IGSTRATEGIS'>IG STRATEGIS</option>
+								</select>
+                                <br>
+                                <ui-select ng-model="selectedsimpul.selected" multiple theme="bootstrap" close-on-select="false" title="Pilih Simpul" ng-hide="linkntry.akses != 'GOVERNMENT'">
+                                    <ui-select-match>{{$item}}</ui-select-match>
+                                    <ui-select-choices repeat="state in kodesimpul | filter:$select.search">
+                                        {{state}}
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                        </tr>
+                        <tr ng-hide="uploadxml==false">
+                            <td><label class="control-label">Pilih Berkas (XML)</label> </td>
+                            <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="metaFile" name="fileMeta" ng-file-select="uploadMeta($files)" required></td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Pilih Berkas Pendukung Usulan KUGI</label> </td>
+                            <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files)" required></td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><button ng-disabled="linkntry.akses == ''" class="btn btn-success" type="submit" ng-click="MetaUp(response.LID, response.TID, model.layer.layer_abstract, linkntry.akses)">Simpan Metadata</button></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <!--<table>
+                        <tr>
+                            <div>
+                                <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                            </div>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>-->
+                </div>
+            </div>
+            <div class="modal-footer wizard-buttons">
+                <!-- The wizard button will be inserted here. -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    angular.element(document).ready(function() {
+        $("#layer_wizard").wizard({
+            onfinish: function() {
+                window.location.href = "#/state1";
+                console.log("Done!");
+            }
+        });
+    });
+
+    $('#layer_wizard').on('hidden.bs.modal', function() {
+        angular.element($("#LayerView")).scope().reloadView();
+    })
+
+    // function sticky_relocate() {
+    //     var window_top = $(window).scrollTop();
+    //     var div_top = $('#sticky_cari_anchor').offset().top;
+    //     if (window_top > div_top) {
+    //         $('#sticky_cari').addClass('stick');
+    //         $('#sticky_cari_anchor').height($('#sticky_cari').outerHeight());
+    //     } else {
+    //         $('#sticky_cari').removeClass('stick');
+    //         $('#sticky_cari_anchor').height(0);
+    //     }
+    // }
+
+    // $(function() {
+    //     $(window).scroll(sticky_relocate);
+    //     sticky_relocate();
+    // });
+</script>

@@ -1,0 +1,27 @@
+<!-- Modal -->
+<div id="links_unpublish" class="modal fade" data-backdrop="static" role="dialog" ng-controller="MetalinksCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Unpublish servis CSW {{ model.item.feature }}?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Yakin akan unpublish service CSW <strong>{{ model.item.identifier }}</strong>???</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="btnLayerHapus" ng-click="hapusMDLink(model.item.identifier,model.item.workspace)">Unpublish!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#links_unpublish').on('hidden.bs.modal', function() {
+        angular.element($("#MetalinksView")).scope().reloadView();
+    })
+</script>

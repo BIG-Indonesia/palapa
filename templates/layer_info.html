@@ -1,0 +1,62 @@
+<!-- Modal -->
+<div id="layer_info" class="modal fade" data-backdrop="static" role="dialog" ng-controller="LayersCtrl">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal Info content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{ model.layer.layer_name }}</h4>
+            </div>
+            <div class="modal-body">
+                <!--<div id="map" style="width: 100%; height: 300px; display : inline-block;" class="map"></div>-->
+                <div id="layer_info_map"> </div>
+                <!--<openlayers width="100%" height="300px"></openlayers>-->
+                <openlayers id='prevmap' width="100%" height="300px" ol-center="model.center" ol-defaults="defaults" ng-if="model.render">
+                    <ol-layer ol-layer-properties="model.wms" ng-if="model.render"></ol-layer>
+                </openlayers>
+                <!--<pre ng-if="model.render">{{ model.wms | json }}</pre>
+				<pre ng-if="model.render">{{ model.center | json }}</pre>-->
+                <!--<openlayers ol-center="center" height="300px">
+                    <ol-layer ol-layer-properties="layers"></ol-layer>
+                </openlayers>-->
+                <!--<leaflet width="100%" height="480px"></leaflet>-->
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 150px"><strong>Layer ID</strong></td>
+                        <td>{{ model.layer.layer_id }}</td>
+                    </tr>
+                    <!--<tr><td><strong>Layer REST URL</strong></td><td>{{ model.layer.layer_resource }}</td></tr>-->
+                    <tr>
+                        <td><strong>Layer Title</strong></td>
+                        <td>{{ model.layer.layer_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Layer Abstract</strong></td>
+                        <td>{{ model.layer.layer_abstract }}</td>
+                    </tr>
+                    <!--<tr>
+                        <td><strong>Aktif</strong></td>
+                        <td>
+                            <span ng-if="model.layer.layer_aktif==true" class="fa fa-check-square-o"></span>
+                            <span ng-if="model.layer.layer_aktif==false" class="fa fa-square-o"></span>
+                        </td>
+                    </tr>-->
+                    <tr>
+                        <td><strong>Layer Default Style</strong></td>
+                        <td>{{ model.layer.layer_style }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Layer SRS</strong></td>
+                        <td>{{ model.layer.layer_srs }}</td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>

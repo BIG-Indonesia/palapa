@@ -1,0 +1,361 @@
+  <form name="outerForm" class="tab-form-demo">
+                                <uib-tabset active="activeForm">
+
+
+                                  <uib-tab index="0" heading="Md_Metadata">
+                                    <ng-form name="md_metadata">
+                                     <br>
+                             <div class="col-md-6"> 
+                                      <div class="form-group">
+                                        <label class="control-label" >Id </label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label" >FieldIdentifier</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group has-error">
+                                        <label class="control-label" for="inputError"> Language</label>
+                                        <input type="text" class="form-control" id="inputError" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label" >Characterset</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label">ParentIdentifier</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group has-error"  >
+                                        <label class="control-label" for="inputError">Hierarchylevel</label>
+                                        <input type="text" class="form-control" id="inputError" required ng-model="model.name"/>
+                                      </div>
+
+                                       <div class="form-group has error">
+                                        <label>HierarchylevelName  *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+                               </div>
+                               <div class="col-md-6">       
+
+                                      <div class="form-group">
+                                        <label class="control-label">Contact</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label">Datestamp   *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label">MetadataStandardName</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label">MetadataStandardVersion</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label" >DatasetUrl</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="control-label" >Locale</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                        <div class="form-group">
+                                        <label class="control-label">Status</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div> 
+                                 
+
+                                   
+                               </div>
+
+                             
+
+                                <div class="box-footer" align="left">
+                                    <div class="col-md-10">
+                                       <button type="submit" class="btn btn-flat btn-success fa fa-floppy-o">  Simpan</button>
+                                     </div>  
+                                    <div class="col-md-2">
+                                    <p align="right"><a href="" role='button' class='btn btn-flat btn-danger fa fa-ban' >  Batal  </a></p>
+                                   </div>
+
+                                    </ng-form>
+                                 </div>
+
+                                  </uib-tab>
+
+    <!-- ===================================================================================================================== -->                              
+                                  <uib-tab index="1" heading="Ci_ResponsibleParty">
+                                    <ng-form name="ci_responsibleparty">
+                                  <br>
+                                  <br>
+                                    <div class="col-md-6"> 
+                                      <div class="form-group">
+                                        <label>Id </label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Ci_CitationId</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Role  *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+                                </div>
+                                 <div class="col-md-6"> 
+                                      <div class="form-group">
+                                        <label>IndividualName</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>PositionName</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>OrganisationName  *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                    
+                               </div>
+
+                                <div class="box-footer" align="left">
+                                    <div class="col-md-10">
+                                       <button type="submit" class="btn btn-flat btn-success fa fa-floppy-o">  Simpan</button>
+                                     </div>  
+                                    <div class="col-md-2">
+                                    <p align="right"><a href="" role='button' class='btn btn-flat btn-danger fa fa-ban' >  Batal  </a></p>
+                                   </div>
+
+                                  
+                                 </div>
+                        </ng-form>
+                    
+                    </uib-tab>
+
+
+    <!-- ===================================================================================================================== -->                              
+                    <uib-tab index="2" heading="Ci_Telephone">
+                        <ng-form name="ci_telephone">
+                                  <br>
+                                  <br>
+                                    <div class="col-md-6"> 
+                                      <div class="form-group">
+                                        <label>Id </label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Ci_ContacId</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                     
+                                </div>
+                                 <div class="col-md-6"> 
+                                      <div class="form-group">
+                                        <label>Voice  *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Facsmili  *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                              
+
+                                    
+                               </div>
+
+                                <div class="box-footer" align="left">
+                                    <div class="col-md-10">
+                                       <button type="submit" class="btn btn-flat btn-success fa fa-floppy-o">  Simpan</button>
+                                     </div>  
+                                    <div class="col-md-2">
+                                    <p align="right"><a href="" role='button' class='btn btn-flat btn-danger fa fa-ban' >  Batal  </a></p>
+                                   </div>
+
+                                  
+                                 </div>
+                              </ng-form>
+
+                        </uib-tab>
+                                 
+                                 
+ <!-- ===================================================================================================================== -->
+
+
+                     <uib-tab index="3" heading="Ci_Address">
+                        <ng-form name="ci_address">
+                                  <br>
+                                  <br>
+                                    <div class="col-md-6"> 
+                                     
+                                      <div class="form-group">
+                                        <label>Id </label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>DeliveryPoint *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                       <div class="form-group">
+                                        <label>City*(M) </label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Administrativearea *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+
+                                     
+                                </div>
+                                 <div class="col-md-6"> 
+                                      
+                                      <div class="form-group">
+                                        <label>PostalCode *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Country *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                       <div class="form-group">
+                                        <label>ElectronicMailAddress *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Ci_ContacId</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+
+                              
+
+                                    
+                               </div>
+
+                                <div class="box-footer" align="left">
+                                    <div class="col-md-10">
+                                       <button type="submit" class="btn btn-flat btn-success fa fa-floppy-o">  Simpan</button>
+                                     </div>  
+                                    <div class="col-md-2">
+                                    <p align="right"><a href="" role='button' class='btn btn-flat btn-danger fa fa-ban' >  Batal  </a></p>
+                                   </div>
+
+                                  
+                                 </div>
+                              </ng-form>
+
+                        </uib-tab>
+                                 
+                                 
+ <!-- ===================================================================================================================== -->
+
+                     <uib-tab index="4" heading="Ci_OnlineResources">
+                        <ng-form name="ci_onlineresources">
+                                  <br>
+                                  <br>
+                                    <div class="col-md-6"> 
+                                     
+                                      <div class="form-group">
+                                        <label>Id </label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Linkage *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                       <div class="form-group">
+                                        <label>Protocol</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>ApplicationProfile</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+
+                                     
+                                </div>
+                                 <div class="col-md-6"> 
+                                      
+                                      <div class="form-group">
+                                        <label>Name *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Description *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                       <div class="form-group">
+                                        <label>Function *(M)</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label>Ci_ContacId</label>
+                                        <input type="text" class="form-control" required ng-model="model.name"/>
+                                      </div>
+
+
+                              
+
+                                    
+                               </div>
+
+                                <div class="box-footer" align="left">
+                                    <div class="col-md-10">
+                                       <button type="submit" class="btn btn-flat btn-success fa fa-floppy-o">  Simpan</button>
+                                     </div>  
+                                    <div class="col-md-2">
+                                    <p align="right"><a href="" role='button' class='btn btn-flat btn-danger fa fa-ban' >  Batal  </a></p>
+                                   </div>
+
+                                  
+                                 </div>
+                              </ng-form>
+
+                        </uib-tab>
+                                 
+                                 
+ <!-- ===================================================================================================================== -->
+                            
+                                  <uib-tab index="5" heading="Tab Two">
+                                    More Tab Content
+                                  </uib-tab>
+                                
+
+                                </uib-tabset>
+                              </form>

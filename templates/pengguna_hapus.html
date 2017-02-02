@@ -1,0 +1,27 @@
+<!-- Modal -->
+<div id="pengguna_hapus" class="modal fade" role="dialog" ng-controller="PenggunaCtrl">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Hapus Pengguna {{ model.item.name }} ?</h4>
+			</div>
+			<div class="modal-body">
+				<p>Yakin akan menghapus pengguna <strong>{{ model.item.name }}</strong> ???</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal" id="btnPenggunaHapus" ng-click="hapusGSPengguna()">Hapus!</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+			</div>
+		</div>
+		<!-- rem -->
+	</div>
+</div>
+
+<script>
+    $('#pengguna_hapus').on('hidden.bs.modal', function() {
+        angular.element($("#PenggunaView")).scope().reloadView();
+    });
+</script>

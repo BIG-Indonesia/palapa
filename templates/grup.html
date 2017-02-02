@@ -1,0 +1,170 @@
+<div id="GrupView" ng-app="nodeManager" ng-controller="GrupCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Grup
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#grup_tambah"><span class="glyphicon glyphicon-upload"></span> Tambah Grup</button></div>
+        <div class="panel-body">
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariPengguna">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <td>
+                            <a href="#/grup" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+            Nama Grup 
+            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </td>
+                        <td>
+                            <a href="#/grup" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+            Organisasi 
+            <span ng-show="sortType == 'organization' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'organization' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </td>
+                        <!--<td>Aktif</td>-->
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="item in grup | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.organization }}</td>
+                        <!--<td>
+                            <span ng-if="item.enabled=='Y'" class="fa fa-check-square-o"></span>
+                            <span ng-if="item.enabled!='Y'" class="fa fa-square-o"></span>
+                        </td>-->
+                        <td style="width: 152px">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info" ng-click="infoGrup.open(item)"><span class=" glyphicon glyphicon-info-sign "></span></button>
+                                <button type="button" class="btn btn-warning" ng-click="editGrup.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>
+                                <button type="button" class="btn btn-danger" ng-click="hapusGrup.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <grup-info-dialog model="infoGrup "></grup-info-dialog>
+            <grup-edit-dialog model="editGrup "></grup-edit-dialog>
+            <grup-tambah-dialog model="tambahGrup "></grup-tambah-dialog>
+            <grup-hapus-dialog model="hapusGrup "></grup-hapus-dialog>
+
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="grup_tambah" class="modal fade" role="dialog" ng-controller="GrupCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Tambah Grup</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Nama Grup</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.name"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Nama Organisasi</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.organization"></td>
+                    </tr>
+                    <!--                    <tr class="warning">
+                        <td style="width: 150px"><strong>Kode Simpul</strong></td>
+                        <td><input type="text" ng-model="grupentry.kodesimpul" uib-typeahead="state for state in kodesimpul | filter:$viewValue | limitTo:8" class="form-control">
+                        </td>
+                    </tr>-->
+                    <tr>
+                        <td style="width: 150px"><strong>Alamat URL</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.url"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Telepon</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.phone"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Fax</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.fax"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Alamat</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.address"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Kota/Kabupaten</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.city"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Provinsi</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.administrativearea"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Kode Pos</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.postalcode"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>e-mail</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.email"></td>
+                    </tr>
+                    <!--<tr><td><strong>Layer REST URL</strong></td><td>{{ model.layer.layer_resource }}</td></tr>-->
+                    <!--<tr>
+                        <td><strong>Aktif</strong></td>
+                        <td><select ng-model="grupentry.enabled">
+                <option value='Y'>Ya</option>
+                <option value='N'>TIdak</option>
+              </select></td>
+                    </tr>-->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="tambahGSGrup()" ng-disabled="!grupentry.name || !grupentry.organization">Tambah!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#grup_tambah').on('hidden.bs.modal', function() {
+        angular.element($("#GrupView")).scope().reloadView();
+    })
+</script>

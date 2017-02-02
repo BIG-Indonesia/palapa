@@ -1,0 +1,21 @@
+<!-- Modal -->
+<div id="layer_hapus" class="modal fade" data-backdrop="static" role="dialog" ng-controller="ctrl_dbprod">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Export Dataset {{ model.item.alias }} ?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Yakin akan mengeksport dataset <strong>{{ model.item.alias }}</strong> , skala <strong>{{ model.item.skala }}</strong> dengan identifier <strong>{{ model.item.identifier }}</strong>???</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="btnLayerHapus" ng-click="eksporPRODPUB(model.item)">Ekspor!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
