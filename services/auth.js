@@ -12,6 +12,8 @@ nodeManager.factory('Auth', ['$http', '$rootScope', '$window', 'Session', 'AUTH_
     $http.get(CONFIG.api_url + 'sisteminfo').success(function (data) {
       $rootScope.kodesimpul = data.kodesimpul.split(',', 1)[0]
       $rootScope.simpul = data.kodesimpul.split(',', 2)[1].trim()
+      $rootScope.clat = data.kodesimpul.split(", ")[3];
+      $rootScope.clon = data.kodesimpul.split(", ")[2];
     })
     // the login function
     authService.login = function (user, success, error) {

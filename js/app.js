@@ -2987,6 +2987,14 @@ nodeManager.controller('ctrl_dbpub_publikasi', function($rootScope, $scope, CONF
     $scope.currusr = $rootScope.currentUser.user;
     $scope.curkelas = $rootScope.currentUser.kelas;
 
+    $scope.cekadmin = function() {
+        if ($scope.curgrup == 'admin') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     var params = {};
     params.workspace = 'KUGI'
     console.log(params)
@@ -3506,7 +3514,7 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
     $scope.cariLayer = ''; // set the default search/filter term
     $scope.sisteminfo = '';
 
-    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodesimpulext').success(function(data) {
         $scope.kodesimpul = data;
     });
 
@@ -3552,7 +3560,7 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
     });
 });
 
-nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, olData, $timeout) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariLayer = ''; // set the default search/filter term
@@ -3564,6 +3572,57 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
     $scope.berkas_logo = '';
     $scope.berkas_gambar1 = '';
     $scope.berkas_gambar2 = '';
+    $scope.clatitude = parseFloat($rootScope.clat);
+    $scope.clongitue = parseFloat($rootScope.clon);
+    $scope.czoom = 5;
+
+    angular.extend($scope, {
+        center: {
+            lat: $scope.clatitude,
+            lon: $scope.clongitue,
+            zoom: $scope.czoom,
+            projection: 'EPSG:4326',
+            bounds: []
+        },
+        defaults: {
+            layers: [{
+                main: {
+                    source: {
+                        type: 'OSM',
+                        url: baseXYZLayer
+                    }
+                }
+            }],
+            interactions: {
+                mouseWheelZoom: true
+            },
+            controls: {
+                zoom: true,
+                rotate: true,
+                attribution: false
+            }
+        }
+    });
+
+    angular.extend($scope, {
+        wms: {
+            source: {
+                type: 'ImageWMS',
+                url: CONFIG.gs_url,
+                params: {}
+            }
+        }
+    });
+
+    $scope.updatemap = function(layer) {
+        setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.wms.source.params.LAYERS = layer
+                });
+            })
+            // $scope.wms.source.params.LAYERS = layer
+            // olData.
+    };
 
     $scope.reloadView = function() {
         $state.transitionTo($state.current, $stateParams, {
@@ -3709,6 +3768,9 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
         params.judul_fitur = encodeURIComponent(params.judul_fitur);
         params.keterangan_fitur = encodeURIComponent(params.keterangan_fitur);
         params.tipe_tema = encodeURIComponent(params.tipe_tema);
+        params.c_y = $scope.center.lat;
+        params.c_x = $scope.center.lon;
+        params.c_zoom = $scope.center.zoom;
         console.log(params)
         console.log($scope.frontend_content)
         var data = $.param({

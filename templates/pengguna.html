@@ -85,8 +85,8 @@
                         </td>-->
                         <td style="width: 120px">
                             <div class="btn-group">
-                                <button ng-hide="cekgrup(item.groupname)" type="button" class="btn btn-warning" ng-click="editPengguna.open(item)" tooltip-placement="left" uib-tooltip="Edit password."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button ng-hide="cekadmin()" type="button" class="btn btn-danger" ng-click="hapusPengguna.open(item)" tooltip-placement="left" uib-tooltip="Hapus pengguna."><span class="glyphicon glyphicon-remove"></span></button>
+                                <button ng-hide="cekgrup(item.groupname) || item.name == 'palapa'" type="button" class="btn btn-warning" ng-click="editPengguna.open(item)" tooltip-placement="left" uib-tooltip="Edit password."><span class="glyphicon glyphicon-edit"></span></button>
+                                <button ng-hide="cekadmin() || item.name == 'palapa'" type="button" class="btn btn-danger" ng-click="hapusPengguna.open(item)" tooltip-placement="left" uib-tooltip="Hapus pengguna."><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
                     </tr>
