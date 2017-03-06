@@ -451,11 +451,16 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         }
         parameters = {};
         parameters.ID = id;
-        if (typeof $scope.model.layer.layer_name == 'undefined') {
+        try {
+            if (typeof $scope.model.layer.layer_name == 'undefined') {
+                parameters.TITLE = encodeURIComponent(title);
+            } else {
+                parameters.TITLE = encodeURIComponent($scope.model.layer.layer_name);
+            }
+        } catch(err) {
             parameters.TITLE = encodeURIComponent(title);
-        } else {
-            parameters.TITLE = encodeURIComponent($scope.model.layer.layer_name);
         }
+
         // parameters.TITLE = title;
         parameters.ABSTRACT = encodeURIComponent(abstract);
         parameters.WORKSPACE = $scope.curwrk;
@@ -483,7 +488,12 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
                 bootbox.alert(pesan.MSG);
             });
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
-            $scope.BerkasSelect($scope.docFile);
+            try {
+                $scope.BerkasSelect($scope.docFile);
+            } catch(err) {
+                //
+            }
+            
         } else {
             $scope.MetaFileSelect($scope.metaFile, id, akses);
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
@@ -1189,7 +1199,11 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
         $http.post(CONFIG.api_url + 'users', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            console.log(pesan);
+            // $state.transitionTo($state.current, $stateParams, {
+            //     reload: true,
+            //     inherit: false,
+            //     notify: true
+            // });
         })
     }
 
@@ -1219,8 +1233,13 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
             })
         });
         $http.post(CONFIG.api_url + 'user/delete', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            // $state.transitionTo($state.current, $stateParams, {
+            //     reload: true,
+            //     inherit: false,
+            //     notify: true
+            // });
         })
     }
 
@@ -1383,7 +1402,11 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         $http.post(CONFIG.api_url + 'groups', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            console.log(pesan);
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
         })
     }
 
@@ -1403,8 +1426,12 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         });
         $http.post(CONFIG.api_url + 'group/edit', data).success(function(data, status) {
             pesan = data;
-            bootbox.alert(pesan.MSG)
-            console.log(pesan);
+            bootbox.alert(pesan.MSG)            
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
         })
     }
 
@@ -1417,8 +1444,8 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
             })
         });
         $http.post(CONFIG.api_url + 'group/delete', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            bootbox.alert(pesan.MSG)
         })
     }
 
@@ -2507,10 +2534,14 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
     }
 
     $scope.cek_meta = function(identifier) {
-        if ($scope.metadevlist.indexOf(identifier) === -1) {
-            return true
-        } else {
-            return false
+        try {
+            if ($scope.metadevlist.indexOf(identifier) === -1) {
+                return true
+            } else {
+                return false
+            }
+        } catch(err) {
+            //
         }
     }
 
@@ -2803,10 +2834,14 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
     }
 
     $scope.cek_meta = function(identifier) {
-        if ($scope.metadevlist.indexOf(identifier) === -1) {
-            return true
-        } else {
-            return false
+        try {
+            if ($scope.metadevlist.indexOf(identifier) === -1) {
+                return true
+            } else {
+                return false
+            }
+        } catch(err) {
+            //
         }
     }
 
@@ -2988,7 +3023,8 @@ nodeManager.controller('ctrl_dbpub_publikasi', function($rootScope, $scope, CONF
     $scope.curkelas = $rootScope.currentUser.kelas;
 
     $scope.cekadmin = function() {
-        if ($scope.curgrup == 'admin') {
+        console.log($scope.curkelas)
+        if ($scope.curkelas == 'admin') {
             return false;
         } else {
             return true;
