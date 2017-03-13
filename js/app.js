@@ -457,7 +457,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             } else {
                 parameters.TITLE = encodeURIComponent($scope.model.layer.layer_name);
             }
-        } catch(err) {
+        } catch (err) {
             parameters.TITLE = encodeURIComponent(title);
         }
 
@@ -490,10 +490,10 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
             try {
                 $scope.BerkasSelect($scope.docFile);
-            } catch(err) {
+            } catch (err) {
                 //
             }
-            
+
         } else {
             $scope.MetaFileSelect($scope.metaFile, id, akses);
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
@@ -1199,11 +1199,11 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
         $http.post(CONFIG.api_url + 'users', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            // $state.transitionTo($state.current, $stateParams, {
-            //     reload: true,
-            //     inherit: false,
-            //     notify: true
-            // });
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -1235,11 +1235,11 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
         $http.post(CONFIG.api_url + 'user/delete', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            // $state.transitionTo($state.current, $stateParams, {
-            //     reload: true,
-            //     inherit: false,
-            //     notify: true
-            // });
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -1426,7 +1426,7 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         });
         $http.post(CONFIG.api_url + 'group/edit', data).success(function(data, status) {
             pesan = data;
-            bootbox.alert(pesan.MSG)            
+            bootbox.alert(pesan.MSG)
             $state.transitionTo($state.current, $stateParams, {
                 reload: true,
                 inherit: false,
@@ -2540,7 +2540,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
             } else {
                 return false
             }
-        } catch(err) {
+        } catch (err) {
             //
         }
     }
@@ -2840,7 +2840,7 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
             } else {
                 return false
             }
-        } catch(err) {
+        } catch (err) {
             //
         }
     }
@@ -3194,6 +3194,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.nstage1_berkas = true;
     $scope.nstage2 = false;
     $scope.nstage3 = false;
+    $scope.metaitem = 0;
+    $scope.metatotal = 1;
 
     $scope.selectedsimpul = [];
 
@@ -3260,7 +3262,13 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
                     $scope.iden_unik = $scope.response['IDEN']
-                        // $scope.loader_work = false
+                    try {
+                        $scope.metaitem = $scope.iden_unik.length;
+                        console.log($scope.metaitem)
+                    } catch(err) {
+                        //
+                    }
+                    // $scope.loader_work = false
                     bootbox.alert($scope.response.MSG);
                     // $state.go('db_dev');
                     //angular.element(document.getElementById('eWNext'))[0].disabled = false;
@@ -3270,6 +3278,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // file failed to upload
                     $scope.response = data;
                     bootbox.alert($scope.response.MSG);
+                    $state.go('db_dev');
                     //ngular.element(document.getElementById('eWNext'))[0].disabled = true;
                     console.log(data);
                 });
@@ -3283,6 +3292,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             inherit: false,
             notify: true
         });
+    }
+
+    $scope.todbdev = function() {
+        $state.go('db_dev');
     }
 
     $scope.GetSkala = function() {
@@ -3364,6 +3377,19 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             })(i);
         }
     }
+
+    $scope.metastagecek = function() {
+        console.log( $scope.metatotal);
+        console.log( $scope.metaitem);
+        if ($scope.metatotal === $scope.metaitem+1) {
+             $scope.savebtn = false;
+            return false
+        } else {
+            return true 
+        }
+    }
+
+    $scope.savebtn = true;
 
     $scope.MetaFileSelect = function($files, identifier, akses, kodesimpul) {
         console.log('INIT');
@@ -3448,8 +3474,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // $scope.progress_mt = parseInt(100.0 * evt.loaded / evt.total);
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
-                    bootbox.alert($scope.response.MSG)
-                        // file is uploaded successfully
+                    $scope.metatotal = $scope.metatotal+1;
+                    bootbox.alert($scope.response.MSG);
+                    $scope.metastagecek();
+                    // file is uploaded successfully
                     console.log(data);
                 }).error(function(data, status, headers, config) {
                     // file failed to upload
