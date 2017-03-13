@@ -100,7 +100,7 @@
                                 <button type="button" ng-disabled="cek_meta(feature.identifier)" class="btn btn-success" ng-click="lihatKugi.open(feature)" tooltip-placement="left" uib-tooltip="Raw XML metadata."><span class="glyphicon glyphicon-info-sign"></span></button>
                                 <button type="button" class="btn btn-success" ng-click="saverow('palapa_pub',feature)" tooltip-placement="left" uib-tooltip="Download Row (GML)."><span class="glyphicon glyphicon-download-alt"></span></button>
                                 <button ng-hide="cekadmin()" type="button" class="btn btn-warning" ng-click="tambahKugi.open(feature)" tooltip-placement="right" uib-tooltip="Unggah/update berkas XML metadata."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button ng-hide="cekadmin()" type="button" class="btn btn-warning" ng-click="eksporProdpub.open(feature)" tooltip-placement="left" uib-tooltip="Migrasi dataset ke database Publikasi."><span class="glyphicon glyphicon-export"></span></button>
+                                <button ng-hide="cekadmin()"  ng-disabled="feature.inpub" type="button" class="btn btn-warning" ng-click="eksporProdpub.open(feature)" tooltip-placement="left" uib-tooltip="Migrasi dataset ke database Publikasi."><span class="glyphicon glyphicon-export"></span></button>
                                 <button ng-hide="cekadmin()" type="button" class="btn btn-danger" ng-click="hapusProdpub.open(feature)" tooltip-placement="right" uib-tooltip="Hapus dataset dari database Produksi."><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>

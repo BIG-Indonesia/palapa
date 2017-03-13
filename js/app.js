@@ -2285,6 +2285,16 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         });
     }
 
+    $scope.cekprod = function(identifier) {
+        $http.get(CONFIG.api_url + 'cekprod/' + identifier, { cache: true }).success(function(data) {
+            if (data.Result == true){
+                return false
+            } else {
+                return true
+            }
+        });
+    }
+    
     $scope.reloadDBView = function(dbkugi) {
         db = {}
         db.dbkugi = dbkugi
@@ -2561,7 +2571,17 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         }
     }
 
-
+    $scope.cekpub = function(identifier) {
+        $http.get(CONFIG.api_url + 'cekpub/' + identifier, { cache: true }).success(function(data) {
+            console.log(data)
+            if (data.Result == true){
+                return false
+            } else {
+                return true
+            }
+        });
+    }
+    
     $scope.saverow = function(database, item) {
         console.log(item)
         $.fileDownload(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier)
