@@ -946,7 +946,7 @@ nodeManager.controller('StylesCtrl', function($scope, CONFIG, $http, $state, $st
     $scope.pageSize = 10;
     $scope.styles = [];
 
-    $http.get(CONFIG.api_url + 'getstyles', { cache: true }).success(function(data) {
+    $http.get(CONFIG.api_url + 'getstyles', { cache: false }).success(function(data) {
         $scope.styles = data;
         $scope.numberOfPages = function() {
             return Math.ceil($scope.styles.length / $scope.pageSize);
