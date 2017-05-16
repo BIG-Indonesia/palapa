@@ -295,3 +295,8 @@ img {
     overflow: visible;
     height: 250px;
 }
+
+#cmsprevmap {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}

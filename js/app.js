@@ -451,11 +451,16 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         }
         parameters = {};
         parameters.ID = id;
-        if (typeof $scope.model.layer.layer_name == 'undefined') {
+        try {
+            if (typeof $scope.model.layer.layer_name == 'undefined') {
+                parameters.TITLE = encodeURIComponent(title);
+            } else {
+                parameters.TITLE = encodeURIComponent($scope.model.layer.layer_name);
+            }
+        } catch (err) {
             parameters.TITLE = encodeURIComponent(title);
-        } else {
-            parameters.TITLE = encodeURIComponent($scope.model.layer.layer_name);
         }
+
         // parameters.TITLE = title;
         parameters.ABSTRACT = encodeURIComponent(abstract);
         parameters.WORKSPACE = $scope.curwrk;
@@ -483,7 +488,12 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
                 bootbox.alert(pesan.MSG);
             });
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
-            $scope.BerkasSelect($scope.docFile);
+            try {
+                $scope.BerkasSelect($scope.docFile);
+            } catch (err) {
+                //
+            }
+
         } else {
             $scope.MetaFileSelect($scope.metaFile, id, akses);
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
@@ -936,7 +946,7 @@ nodeManager.controller('StylesCtrl', function($scope, CONFIG, $http, $state, $st
     $scope.pageSize = 10;
     $scope.styles = [];
 
-    $http.get(CONFIG.api_url + 'getstyles', { cache: true }).success(function(data) {
+    $http.get(CONFIG.api_url + 'getstyles', { cache: false }).success(function(data) {
         $scope.styles = data;
         $scope.numberOfPages = function() {
             return Math.ceil($scope.styles.length / $scope.pageSize);
@@ -1189,7 +1199,11 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
         $http.post(CONFIG.api_url + 'users', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            console.log(pesan);
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -1219,8 +1233,13 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
             })
         });
         $http.post(CONFIG.api_url + 'user/delete', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -1383,7 +1402,11 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         $http.post(CONFIG.api_url + 'groups', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            console.log(pesan);
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
         })
     }
 
@@ -1404,7 +1427,11 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         $http.post(CONFIG.api_url + 'group/edit', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            console.log(pesan);
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
         })
     }
 
@@ -1417,8 +1444,8 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
             })
         });
         $http.post(CONFIG.api_url + 'group/delete', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            bootbox.alert(pesan.MSG)
         })
     }
 
@@ -2258,6 +2285,16 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         });
     }
 
+    $scope.cekprod = function(identifier) {
+        $http.get(CONFIG.api_url + 'cekprod/' + identifier, { cache: true }).success(function(data) {
+            if (data.Result == true){
+                return false
+            } else {
+                return true
+            }
+        });
+    }
+    
     $scope.reloadDBView = function(dbkugi) {
         db = {}
         db.dbkugi = dbkugi
@@ -2507,10 +2544,14 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
     }
 
     $scope.cek_meta = function(identifier) {
-        if ($scope.metadevlist.indexOf(identifier) === -1) {
-            return true
-        } else {
-            return false
+        try {
+            if ($scope.metadevlist.indexOf(identifier) === -1) {
+                return true
+            } else {
+                return false
+            }
+        } catch (err) {
+            //
         }
     }
 
@@ -2530,7 +2571,17 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         }
     }
 
-
+    $scope.cekpub = function(identifier) {
+        $http.get(CONFIG.api_url + 'cekpub/' + identifier, { cache: true }).success(function(data) {
+            console.log(data)
+            if (data.Result == true){
+                return false
+            } else {
+                return true
+            }
+        });
+    }
+    
     $scope.saverow = function(database, item) {
         console.log(item)
         $.fileDownload(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier)
@@ -2803,10 +2854,14 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
     }
 
     $scope.cek_meta = function(identifier) {
-        if ($scope.metadevlist.indexOf(identifier) === -1) {
-            return true
-        } else {
-            return false
+        try {
+            if ($scope.metadevlist.indexOf(identifier) === -1) {
+                return true
+            } else {
+                return false
+            }
+        } catch (err) {
+            //
         }
     }
 
@@ -2987,6 +3042,15 @@ nodeManager.controller('ctrl_dbpub_publikasi', function($rootScope, $scope, CONF
     $scope.currusr = $rootScope.currentUser.user;
     $scope.curkelas = $rootScope.currentUser.kelas;
 
+    $scope.cekadmin = function() {
+        console.log($scope.curkelas)
+        if ($scope.curkelas == 'admin') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     var params = {};
     params.workspace = 'KUGI'
     console.log(params)
@@ -3150,6 +3214,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.nstage1_berkas = true;
     $scope.nstage2 = false;
     $scope.nstage3 = false;
+    $scope.metaitem = 0;
+    $scope.metatotal = 1;
 
     $scope.selectedsimpul = [];
 
@@ -3216,7 +3282,13 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
                     $scope.iden_unik = $scope.response['IDEN']
-                        // $scope.loader_work = false
+                    try {
+                        $scope.metaitem = $scope.iden_unik.length;
+                        console.log($scope.metaitem)
+                    } catch(err) {
+                        //
+                    }
+                    // $scope.loader_work = false
                     bootbox.alert($scope.response.MSG);
                     // $state.go('db_dev');
                     //angular.element(document.getElementById('eWNext'))[0].disabled = false;
@@ -3226,6 +3298,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // file failed to upload
                     $scope.response = data;
                     bootbox.alert($scope.response.MSG);
+                    $state.go('db_dev');
                     //ngular.element(document.getElementById('eWNext'))[0].disabled = true;
                     console.log(data);
                 });
@@ -3239,6 +3312,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             inherit: false,
             notify: true
         });
+    }
+
+    $scope.todbdev = function() {
+        $state.go('db_dev');
     }
 
     $scope.GetSkala = function() {
@@ -3320,6 +3397,19 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             })(i);
         }
     }
+
+    $scope.metastagecek = function() {
+        console.log( $scope.metatotal);
+        console.log( $scope.metaitem);
+        if ($scope.metatotal === $scope.metaitem+1) {
+             $scope.savebtn = false;
+            return false
+        } else {
+            return true 
+        }
+    }
+
+    $scope.savebtn = true;
 
     $scope.MetaFileSelect = function($files, identifier, akses, kodesimpul) {
         console.log('INIT');
@@ -3404,8 +3494,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // $scope.progress_mt = parseInt(100.0 * evt.loaded / evt.total);
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
-                    bootbox.alert($scope.response.MSG)
-                        // file is uploaded successfully
+                    $scope.metatotal = $scope.metatotal+1;
+                    bootbox.alert($scope.response.MSG);
+                    $scope.metastagecek();
+                    // file is uploaded successfully
                     console.log(data);
                 }).error(function(data, status, headers, config) {
                     // file failed to upload
@@ -3506,7 +3598,7 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
     $scope.cariLayer = ''; // set the default search/filter term
     $scope.sisteminfo = '';
 
-    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodesimpulext').success(function(data) {
         $scope.kodesimpul = data;
     });
 
@@ -3552,7 +3644,7 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
     });
 });
 
-nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, olData, $timeout) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariLayer = ''; // set the default search/filter term
@@ -3564,6 +3656,57 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
     $scope.berkas_logo = '';
     $scope.berkas_gambar1 = '';
     $scope.berkas_gambar2 = '';
+    $scope.clatitude = parseFloat($rootScope.clat);
+    $scope.clongitue = parseFloat($rootScope.clon);
+    $scope.czoom = 5;
+
+    angular.extend($scope, {
+        center: {
+            lat: $scope.clatitude,
+            lon: $scope.clongitue,
+            zoom: $scope.czoom,
+            projection: 'EPSG:4326',
+            bounds: []
+        },
+        defaults: {
+            layers: [{
+                main: {
+                    source: {
+                        type: 'OSM',
+                        url: baseXYZLayer
+                    }
+                }
+            }],
+            interactions: {
+                mouseWheelZoom: true
+            },
+            controls: {
+                zoom: true,
+                rotate: true,
+                attribution: false
+            }
+        }
+    });
+
+    angular.extend($scope, {
+        wms: {
+            source: {
+                type: 'ImageWMS',
+                url: CONFIG.gs_url,
+                params: {}
+            }
+        }
+    });
+
+    $scope.updatemap = function(layer) {
+        setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.wms.source.params.LAYERS = layer
+                });
+            })
+            // $scope.wms.source.params.LAYERS = layer
+            // olData.
+    };
 
     $scope.reloadView = function() {
         $state.transitionTo($state.current, $stateParams, {
@@ -3709,6 +3852,9 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
         params.judul_fitur = encodeURIComponent(params.judul_fitur);
         params.keterangan_fitur = encodeURIComponent(params.keterangan_fitur);
         params.tipe_tema = encodeURIComponent(params.tipe_tema);
+        params.c_y = $scope.center.lat;
+        params.c_x = $scope.center.lon;
+        params.c_zoom = $scope.center.zoom;
         console.log(params)
         console.log($scope.frontend_content)
         var data = $.param({

@@ -78,7 +78,7 @@
 
 
 
-                                <td style="width: 200px"><label class="control-label">Pilih Berkas (XML)</label> </td>
+                                <td style="width: 200px"><label class="control-label">Pilih Berkas Metadata</label> </td>
                                 <td style="width: 200px">{{ iden }}</td>
                                 <td><input type="file" ng-file-select="KMetaFileSelect($files, fitur, iden, linkntry.akses, currentKode)" multiple required>
                                     <!--<br>
@@ -93,6 +93,13 @@
                         </table>
                         <table class="table table-hover">
                             <tr>
+                                <td>
+                                    <button ng-disabled="savebtn" ng-model="savebtn" type="button" class="btn btn-success" ng-click="todbdev()" tooltip-placement="left" uib-tooltip="Simpan"><span class="glyphicon glyphicon glyphicon-floppy-save"></span> Simpan</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-hover">
+                            <tr>
                                 <td style="width: 100%; background-color: #669"></td>
                             </tr>
                         </table>
@@ -100,7 +107,7 @@
                             <tr>
                                 <td style="width: 200px">Atau unggah usulan KUGI</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah ZIP (layer ter-arsip) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Usulan KUGI</button>
+                                    <button ng-disabled="sumberskala" type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah ZIP (layer ter-arsip) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Usulan KUGI</button>
                                 </td>
                             </tr>
                         </table>

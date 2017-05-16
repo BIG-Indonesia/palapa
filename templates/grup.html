@@ -68,9 +68,9 @@
                         </td>-->
                         <td style="width: 152px">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-info" ng-click="infoGrup.open(item)"><span class=" glyphicon glyphicon-info-sign "></span></button>
-                                <button type="button" class="btn btn-warning" ng-click="editGrup.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>
-                                <button type="button" class="btn btn-danger" ng-click="hapusGrup.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>
+                                <button ng-hide="item.name == 'ADMIN' || item.name == 'KUGI'" type="button" class="btn btn-info" ng-click="infoGrup.open(item)"><span class=" glyphicon glyphicon-info-sign "></span></button>
+                                <button ng-hide="item.name == 'ADMIN' || item.name == 'KUGI'" type="button" class="btn btn-warning" ng-click="editGrup.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>
+                                <button ng-hide="item.name == 'ADMIN' || item.name == 'KUGI'" type="button" class="btn btn-danger" ng-click="hapusGrup.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>
                             </div>
                         </td>
                     </tr>

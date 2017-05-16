@@ -38,6 +38,8 @@ angular.module('nodeManager').controller('ParentController', ['$scope', '$rootSc
       console.log($scope.currentUser)
       console.log($rootScope.kodesimpul)
       console.log($rootScope.simpul)
+      console.log($rootScope.clat)
+      console.log($rootScope.clon)
     }
 
     var showNotAuthorized = function () {
