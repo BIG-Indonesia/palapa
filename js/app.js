@@ -4122,6 +4122,12 @@ nodeManager.controller('DocsCtrl', function($rootScope, $scope, CONFIG, $http, $
     $scope.upload = [];
     $scope.progress = 0;
     $scope.response = '';
+    $scope.layers = '';
+
+
+    $http.get(CONFIG.api_url + 'getWMSlayers').success(function(data) {
+        $scope.layers = data;
+    });
 
     $scope.reloadView = function() {
             $state.transitionTo($state.current, $stateParams, {
@@ -4205,6 +4211,7 @@ nodeManager.controller('DocsCtrl', function($rootScope, $scope, CONFIG, $http, $
     }
 
     $scope.hapusDocs = new HapusDocsDialogModel();
+    $scope.layerid = '';
 
     $scope.FileSelect = function($files) {
         console.log('INIT');
@@ -4217,7 +4224,10 @@ nodeManager.controller('DocsCtrl', function($rootScope, $scope, CONFIG, $http, $
                     url: CONFIG.api_url + 'docs/add', // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
+                    file: $file,
+                    params: {
+                        identifier: $scope.layerid.layer_id
+                    }
                 }).progress(function(evt) {
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
