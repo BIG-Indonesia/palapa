@@ -100,6 +100,13 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-file-text",
                     tooltip: "Manajemen metadata dengan skema Non-KUGI",
                     level: "member"
+                },
+                {
+                    title: "Dokumen Usulan KUGI",
+                    action: "#/docs",
+                    icons: "fa fa-file-text",
+                    tooltip: "Dokumen usulan skema Non-KUGI",
+                    level: "member"
                 }
             ]
         },
@@ -364,8 +371,8 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         }
     }
 
-    $scope.BerkasSelect = function($files) {
-        console.log($files);
+    $scope.BerkasSelect = function($files, identifier) {
+        console.log($files, identifier);
         //$files: an array of files selected, each file has name, size, and type.
         for (var i = 0; i < $files.length; i++) {
             var $file = $files[i];
@@ -374,7 +381,10 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
                     url: CONFIG.api_url + 'docs/link', // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
+                    file: $file,
+                    params: {
+                        identifier: identifier
+                    }
                 }).progress(function(evt) {
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
@@ -489,7 +499,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             });
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
             try {
-                $scope.BerkasSelect($scope.docFile);
+                $scope.BerkasSelect($scope.docFile, id);
             } catch (err) {
                 //
             }
@@ -497,7 +507,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         } else {
             $scope.MetaFileSelect($scope.metaFile, id, akses);
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
-            $scope.BerkasSelect($scope.docFile);
+            $scope.BerkasSelect($scope.docFile, id);
         }
 
     }
@@ -946,7 +956,7 @@ nodeManager.controller('StylesCtrl', function($scope, CONFIG, $http, $state, $st
     $scope.pageSize = 10;
     $scope.styles = [];
 
-    $http.get(CONFIG.api_url + 'getstyles', { cache: false }).success(function(data) {
+    $http.get(CONFIG.api_url + 'getstyles', { cache: true }).success(function(data) {
         $scope.styles = data;
         $scope.numberOfPages = function() {
             return Math.ceil($scope.styles.length / $scope.pageSize);
@@ -2287,14 +2297,14 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
 
     $scope.cekprod = function(identifier) {
         $http.get(CONFIG.api_url + 'cekprod/' + identifier, { cache: true }).success(function(data) {
-            if (data.Result == true){
+            if (data.Result == true) {
                 return false
             } else {
                 return true
             }
         });
     }
-    
+
     $scope.reloadDBView = function(dbkugi) {
         db = {}
         db.dbkugi = dbkugi
@@ -2574,14 +2584,14 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
     $scope.cekpub = function(identifier) {
         $http.get(CONFIG.api_url + 'cekpub/' + identifier, { cache: true }).success(function(data) {
             console.log(data)
-            if (data.Result == true){
+            if (data.Result == true) {
                 return false
             } else {
                 return true
             }
         });
     }
-    
+
     $scope.saverow = function(database, item) {
         console.log(item)
         $.fileDownload(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier)
@@ -3285,7 +3295,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     try {
                         $scope.metaitem = $scope.iden_unik.length;
                         console.log($scope.metaitem)
-                    } catch(err) {
+                    } catch (err) {
                         //
                     }
                     // $scope.loader_work = false
@@ -3399,13 +3409,13 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     }
 
     $scope.metastagecek = function() {
-        console.log( $scope.metatotal);
-        console.log( $scope.metaitem);
-        if ($scope.metatotal === $scope.metaitem+1) {
-             $scope.savebtn = false;
+        console.log($scope.metatotal);
+        console.log($scope.metaitem);
+        if ($scope.metatotal === $scope.metaitem + 1) {
+            $scope.savebtn = false;
             return false
         } else {
-            return true 
+            return true
         }
     }
 
@@ -3494,7 +3504,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // $scope.progress_mt = parseInt(100.0 * evt.loaded / evt.total);
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
-                    $scope.metatotal = $scope.metatotal+1;
+                    $scope.metatotal = $scope.metatotal + 1;
                     bootbox.alert($scope.response.MSG);
                     $scope.metastagecek();
                     // file is uploaded successfully
@@ -3513,7 +3523,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
         console.log(selectedsimpul)
     }
 
-    $scope.BerkasSelect = function($files) {
+    $scope.BerkasSelect = function($files, identifier) {
         console.log('INIT');
         console.log($files);
         //$files: an array of files selected, each file has name, size, and type.
@@ -3524,7 +3534,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     url: CONFIG.api_url + 'docs/link', // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
+                    file: $file,
+                    identifier: identifier
                 }).progress(function(evt) {
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
@@ -4102,3 +4113,153 @@ nodeManager.controller('GrupFiturCtrl', function($rootScope, $scope, CONFIG, $ht
 nodeManager.controller('LogCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
     $scope.loginfo = '';
 });
+
+nodeManager.controller('DocsCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariStyles = ''; // set the default search/filter term
+
+    $scope.upload = [];
+    $scope.progress = 0;
+    $scope.response = '';
+
+    $scope.reloadView = function() {
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
+        }
+        // create the list of sushi rolls 
+    $http.get(CONFIG.api_url + 'getdocs').success(function(data) {
+        $scope.docs = data;
+    });
+
+    $scope.getBaseUrl = function() {
+        var re = new RegExp(/^.*\//);
+        return re.exec(window.location.href);
+    }
+
+    $scope.toclipboard = function(text) {
+        console.log(text)
+        var baseurl = $scope.getBaseUrl()
+        baseurl = baseurl[0].substring(0, baseurl[0].length - 2);
+        console.log(baseurl)
+        var textArea = document.createElement("textarea");
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = 0;
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        textArea.value = baseurl + 'documents/' + text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        document.body.removeChild(textArea);
+    }
+
+    var HapusDocsDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusDocsDialogModel.prototype.open = function(doc) {
+        this.doc = doc;
+        console.log(doc);
+        this.visible = true;
+    };
+
+    HapusDocsDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.hapusGSDocs = function() {
+        var params = $scope.model.doc.name;
+        // console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'docs/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            console.log(pesan);
+            // console.log($scope.test);
+            // $state.transitionTo($state.current, $stateParams, {
+            //     reload: true,
+            //     inherit: false,
+            //     notify: true
+            // });
+        })
+    }
+
+    $scope.hapusDocs = new HapusDocsDialogModel();
+
+    $scope.FileSelect = function($files) {
+        console.log('INIT');
+        console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        for (var i = 0; i < $files.length; i++) {
+            var $file = $files[i];
+            (function(index) {
+                $scope.upload[index] = $upload.upload({
+                    url: CONFIG.api_url + 'docs/add', // webapi url
+                    method: "POST",
+                    // data: { fileUploadObj: $scope.fileUploadObj },
+                    file: $file
+                }).progress(function(evt) {
+                    // get upload percentage
+                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+                }).success(function(data, status, headers, config) {
+                    pesan = data;
+                    bootbox.alert(pesan.MSG)
+                        // file is uploaded successfully
+                    console.log(pesan);
+                }).error(function(data, status, headers, config) {
+                    // file failed to upload
+                    pesan = data;
+                    bootbox.alert(pesan.MSG)
+                    console.log(pesan);
+                });
+            })(i);
+        }
+    }
+});
+
+nodeManager.directive('docsHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/docs_hapus.html'
+    };
+}]);

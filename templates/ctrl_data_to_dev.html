@@ -78,7 +78,7 @@
 
 
 
-                                <td style="width: 200px"><label class="control-label">Pilih Berkas Metadata</label> </td>
+                                <td style="width: 200px"><label class="control-label">Pilih Berkas (XML)</label> </td>
                                 <td style="width: 200px">{{ iden }}</td>
                                 <td><input type="file" ng-file-select="KMetaFileSelect($files, fitur, iden, linkntry.akses, currentKode)" multiple required>
                                     <!--<br>
@@ -359,7 +359,7 @@
                         <tr>
                             <td><label class="control-label">Pilih Berkas Pendukung Usulan KUGI</label> </td>
                             <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
-                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files)" required></td>
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files, response.LID)" required></td>
                             </td>
                         </tr>
                         <tr>
