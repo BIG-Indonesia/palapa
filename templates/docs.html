@@ -77,6 +77,12 @@
                 <h4 class="modal-title">Unggah</h4>
             </div>
             <div class="modal-body">
+
+                <label class="layerid">Pilih Layer</label>
+                <select id="layerid" ng-model="layerid" ng-options="layer.layer_id for layer in layers | filter: { workspace: '!' +'KUGI'}">
+                                            <option value=''>Pilih Layer</option>
+                                        </select>
+                <br>
                 <label class="control-label">Pilih berkas</label>
                 <input type="file" ng-file-select="FileSelect($files)" multiple required>
                 <br>
