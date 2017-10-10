@@ -1,5 +1,5 @@
 // Configure the main application module.
-var nodeManager = angular.module('nodeManager', ['ngAnimate', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'openlayers-directive', 'nemLogging', 'ngResource', 'base64', 'angularFileUpload', 'angular.filter', 'treasure-overlay-spinner', 'listGroup', 'ui.select', 'angularUtils.directives.dirPagination', 'angular-loading-bar'])
+var nodeManager = angular.module('nodeManager', ['ngAnimate', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'openlayers-directive', 'nemLogging', 'ngResource', 'base64', 'angularFileUpload', 'angular.filter', 'treasure-overlay-spinner', 'listGroup', 'ui.select', 'angularUtils.directives.dirPagination', 'angular-loading-bar', 'pubnub.angular.service', 'ngNotify'])
     /*Constants regarding user login defined here*/
 nodeManager.constant('USER_ROLES', {
         all: '*',
@@ -100,6 +100,13 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-file-text",
                     tooltip: "Manajemen metadata dengan skema Non-KUGI",
                     level: "member"
+                },
+                {
+                    title: "Dokumen Usulan KUGI",
+                    action: "#/docs",
+                    icons: "fa fa-file-text",
+                    tooltip: "Dokumen usulan skema Non-KUGI",
+                    level: "member"
                 }
             ]
         },
@@ -156,6 +163,17 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     level: "member"
                 },
             ]
+        },
+        {
+            title: "Lain-lain",
+            action: "#",
+            menus: [{
+                title: "Pesan",
+                action: "#/chat",
+                icons: "fa fa-address-book",
+                tooltip: "Pesan",
+                level: "member"
+            }, ]
         }
     ]
 });
@@ -364,8 +382,8 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         }
     }
 
-    $scope.BerkasSelect = function($files) {
-        console.log($files);
+    $scope.BerkasSelect = function($files, identifier) {
+        console.log($files, identifier);
         //$files: an array of files selected, each file has name, size, and type.
         for (var i = 0; i < $files.length; i++) {
             var $file = $files[i];
@@ -374,7 +392,10 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
                     url: CONFIG.api_url + 'docs/link', // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
+                    file: $file,
+                    params: {
+                        identifier: identifier
+                    }
                 }).progress(function(evt) {
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
@@ -457,7 +478,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             } else {
                 parameters.TITLE = encodeURIComponent($scope.model.layer.layer_name);
             }
-        } catch(err) {
+        } catch (err) {
             parameters.TITLE = encodeURIComponent(title);
         }
 
@@ -489,15 +510,15 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             });
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
             try {
-                $scope.BerkasSelect($scope.docFile);
-            } catch(err) {
+                $scope.BerkasSelect($scope.docFile, id);
+            } catch (err) {
                 //
             }
-            
+
         } else {
             $scope.MetaFileSelect($scope.metaFile, id, akses);
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
-            $scope.BerkasSelect($scope.docFile);
+            $scope.BerkasSelect($scope.docFile, id);
         }
 
     }
@@ -1199,11 +1220,11 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
         $http.post(CONFIG.api_url + 'users', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            // $state.transitionTo($state.current, $stateParams, {
-            //     reload: true,
-            //     inherit: false,
-            //     notify: true
-            // });
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -1235,11 +1256,11 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
         $http.post(CONFIG.api_url + 'user/delete', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            // $state.transitionTo($state.current, $stateParams, {
-            //     reload: true,
-            //     inherit: false,
-            //     notify: true
-            // });
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -1426,7 +1447,7 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         });
         $http.post(CONFIG.api_url + 'group/edit', data).success(function(data, status) {
             pesan = data;
-            bootbox.alert(pesan.MSG)            
+            bootbox.alert(pesan.MSG)
             $state.transitionTo($state.current, $stateParams, {
                 reload: true,
                 inherit: false,
@@ -2285,6 +2306,16 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         });
     }
 
+    $scope.cekprod = function(identifier) {
+        $http.get(CONFIG.api_url + 'cekprod/' + identifier, { cache: true }).success(function(data) {
+            if (data.Result == true) {
+                return false
+            } else {
+                return true
+            }
+        });
+    }
+
     $scope.reloadDBView = function(dbkugi) {
         db = {}
         db.dbkugi = dbkugi
@@ -2540,7 +2571,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
             } else {
                 return false
             }
-        } catch(err) {
+        } catch (err) {
             //
         }
     }
@@ -2561,6 +2592,16 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         }
     }
 
+    $scope.cekpub = function(identifier) {
+        $http.get(CONFIG.api_url + 'cekpub/' + identifier, { cache: true }).success(function(data) {
+            console.log(data)
+            if (data.Result == true) {
+                return false
+            } else {
+                return true
+            }
+        });
+    }
 
     $scope.saverow = function(database, item) {
         console.log(item)
@@ -2840,7 +2881,7 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
             } else {
                 return false
             }
-        } catch(err) {
+        } catch (err) {
             //
         }
     }
@@ -3194,6 +3235,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.nstage1_berkas = true;
     $scope.nstage2 = false;
     $scope.nstage3 = false;
+    $scope.metaitem = 0;
+    $scope.metatotal = 1;
 
     $scope.selectedsimpul = [];
 
@@ -3260,7 +3303,13 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
                     $scope.iden_unik = $scope.response['IDEN']
-                        // $scope.loader_work = false
+                    try {
+                        $scope.metaitem = $scope.iden_unik.length;
+                        console.log($scope.metaitem)
+                    } catch (err) {
+                        //
+                    }
+                    // $scope.loader_work = false
                     bootbox.alert($scope.response.MSG);
                     // $state.go('db_dev');
                     //angular.element(document.getElementById('eWNext'))[0].disabled = false;
@@ -3270,6 +3319,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // file failed to upload
                     $scope.response = data;
                     bootbox.alert($scope.response.MSG);
+                    $state.go('db_dev');
                     //ngular.element(document.getElementById('eWNext'))[0].disabled = true;
                     console.log(data);
                 });
@@ -3283,6 +3333,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             inherit: false,
             notify: true
         });
+    }
+
+    $scope.todbdev = function() {
+        $state.go('db_dev');
     }
 
     $scope.GetSkala = function() {
@@ -3364,6 +3418,19 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             })(i);
         }
     }
+
+    $scope.metastagecek = function() {
+        console.log($scope.metatotal);
+        console.log($scope.metaitem);
+        if ($scope.metatotal === $scope.metaitem + 1) {
+            $scope.savebtn = false;
+            return false
+        } else {
+            return true
+        }
+    }
+
+    $scope.savebtn = true;
 
     $scope.MetaFileSelect = function($files, identifier, akses, kodesimpul) {
         console.log('INIT');
@@ -3448,8 +3515,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // $scope.progress_mt = parseInt(100.0 * evt.loaded / evt.total);
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
-                    bootbox.alert($scope.response.MSG)
-                        // file is uploaded successfully
+                    $scope.metatotal = $scope.metatotal + 1;
+                    bootbox.alert($scope.response.MSG);
+                    $scope.metastagecek();
+                    // file is uploaded successfully
                     console.log(data);
                 }).error(function(data, status, headers, config) {
                     // file failed to upload
@@ -3465,7 +3534,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
         console.log(selectedsimpul)
     }
 
-    $scope.BerkasSelect = function($files) {
+    $scope.BerkasSelect = function($files, identifier) {
         console.log('INIT');
         console.log($files);
         //$files: an array of files selected, each file has name, size, and type.
@@ -3476,7 +3545,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     url: CONFIG.api_url + 'docs/link', // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
+                    file: $file,
+                    identifier: identifier
                 }).progress(function(evt) {
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
@@ -4053,4 +4123,419 @@ nodeManager.controller('GrupFiturCtrl', function($rootScope, $scope, CONFIG, $ht
 
 nodeManager.controller('LogCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
     $scope.loginfo = '';
+});
+
+nodeManager.controller('DocsCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariStyles = ''; // set the default search/filter term
+
+    $scope.upload = [];
+    $scope.progress = 0;
+    $scope.response = '';
+    $scope.layers = '';
+
+
+    $http.get(CONFIG.api_url + 'getWMSlayers').success(function(data) {
+        $scope.layers = data;
+    });
+
+    $scope.reloadView = function() {
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
+        }
+        // create the list of sushi rolls 
+    $http.get(CONFIG.api_url + 'getdocs').success(function(data) {
+        $scope.docs = data;
+    });
+
+    $scope.getBaseUrl = function() {
+        var re = new RegExp(/^.*\//);
+        return re.exec(window.location.href);
+    }
+
+    $scope.toclipboard = function(text) {
+        console.log(text)
+        var baseurl = $scope.getBaseUrl()
+        baseurl = baseurl[0].substring(0, baseurl[0].length - 2);
+        console.log(baseurl)
+        var textArea = document.createElement("textarea");
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = 0;
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        textArea.value = baseurl + 'documents/' + text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        document.body.removeChild(textArea);
+    }
+
+    var HapusDocsDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusDocsDialogModel.prototype.open = function(doc) {
+        this.doc = doc;
+        console.log(doc);
+        this.visible = true;
+    };
+
+    HapusDocsDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.hapusGSDocs = function() {
+        var params = $scope.model.doc.name;
+        // console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'docs/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            console.log(pesan);
+            // console.log($scope.test);
+            // $state.transitionTo($state.current, $stateParams, {
+            //     reload: true,
+            //     inherit: false,
+            //     notify: true
+            // });
+        })
+    }
+
+    $scope.hapusDocs = new HapusDocsDialogModel();
+    $scope.layerid = '';
+
+    $scope.FileSelect = function($files) {
+        console.log('INIT');
+        console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        for (var i = 0; i < $files.length; i++) {
+            var $file = $files[i];
+            (function(index) {
+                $scope.upload[index] = $upload.upload({
+                    url: CONFIG.api_url + 'docs/add', // webapi url
+                    method: "POST",
+                    // data: { fileUploadObj: $scope.fileUploadObj },
+                    file: $file,
+                    params: {
+                        identifier: $scope.layerid.layer_id
+                    }
+                }).progress(function(evt) {
+                    // get upload percentage
+                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+                }).success(function(data, status, headers, config) {
+                    pesan = data;
+                    bootbox.alert(pesan.MSG)
+                        // file is uploaded successfully
+                    console.log(pesan);
+                }).error(function(data, status, headers, config) {
+                    // file failed to upload
+                    pesan = data;
+                    bootbox.alert(pesan.MSG)
+                    console.log(pesan);
+                });
+            })(i);
+        }
+    }
+});
+
+nodeManager.directive('docsHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/docs_hapus.html'
+    };
+}]);
+
+// nodeManager.factory('MessageService', function MessageServiceFactory($rootScope, $q, Pubnub, currentUser, ngNotify) {
+
+//     // Aliasing this by self so we can access to this trough self in the inner functions
+//     var self = this;
+//     this.messages = []
+//     this.channel = 'messages-channel';
+
+//     // We keep track of the timetoken of the first message of the array
+//     // so it will be easier to fetch the previous messages later
+//     this.firstMessageTimeToken = null;
+//     this.messagesAllFetched = false;
+
+//     var whenDisconnected = function() {
+//         ngNotify.set('Connection lost. Trying to reconnect...', {
+//             type: 'warn',
+//             sticky: true,
+//             button: false,
+//         });
+//     };
+
+//     var whenReconnected = function() {
+//         ngNotify.set('Connection re-established.', {
+//             type: 'info',
+//             duration: 1500
+//         });
+//     };
+
+//     var init = function() {
+
+//         Pubnub.subscribe({
+//             channel: self.channel,
+//             disconnect: whenDisconnected,
+//             reconnect: whenReconnected,
+//             noheresync: true,
+//             triggerEvents: true
+//         });
+
+//         Pubnub.time(function(time) {
+//             self.firstMessageTimeToken = time;
+//         })
+
+//         subcribeNewMessage(function(ngEvent, m) {
+//             self.messages.push(m)
+//             $rootScope.$digest()
+//         });
+
+//     };
+
+//     var populate = function() {
+
+//         var defaultMessagesNumber = 20;
+
+//         Pubnub.history({
+//             channel: self.channel,
+//             callback: function(m) {
+//                 // Update the timetoken of the first message
+//                 self.timeTokenFirstMessage = m[1]
+//                 angular.extend(self.messages, m[0]);
+
+//                 if (m[0].length < defaultMessagesNumber) {
+//                     self.messagesAllFetched = true;
+//                 }
+
+//                 $rootScope.$digest()
+//                 $rootScope.$emit('factory:message:populated')
+
+//             },
+//             count: defaultMessagesNumber,
+//             reverse: false
+//         });
+
+//     };
+
+//     ////////////////// PUBLIC API ////////////////////////
+
+//     var subcribeNewMessage = function(callback) {
+//         $rootScope.$on(Pubnub.getMessageEventNameFor(self.channel), callback);
+//     };
+
+
+//     var fetchPreviousMessages = function() {
+
+//         var defaultMessagesNumber = 10;
+
+//         var deferred = $q.defer()
+
+//         Pubnub.history({
+//             channel: self.channel,
+//             callback: function(m) {
+//                 // Update the timetoken of the first message
+//                 self.timeTokenFirstMessage = m[1]
+//                 Array.prototype.unshift.apply(self.messages, m[0])
+
+//                 if (m[0].length < defaultMessagesNumber) {
+//                     self.messagesAllFetched = true;
+//                 }
+
+//                 $rootScope.$digest()
+//                 deferred.resolve(m)
+
+//             },
+//             error: function(m) {
+//                 deferred.reject(m)
+//             },
+//             count: defaultMessagesNumber,
+//             start: self.timeTokenFirstMessage,
+//             reverse: false
+//         });
+
+//         return deferred.promise
+//     };
+
+
+//     var getMessages = function() {
+
+//         if (_.isEmpty(self.messages))
+//             populate();
+
+//         return self.messages;
+
+//     };
+
+//     var messagesAllFetched = function() {
+
+//         return self.messagesAllFetched;
+
+//     };
+
+//     var sendMessage = function(messageContent) {
+
+//         // Don't send an empty message 
+//         if (_.isEmpty(messageContent))
+//             return;
+
+//         Pubnub.publish({
+//             channel: self.channel,
+//             message: {
+//                 uuid: (Date.now() + currentUser),
+//                 content: messageContent,
+//                 sender_uuid: currentUser,
+//                 date: Date.now()
+//             },
+//         });
+//     };
+
+
+//     init();
+
+//     // The public API interface
+//     return {
+//         getMessages: getMessages,
+//         sendMessage: sendMessage,
+//         subscribeNewMessage: subcribeNewMessage,
+//         fetchPreviousMessages: fetchPreviousMessages,
+//         messagesAllFetched: messagesAllFetched
+//     }
+
+// });
+
+nodeManager.controller('ChatCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, Pubnub) {
+    $scope.loginfo = '';
+    $scope.messages = [];
+    // $scope.messages = MessageService();
+    $scope.channel = 'messages-channel';
+    $scope.theuser = $rootScope.currentUser['user']
+    $scope.curwrk = $rootScope.currentUser['grup']
+
+    function generateUUID() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    };
+
+
+    $scope.messageContent = '';
+    // Generating a random uuid between 1 and 100 using utility function from lodash library.
+    // $scope.uuid = generateUUID();
+    $scope.uuid = $rootScope.currentUser['indiviualname'];
+
+    // Please signup to PubNub to use your own keys: https://admin.pubnub.com/
+    Pubnub.init({
+        publish_key: 'pub-c-7a40563b-4f73-4f00-a111-c70c68f4af5d',
+        subscribe_key: 'sub-c-91ae871a-acba-11e7-b4e4-2675c721e615',
+        ssl: true,
+        uuid: $scope.uuid
+    });
+
+    // Fetching previous messages
+    Pubnub.history({
+        channel: $scope.channel,
+        callback: function(m) {
+            $scope.$apply(function() {
+                $scope.messages = m[0];
+            });
+            $scope.scrollDown(0);
+        },
+        count: 50,
+        reverse: false
+    });
+
+    // Fetching a uniq random avatar from the robohash.org service.
+    $scope.avatarUrl = function(uuid) {
+        return '//robohash.org/' + uuid + '?set=set2&bgset=bg2&size=70x70';
+    };
+
+    // Send the messages over PubNub Network
+    $scope.sendMessage = function() {
+        // Don't send an empty message 
+        if (!$scope.messageContent ||
+            $scope.messageContent === '') {
+            return;
+        }
+        Pubnub.publish({
+            channel: $scope.channel,
+            message: {
+                content: $scope.messageContent,
+                sender_uuid: $scope.uuid,
+                date: new Date()
+            },
+            callback: function(m) {
+                console.log(m);
+            }
+        });
+        // Reset the messageContent input
+        $scope.messageContent = '';
+
+    }
+
+    // Subscribe to messages channel
+    Pubnub.subscribe({
+        channel: $scope.channel,
+        triggerEvents: ['callback']
+    });
+
+    // Make it possible to scrollDown to the bottom of the messages container
+    $scope.scrollDown = function(time) {
+        var $elem = $('.collection');
+        $('body').animate({
+            scrollTop: $elem.height()
+        }, time);
+    };
+
+    // Listenning to messages sent.
+    $scope.$on(Pubnub.getMessageEventNameFor($scope.channel), function(ngEvent, m) {
+        $scope.$apply(function() {
+            $scope.messages.push(m)
+        });
+        $scope.scrollDown(400);
+    });
 });
