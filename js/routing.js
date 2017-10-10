@@ -160,12 +160,5 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
                     authorizedRoles: [USER_ROLES.admin]
                 }
             })
-            .state('docs', {
-                url: '/docs',
-                templateUrl: 'templates/docs.html',
-                data: {
-                    authorizedRoles: [USER_ROLES.admin]
-                }
-            })
     }
 ])
