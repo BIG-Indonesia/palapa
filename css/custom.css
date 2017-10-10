@@ -132,10 +132,11 @@
     line-height: 22px;
 }
 
-img {
+
+/* img {
     min-height: 40px;
-    /*max-height: 40px;*/
-}
+    max-height: 40px;
+} */
 
 
 /* Timeline End*/
@@ -179,7 +180,7 @@ img {
     padding-top: 50px;
     height: 100vh;
     width: 200px;
-    font-size: 13px;
+    font-size: 12px;
     position: fixed!important;
     left: -5px;
     overflow: auto;
@@ -299,4 +300,42 @@ img {
 #cmsprevmap {
     padding-top: 20px;
     padding-bottom: 20px;
+}
+
+
+/* CHAT */
+
+.collection {
+    margin-bottom: 130px;
+    margin-top: -1px;
+}
+
+.message-date {
+    color: #585858;
+    font-style: italic;
+    font-size: 11px;
+}
+
+footer {
+    color: white;
+    background: teal;
+    position: fixed;
+    padding: 0;
+    bottom: 48px;
+    left: 195px;
+    width: 100%;
+    height: 130px;
+}
+
+footer .input-field input,
+button {
+    border-color: #FFFFFF;
+}
+
+.chip {
+    font-style: italic;
+}
+
+.chatroom {
+    margin-bottom: 100px;
 }

@@ -1,0 +1,60 @@
+<div id="ChatView" ng-app="nodeManager" ng-controller="ChatCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Pesan
+            <!-- <button type="button" class="btn btn-info pull-right" ng-click="reloadView()" tooltip-placement="top" uib-tooltip="Refresh halaman ini."><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#docs_tambah" tooltip-placement="left" uib-tooltip="Upload"><span class="glyphicon glyphicon-upload"></span> Upload</button> -->
+        </div>
+        <div class="panel-body chatroom">
+            <ul class="collection">
+                <li class="collection-item avatar" ng-repeat="message in messages">
+                    <img src="{{avatarUrl(message.sender_uuid)}}" alt="{{message.sender_uuid}}" class="circle">
+                    <span class="title ">{{message.sender_uuid}}</span>
+                    <p><i class="prefix mdi-action-alarm"></i><span class="message-date">{{ message.date | date:"MM/dd/yyyy 'at' h:mma "}}</span></br> {{ message.content }}</p>
+                </li>
+            </ul>
+            <footer class="teal">
+                <form ng-submit="sendMessage()" class="container">
+                    <div class="row ">
+                        <div class="input-field col s10">
+                            <span class="glyphicon glyphicon-chat"></span>
+                            <input ng-model="messageContent" type="text" placeholder="Type your message">
+                            <span class="chip left">
+                        <img src="{{avatarUrl(uuid)}} ">
+                        {{ theuser }}
+                      </span>
+                        </div>
+                        <div class="input-field col s2">
+                            <!-- <button type="submit" class="waves-effect waves-light btn-floating btn-large"> -->
+                            <button type="submit" class="btn-floating btn-large">
+                        <span class="glyphicon glyphicon-send"></span>
+                      </button>
+                        </div>
+                    </div>
+                </form>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<!-- <script>
+    function sticky_relocate() {
+        var window_top = $(window).scrollTop();
+        var div_top = $('#sticky_cari_anchor').offset().top;
+        if (window_top > div_top) {
+            $('#sticky_cari').addClass('stick');
+            $('#sticky_cari_anchor').height($('#sticky_cari').outerHeight());
+        } else {
+            $('#sticky_cari').removeClass('stick');
+            $('#sticky_cari_anchor').height(0);
+        }
+    }
+
+    $('#docs_tambah').on('hidden.bs.modal', function() {
+        angular.element($("#DocsView ")).scope().reloadView();
+    })
+
+    $(function() {
+        $(window).scroll(sticky_relocate);
+        sticky_relocate();
+    });
+</script> -->
