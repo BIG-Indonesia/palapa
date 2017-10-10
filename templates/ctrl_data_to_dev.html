@@ -93,13 +93,6 @@
                         </table>
                         <table class="table table-hover">
                             <tr>
-                                <td>
-                                    <button ng-disabled="savebtn" ng-model="savebtn" type="button" class="btn btn-success" ng-click="todbdev()" tooltip-placement="left" uib-tooltip="Simpan"><span class="glyphicon glyphicon glyphicon-floppy-save"></span> Simpan</button>
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="table table-hover">
-                            <tr>
                                 <td style="width: 100%; background-color: #669"></td>
                             </tr>
                         </table>
@@ -107,7 +100,7 @@
                             <tr>
                                 <td style="width: 200px">Atau unggah usulan KUGI</td>
                                 <td>
-                                    <button ng-disabled="sumberskala" type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah ZIP (layer ter-arsip) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Usulan KUGI</button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah ZIP (layer ter-arsip) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Usulan KUGI</button>
                                 </td>
                             </tr>
                         </table>
@@ -359,7 +352,7 @@
                         <tr>
                             <td><label class="control-label">Pilih Berkas Pendukung Usulan KUGI</label> </td>
                             <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
-                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files, response.LID)" required></td>
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files)" required></td>
                             </td>
                         </tr>
                         <tr>
