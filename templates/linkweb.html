@@ -1,0 +1,128 @@
+<div id="LinkwebView" ng-app="nodeManager" ng-controller="LinkwebCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Link Laman Web
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#linkweb_tambah"><span class="glyphicon glyphicon-upload"></span> Tambah Linkweb</button></div>
+        <div class="panel-body">
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariLinkweb">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <td>
+                            <a href="#/linkwebs" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+            Nama 
+            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                            <td>URL</td>
+                            <td>
+
+                                Logo
+                                </a>
+                            </td>
+                        </td>
+
+                        <td>
+
+                            Aksi
+                            </a>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="item in linkweb | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
+                        <td>{{ item.nama }}</td>
+                        <td>{{ item.url }}</td>
+                        <td><img style='height: 50px;' src='data:image/jpeg;base64,{{ item.image }}' /></td>
+                        <td style="width: 152px">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-warning" ng-click="editLinkweb.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>
+                                <button type="button" class="btn btn-danger" ng-click="hapusLinkweb.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <linkweb-edit-dialog model="editLinkweb "></linkweb-edit-dialog>
+            <linkweb-tambah-dialog model="tambahLinkweb "></linkweb-tambah-dialog>
+            <linkweb-hapus-dialog model="hapusLinkweb "></linkweb-hapus-dialog>
+
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="linkweb_tambah" class="modal fade" role="dialog" ng-controller="LinkwebCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Tambah Linkweb</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Nama</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="linkwebentry.nama"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>URL</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="linkwebentry.url"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Logo</strong></td>
+                        <td><input id="linkweb_logo" type="file" ng-model="linkweb_logo" name="file_logo" ng-file-select="uploadLogo($files)" required></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnLinkwebTambah" ng-click="tambahGSLinkweb()" ng-disabled="!linkwebentry.nama && !linkwebentry.url && !linkwebentry.linkweb_logo">Tambah!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#linkweb_tambah').on('hidden.bs.modal', function() {
+        angular.element($("#LinkwebView")).scope().reloadView();
+    })
+</script>

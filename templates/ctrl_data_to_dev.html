@@ -333,6 +333,20 @@
                             <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
                         </tr>
                         <tr>
+                            <td>Keyword</td>
+                            <td>
+                                <!-- <select ng-model="linkntry.akses" ng-init="">
+									<option value='PUBLIC'>PUBLIC</option>
+									<option value='GOVERNMENT'>GOVERNMENT</option>
+									<option value='PRIVATE'>PRIVATE</option>
+									<option value='IGSTRATEGIS'>IG STRATEGIS</option>
+								</select>
+                                <br> -->
+                                <select ng-model="keyword_item" ng-options="k.keyword for k in keywords">Pilih Keyword</option>
+                                        </select>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>Informasi Data Constraints</td>
                             <td>
                                 <select ng-model="linkntry.akses" ng-init="">
@@ -363,7 +377,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><button ng-disabled="linkntry.akses == ''" class="btn btn-success" type="submit" ng-click="MetaUp(response.LID, response.TID, model.layer.layer_abstract, linkntry.akses)">Simpan Metadata</button></td>
+                            <td><button ng-disabled="linkntry.akses == '' && keyword_item == ''" class="btn btn-success" type="submit" ng-click="MetaUp(response.LID, response.TID, model.layer.layer_abstract, linkntry.akses, keyword_item)">Simpan Metadata</button></td>
                             <td></td>
                         </tr>
                     </table>

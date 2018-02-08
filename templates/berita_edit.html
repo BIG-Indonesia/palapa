@@ -1,0 +1,51 @@
+<!-- Modal -->
+<div class="modal fade" data-backdrop="static" id="berita_edit" ng-controller="BeritaCtrl" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button">&times;</button>
+                <h4 class="modal-title">Sunting Berita</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 150px">
+                            <strong>Berita</strong>
+                        </td>
+                        <td><input class="form-control input-sm" type="date" style="width: 500" ng-model="model.item.tgl"><input type="hidden" ng-model="model.item.tgl"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px">
+                            <strong>Judul</strong>
+                        </td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.judul"><input type="hidden" ng-model="model.item.judul"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px;height: 450px;"><strong>Isi Berita</strong></td>
+                        <td>
+                            <div id='isinyaberita' style='display:none;'>{{model.item.isiberita}}</div>
+                            <div id='editisiberita'></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" id="btnBeritaEdit" ng-click="editGSBerita(model.item)" type="button">Simpan!</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">Tutup</button>
+            </div>
+        </div>
+        <!-- rem -->
+    </div>
+</div>
+
+<script>
+    // $('#berita_tambah').on('hidden.bs.modal', function() {
+    //     angular.element($("#BeritaView")).scope().reloadView();
+    // })
+    // // $(document).ready(function() {
+    // $('#editisiberita').summernote({
+    //     height: 430
+    // });
+    // });
+</script>

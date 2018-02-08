@@ -177,6 +177,7 @@ img {
 .sidemenu {
     background: #404040;
     padding-top: 50px;
+    padding-bottom: 50px;
     height: 100vh;
     width: 200px;
     font-size: 12px;

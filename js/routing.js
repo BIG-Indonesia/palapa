@@ -141,7 +141,7 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
             })
             .state('sisFrontCMS', {
                 url: '/sisfrontcms',
-                templateUrl: 'templates/sistem_frontend_cms.html',
+                templateUrl: 'templates/frontend_cms.html',
                 data: {
                     authorizedRoles: [USER_ROLES.admin]
                 }
@@ -163,6 +163,55 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
             .state('docs', {
                 url: '/docs',
                 templateUrl: 'templates/docs.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('keyword', {
+                url: '/keyword',
+                templateUrl: 'templates/meta_keywords.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('extsrv', {
+                url: '/extsrv',
+                templateUrl: 'templates/ext_services.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('basemaps', {
+                url: '/basemaps',
+                templateUrl: 'templates/basemaps.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('photos', {
+                url: '/photos',
+                templateUrl: 'templates/photos.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('linkweb', {
+                url: '/linkweb',
+                templateUrl: 'templates/linkweb.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('kontak', {
+                url: '/kontak',
+                templateUrl: 'templates/kontak.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('berita', {
+                url: '/berita',
+                templateUrl: 'templates/berita.html',
                 data: {
                     authorizedRoles: [USER_ROLES.admin]
                 }

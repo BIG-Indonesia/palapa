@@ -1,0 +1,38 @@
+<!-- Modal -->
+<div class="modal fade" data-backdrop="static" id="extsrv_edit" ng-controller="ExtSrvCtrl" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button">&times;</button>
+                <h4 class="modal-title">Sunting Eksternal Servis</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 150px">
+                            <strong>Nama Servis</strong>
+                        </td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.name"><input type="hidden" ng-model="model.item.id"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>URL Servis</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.url"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Tipe</strong></td>
+                        <td> <select ng-model="model.item.type" ng-init="">
+                            <option value='OGC WMS'>OGC WMS</option>
+                            <option value='ESRI REST'>ESRI REST</option>
+                        </select></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" id="btnExtsrvEdit" ng-click="editGSExtsrv(model.item)" type="button">Simpan!</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">Tutup</button>
+            </div>
+        </div>
+        <!-- rem -->
+    </div>
+</div>

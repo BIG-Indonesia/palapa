@@ -1,0 +1,118 @@
+<div id="KontakView" ng-app="nodeManager" ng-controller="KontakCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Kontak Masuk
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <!-- <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#kontak_tambah"><span class="glyphicon glyphicon-upload"></span> Tambah Kontak</button> -->
+        </div>
+        <div class="panel-body">
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariKontak">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <td>
+                            <a href="#/kontaks" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+            Nama 
+            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                            <td> email</td>
+                            <td>Alamat</td>
+                            <td>Subject</td>
+                            <td>Pesan</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="item in kontak | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
+                        <td>{{ item.nama }}</td>
+                        <td>{{ item.email }}</td>
+                        <td>{{ item.alamat }}</td>
+                        <td>{{ item.subject }}</td>
+                        <td>{{ item.pesan }}</td>
+                        <td style="width: 152px">
+                            <div class="btn-group">
+                                <!-- <button type="button" class="btn btn-warning" ng-click="editKontak.open(item)"><span class=" glyphicon glyphicon-edit "></span></button> -->
+                                <button type="button" class="btn btn-danger" ng-click="hapusKontak.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <kontak-edit-dialog model="editKontak "></kontak-edit-dialog>
+            <kontak-tambah-dialog model="tambahKontak "></kontak-tambah-dialog>
+            <kontak-hapus-dialog model="hapusKontak "></kontak-hapus-dialog>
+
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="kontak_tambah" class="modal fade" role="dialog" ng-controller="KontakCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Tambah Kontak</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Kontak</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="kontakentry.kontak"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Logo</strong></td>
+                        <td><input id="kontak_logo" type="file" ng-model="kontak_logo" name="file_logo" ng-file-select="uploadLogo($files)" required></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnKontakTambah" ng-click="tambahGSKontak()" ng-disabled="!kontakentry.kontak">Tambah!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#kontak_tambah').on('hidden.bs.modal', function() {
+        angular.element($("#KontakView")).scope().reloadView();
+    })
+</script>

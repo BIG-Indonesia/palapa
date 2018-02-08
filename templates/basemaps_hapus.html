@@ -1,0 +1,26 @@
+<!-- Modal -->
+<div class="modal fade" id="basemaps_hapus" ng-controller="BasemapsCtrl" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button">&times;</button>
+                <h4 class="modal-title">Hapus Servis Basemap {{ model.item.basemaps }} ?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Yakin akan menghapus Servis Basemap
+                    <strong>{{ model.item.basemaps }}</strong>???</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" id="btnBasemapsHapus" ng-click="hapusGSBasemaps()" type="button">Hapus!</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">Tutup</button>
+            </div>
+        </div>
+        <!-- rem -->
+    </div>
+</div>
+<script>
+    $('#basemaps_hapus').on('hidden.bs.modal', function() {
+        angular.element($("#BasemapsView")).scope().reloadView();
+    });
+</script>

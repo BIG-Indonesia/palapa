@@ -1,0 +1,54 @@
+<div id="SisFrontCMSView" ng-app="nodeManager" ng-controller="SisFrontCMSCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Konfigurasi Palapa (Front-end)
+            <button type="button" class="btn btn-info pull-right" ng-click="SimpanTheme()"><span class="glyphicon glyphicon-floppy-save"></span> Simpan</button>
+        </div>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="CMSgambarHalaman1" class="col-lg-2 control-label">1a.</label>
+                                <div class="col-lg-10">
+                                    <img style='height: 200px; padding: 20px;' src='{{ frontend_content[0].image_1 }}' />
+                                    <input id="CMSgambarHalaman1" type="file" ng-model="gambar1File" name="file1" ng-file-select="uploadGambar1($files)" required>
+                                    <span class="help-block">Berkas Gambar 1</span>
+                                </div>
+                                <label for="CMSgambarHalaman2" class="col-lg-2 control-label">1b.</label>
+                                <div class="col-lg-10">
+                                    <img style='height: 200px; padding: 20px;;' src='{{ frontend_content[0].image_2 }}' />
+                                    <input id="CMSgambarHalaman2" type="file" ng-model="gambar2File" name="file2" ng-file-select="uploadGambar2($files)" required>
+                                    <span class="help-block">Berkas Gambar 2</span>
+                                </div>
+                                <label for="CMSgambarHalaman3" class="col-lg-2 control-label">1c.</label>
+                                <div class="col-lg-10">
+                                    <img style='height: 200px; padding: 20px;' src='{{ frontend_content[0].image_3 }}' />
+                                    <input id="CMSgambarHalaman3" type="file" ng-model="gambar3File" name="file3" ng-file-select="uploadGambar3($files)" required>
+                                    <span class="help-block">Berkas Gambar 3</span>
+                                </div>
+                                <label for="CMSgambarHalaman4" class="col-lg-2 control-label">2.</label>
+                                <div class="col-lg-10">
+                                    <img style='height: 200px; padding: 20px;' src='{{ frontend_content[0].image_4 }}' />
+                                    <input id="CMSgambarHalaman4" type="file" ng-model="gambar4File" name="file4" ng-file-select="uploadGambar4($files)" required>
+                                    <span class="help-block">Berkas Gambar 4</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="CMSgambarHalamanTeks1" class="col-lg-2 control-label">3.</label>
+                                <div class="col-lg-10">
+                                    <textarea class="form-control" rows="7" id="CMSgambarHalamanTeks1" ng-model="frontend_content[0].remark_1"></textarea>
+                                    <span class="help-block">Tag Line</span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        <!--<pre>{{selectedlayers}}</pre>-->
+
+    </div>
+</div>

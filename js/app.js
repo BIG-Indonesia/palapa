@@ -35,6 +35,19 @@ nodeManager.constant('USER_ROLES', {
 
 /* Functions */
 
+function encodeImageFileAsURL(berkas) {
+    console.log(berkas)
+    var file = berkas[0];
+    var reader = new FileReader();
+    // reader.onloadend = function() {
+    //     return reader.result;
+    // }
+    reader.readAsDataURL(file);
+    setTimeout(() => {
+        return reader.result;
+    }, 1000);
+}
+
 /* End Functions */
 
 
@@ -107,6 +120,13 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-file-text",
                     tooltip: "Dokumen usulan skema Non-KUGI",
                     level: "member"
+                },
+                {
+                    title: "Berita",
+                    action: "#/berita",
+                    icons: "fa fa-file-text",
+                    tooltip: "Berita",
+                    level: "admin"
                 }
             ]
         },
@@ -144,9 +164,37 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                 {
                     title: "Fitur Grup",
                     action: "#/grupfitur",
-                    icons: "fa fa-user",
+                    icons: "fa fa-clone",
                     tooltip: "Fitur Grup",
                     level: "admin"
+                },
+                {
+                    title: "Keyword Metadata",
+                    action: "#/keyword",
+                    icons: "fa fa-server",
+                    tooltip: "Keyword Metadata",
+                    level: "admin"
+                },
+                {
+                    title: "External Web Services",
+                    action: "#/extsrv",
+                    icons: "fa fa-globe",
+                    tooltip: "External Web Services",
+                    level: "admin"
+                },
+                {
+                    title: "Basemaps",
+                    action: "#/basemaps",
+                    icons: "fa fa-globe",
+                    tooltip: "Basemap Services",
+                    level: "admin"
+                },
+                {
+                    title: "Foto",
+                    action: "#/photos",
+                    icons: "fa fa-globe",
+                    tooltip: "Foto",
+                    level: "member"
                 },
                 {
                     title: "Pengguna",
@@ -161,6 +209,20 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-paint-brush",
                     tooltip: "Manajemen Style GeoServer",
                     level: "member"
+                },
+                {
+                    title: "Link Web",
+                    action: "#/linkweb",
+                    icons: "fa fa-paint-brush",
+                    tooltip: "Manajemen Link Web",
+                    level: "admin"
+                },
+                {
+                    title: "Kontak Masuk",
+                    action: "#/kontak",
+                    icons: "fa fa-paint-brush",
+                    tooltip: "Kontak Masuk",
+                    level: "admin"
                 },
             ]
         }
@@ -180,6 +242,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
     console.log($scope.init)
     $scope.uploadxml = false;
     $scope.minimalmeta = true;
+    $scope.keywords = [];
 
     $scope.theuser = $rootScope.currentUser['user']
     $scope.curwrk = $rootScope.currentUser['grup']
@@ -216,6 +279,11 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
 
     $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
         $scope.kodesimpul = data;
+    });
+
+
+    $http.get(CONFIG.api_url + 'keyword/list', { cache: false }).success(function(data) {
+        $scope.keywords = data;
     });
 
     $scope.safeApply = function(fn) {
@@ -445,7 +513,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
 
     $scope.govsimpul = []
 
-    $scope.MetaUp = function(id, title, abstract, akses) {
+    $scope.MetaUp = function(id, title, abstract, akses, keyword) {
         console.log($scope.metaFile);
         console.log($scope.docFile);
         console.log($scope.curwrk);
@@ -455,12 +523,14 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         console.log(title);
         console.log(abstract);
         console.log(akses);
+        console.log(keyword);
         console.log($scope.selectedsimpul.selected);
-        if (typeof abstract == 'undefined') {
+        if (typeof abstract == 'undefined' || abstract == 'undefined') {
             abstract == title
         }
         parameters = {};
         parameters.ID = id;
+        parameters.KEYWORD = encodeURIComponent(keyword.keyword);
         try {
             if (typeof $scope.model.layer.layer_name == 'undefined') {
                 parameters.TITLE = encodeURIComponent(title);
@@ -472,7 +542,17 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         }
 
         // parameters.TITLE = title;
-        parameters.ABSTRACT = encodeURIComponent(abstract);
+        try {
+            if (typeof abstract == 'undefined') {
+                parameters.ABSTRACT = encodeURIComponent(title);
+            } else {
+                parameters.ABSTRACT = encodeURIComponent(abstract);
+            }
+        } catch (error) {
+            // parameters.ABSTRACT = encodeURIComponent(abstract);
+
+        }
+        // parameters.ABSTRACT = encodeURIComponent(abstract);
         parameters.WORKSPACE = $scope.curwrk;
         if (typeof $scope.selectedsimpul.selected != 'undefined' && akses == 'GOVERNMENT') {
             parameters.AKSES = akses + ':';
@@ -1336,6 +1416,18 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         }
     });
 
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
     var HapusGrupDialogModel = function() {
         this.visible = false;
     };
@@ -1403,6 +1495,7 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         params.city = encodeURIComponent(params.city)
         params.administrativearea = encodeURIComponent(params.administrativearea)
         params.kodesimpul = encodeURIComponent(params.kodesimpul)
+        params.logo = $scope.berkas_logo;
         console.log(params)
         var data = $.param({
             json: JSON.stringify({
@@ -1412,11 +1505,11 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         $http.post(CONFIG.api_url + 'groups', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            $state.transitionTo($state.current, $stateParams, {
-                reload: true,
-                inherit: false,
-                notify: true
-            });
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -1428,6 +1521,7 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         params.city = encodeURIComponent(params.city)
         params.administrativearea = encodeURIComponent(params.administrativearea)
         params.kodesimpul = encodeURIComponent(params.kodesimpul)
+        params.logo = $scope.berkas_logo;
         console.log(params)
         var data = $.param({
             json: JSON.stringify({
@@ -1437,11 +1531,11 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
         $http.post(CONFIG.api_url + 'group/edit', data).success(function(data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
-            $state.transitionTo($state.current, $stateParams, {
-                reload: true,
-                inherit: false,
-                notify: true
-            });
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
         })
     }
 
@@ -3229,6 +3323,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
 
     $scope.selectedsimpul = [];
 
+    // $scope.keywords = [];
+
     $scope.cekadmin = function() {
         if ($scope.curgrup == 'admin') {
             return false;
@@ -3253,10 +3349,15 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
         $scope.kodeepsg = data;
     });
 
+    $http.get(CONFIG.api_url + 'keyword/list', { cache: false }).success(function(data) {
+        $scope.keywords = data;
+    });
+
     $scope.stage2 = function() {
         $scope.nstage1_berkas = true;
         $scope.nstage2 = true;
         $scope.nstage1 = false;
+        console.log($scope.keywords);
     }
 
     $scope.FileSelect = function($files, schema, fitur, scale) {
@@ -3621,6 +3722,21 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
         });
     }
 
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+
     $scope.sisteminfoedit = function() {
         var params = $scope.sisteminfo;
         params.organization = encodeURIComponent(params.organization)
@@ -3636,16 +3752,16 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
         params.email = encodeURIComponent(params.email)
         params.individualname = encodeURIComponent(params.individualname)
         params.kodesimpul = encodeURIComponent(params.kodesimpul)
-        console.log(params)
+        params.tentangkami = encodeURIComponent(params.tentangkami)
+        params.logo = $scope.berkas_logo;
+        console.log(params.tentangkami)
         var data = $.param({
             json: JSON.stringify({
                 pubdata: params
             })
         });
         $http.post(CONFIG.api_url + 'sisteminfo/edit', data).success(function(data, status) {
-            $scope.test = data;
-            bootbox.alert($scope.response.MSG)
-            console.log($scope.test);
+            bootbox.alert(data.MSG)
         })
     }
 
@@ -3660,64 +3776,6 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
     $scope.sortReverse = false; // set the default sort order
     $scope.cariLayer = ''; // set the default search/filter term
     $scope.sisteminfo = '';
-    $scope.frontend_content = [];
-    $scope.upload_logo = [];
-    $scope.upload_gambar1 = [];
-    $scope.upload_gambar2 = [];
-    $scope.berkas_logo = '';
-    $scope.berkas_gambar1 = '';
-    $scope.berkas_gambar2 = '';
-    $scope.clatitude = parseFloat($rootScope.clat);
-    $scope.clongitue = parseFloat($rootScope.clon);
-    $scope.czoom = 5;
-
-    angular.extend($scope, {
-        center: {
-            lat: $scope.clatitude,
-            lon: $scope.clongitue,
-            zoom: $scope.czoom,
-            projection: 'EPSG:4326',
-            bounds: []
-        },
-        defaults: {
-            layers: [{
-                main: {
-                    source: {
-                        type: 'OSM',
-                        url: baseXYZLayer
-                    }
-                }
-            }],
-            interactions: {
-                mouseWheelZoom: true
-            },
-            controls: {
-                zoom: true,
-                rotate: true,
-                attribution: false
-            }
-        }
-    });
-
-    angular.extend($scope, {
-        wms: {
-            source: {
-                type: 'ImageWMS',
-                url: CONFIG.gs_url,
-                params: {}
-            }
-        }
-    });
-
-    $scope.updatemap = function(layer) {
-        setTimeout(function() {
-                $scope.$apply(function() {
-                    $scope.wms.source.params.LAYERS = layer
-                });
-            })
-            // $scope.wms.source.params.LAYERS = layer
-            // olData.
-    };
 
     $scope.reloadView = function() {
         $state.transitionTo($state.current, $stateParams, {
@@ -3727,155 +3785,88 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
         });
     }
 
-    $http.get(CONFIG.api_url + 'frontendtheme').success(function(data) {
+    $http.get(CONFIG.api_url + 'frontend').success(function(data) {
         $scope.frontend_content = data;
         console.log($scope.frontend_content)
     });
 
-    $scope.uploadLogo = function(file) {
-        $scope.logoFile = file;
-        console.log($scope.logoFile);
-    }
-
-    $scope.uploadGambar1 = function(file) {
-        $scope.gambar1File = file;
-        console.log($scope.gambar1File);
-    }
-
-    $scope.uploadGambar2 = function(file) {
-        $scope.gambar2File = file;
-        console.log($scope.gambar2File);
-    }
-
-    $scope.uploadBerkasLogo = function($files) {
-        console.log('INIT');
-        console.log($files);
-        //$files: an array of files selected, each file has name, size, and type.
-        for (var i = 0; i < $files.length; i++) {
-            var $file = $files[i];
-            (function(index) {
-                $scope.upload_logo[index] = $upload.upload({
-                    url: CONFIG.api_url + 'setfrontend/uploadlogo', // webapi url
-                    method: "POST",
-                    // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
-                }).progress(function(evt) {
-                    // get upload percentage
-                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
-                }).success(function(data, status, headers, config) {
-                    // file is uploaded successfully
-                    $scope.berkas_logo = data.VAL;
-                    console.log($scope.berkas_logo);
-                }).error(function(data, status, headers, config) {
-                    // file failed to upload
-                    $scope.bresponse = data;
-                    console.log(data);
-                });
-            })(i);
+    $scope.uploadGambar1 = function($files) {
+        $scope.gambar1File = $files;
+        // console.log($scope.gambar1File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar1 = reader.result;
+            // console.log($scope.berkas_gambar1);
         }
     }
 
-    $scope.uploadBerkasGambar1 = function($files) {
-        console.log('INIT');
-        console.log($files);
-        //$files: an array of files selected, each file has name, size, and type.
-        for (var i = 0; i < $files.length; i++) {
-            var $file = $files[i];
-            (function(index) {
-                $scope.upload_gambar1[index] = $upload.upload({
-                    url: CONFIG.api_url + 'setfrontend/uploadgambar1', // webapi url
-                    method: "POST",
-                    // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
-                }).progress(function(evt) {
-                    // get upload percentage
-                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
-                }).success(function(data, status, headers, config) {
-                    // file is uploaded successfully
-                    $scope.berkas_gambar1 = data.VAL;
-                    console.log($scope.berkas_gambar1);
-                }).error(function(data, status, headers, config) {
-                    // file failed to upload
-                    $scope.bresponse = data;
-                    console.log(data);
-                });
-            })(i);
+    $scope.uploadGambar2 = function($files) {
+        $scope.gambar2File = $files;
+        // console.log($scope.gambar2File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar2 = reader.result;
+            // console.log($scope.berkas_gambar2);
         }
     }
 
-    $scope.uploadBerkasGambar2 = function($files) {
-        console.log('INIT');
-        console.log($files);
-        //$files: an array of files selected, each file has name, size, and type.
-        for (var i = 0; i < $files.length; i++) {
-            var $file = $files[i];
-            (function(index) {
-                $scope.upload_gambar2[index] = $upload.upload({
-                    url: CONFIG.api_url + 'setfrontend/uploadgambar2', // webapi url
-                    method: "POST",
-                    // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
-                }).progress(function(evt) {
-                    // get upload percentage
-                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
-                }).success(function(data, status, headers, config) {
-                    // file is uploaded successfully
-                    $scope.response = data;
-                    $scope.berkas_gambar2 = $scope.response.VAL;
-                    console.log($scope.berkas_gambar2);
-                }).error(function(data, status, headers, config) {
-                    // file failed to upload
-                    $scope.bresponse = data;
-                    console.log(data);
-                });
-            })(i);
+    $scope.uploadGambar3 = function($files) {
+        $scope.gambar3File = $files;
+        // console.log($scope.gambar3File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar3 = reader.result;
+            // console.log($scope.berkas_gambar3);
+        }
+    }
+
+    $scope.uploadGambar4 = function($files) {
+        $scope.gambar4File = $files;
+        // console.log($scope.gambar4File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar4 = reader.result;
+            // console.log($scope.berkas_gambar4);
+        }
+    }
+
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        // console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            // console.log($scope.berkas_logo);
         }
     }
 
     $scope.SimpanTheme = function() {
-        var params = $scope.frontend_content;
-        if (document.getElementById("CMSlogoHalaman").files.length == 0) {
-            console.log("no files selected");
-        } else {
-            $scope.uploadBerkasLogo($scope.logoFile);
-            params.logo_situs = encodeURIComponent($scope.logoFile[0].name);
-        };
-        if (document.getElementById("CMSgambarHalaman1").files.length == 0) {
-            console.log("no files selected");
-        } else {
-            $scope.uploadBerkasGambar1($scope.gambar1File);
-            params.berkas_gambar_1 = encodeURIComponent($scope.gambar1File[0].name);
-        };
-        if (document.getElementById("CMSgambarHalaman2").files.length == 0) {
-            console.log("no files selected");
-        } else {
-            $scope.uploadBerkasGambar2($scope.gambar2File);
-            params.berkas_gambar_2 = encodeURIComponent($scope.gambar2File[0].name);
-        };
-        params.judul_situs = encodeURIComponent(params.judul_situs);
-        params.keterangan_gambar_1 = encodeURIComponent(params.keterangan_gambar_1);
-        params.keterangan_gambar_2 = encodeURIComponent(params.keterangan_gambar_2);
-        params.judul_headline = encodeURIComponent(params.judul_headline);
-        params.keterangan_headline = encodeURIComponent(params.keterangan_headline);
-        params.judul_fitur = encodeURIComponent(params.judul_fitur);
-        params.keterangan_fitur = encodeURIComponent(params.keterangan_fitur);
-        params.tipe_tema = encodeURIComponent(params.tipe_tema);
-        params.c_y = $scope.center.lat;
-        params.c_x = $scope.center.lon;
-        params.c_zoom = $scope.center.zoom;
+        var params = {};
+        params.id = $scope.frontend_content[0].id;
+        params.remark_1 = encodeURIComponent($scope.frontend_content[0].remark_1);
+        params.image_1 = $scope.berkas_gambar1;
+        params.image_2 = $scope.berkas_gambar2;
+        params.image_3 = $scope.berkas_gambar3;
+        params.image_4 = $scope.berkas_gambar4;
         console.log(params)
-        console.log($scope.frontend_content)
+            // console.log($scope.frontend_content)
         var data = $.param({
             json: JSON.stringify({
                 pubdata: params
             })
         });
-        console.log(data)
-        $http.post(CONFIG.api_url + 'setfrontendtheme', data).success(function(data, status) {
+        // console.log(data)
+        $http.post(CONFIG.api_url + 'setfrontend', data).success(function(data, status) {
+            $scope.reloadView();
             pesan = data;
+            params.remark_1 = decodeURIComponent(params.remark1);
             bootbox.alert(pesan.MSG)
             console.log(pesan);
         });
@@ -4271,5 +4262,1240 @@ nodeManager.directive('docsHapusDialog', [function() {
             });
         },
         templateUrl: 'templates/docs_hapus.html'
+    };
+}]);
+
+nodeManager.controller('KeywordCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
+        $scope.kodesimpul = data;
+    });
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.keyword = [];
+
+    $http.get(CONFIG.api_url + 'keyword/list').success(function(data) {
+        $scope.keyword = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.keyword.length / $scope.pageSize);
+        }
+    });
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.uploadBerkasLogo = function($files) {
+        // console.log('INIT');
+        // console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        // for (var i = 0; i < $files.length; i++) {
+        //     var $file = $files[i];
+        //     (function(index) {
+        //         $scope.berkas_logo = encodeImageFileAsURL($file);
+        //     })(i);
+        // }
+        // console.log($scope.berkas_logo);
+    }
+
+    var HapusKeywordDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusKeywordDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusKeywordDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var EditKeywordDialogModel = function() {
+        this.visible = false;
+    };
+
+    EditKeywordDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    EditKeywordDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var InfoKeywordDialogModel = function() {
+        this.visible = false;
+    };
+
+    InfoKeywordDialogModel.prototype.open = function(item) {
+        this.item = item;
+        this.visible = true;
+        console.log(item);
+    };
+
+    InfoKeywordDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.infoKeyword = new InfoKeywordDialogModel();
+    $scope.hapusKeyword = new HapusKeywordDialogModel();
+    $scope.editKeyword = new EditKeywordDialogModel();
+    $scope.keywordentry = {}
+    $scope.keywordentry.keyword = ''
+
+    $scope.tambahGSKeyword = function() {
+        var params = $scope.keywordentry;
+        params.keyword = encodeURIComponent(params.keyword)
+        params.logo = $scope.berkas_logo;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'keyword/add', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.editGSKeyword = function(item) {
+        var params = item;
+        params.keyword = encodeURIComponent(params.keyword)
+        params.logo = $scope.berkas_logo;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'keyword/edit', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            params.keyword = decodeURIComponent(params.keyword)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.hapusGSKeyword = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'keyword/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('keywordHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/keyword_hapus.html'
+    };
+}]);
+
+nodeManager.directive('keywordEditDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/keyword_edit.html'
+    };
+}]);
+
+nodeManager.controller('ExtSrvCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
+        $scope.kodesimpul = data;
+    });
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.extsrv = [];
+
+    $http.get(CONFIG.api_url + 'extsrv/list').success(function(data) {
+        $scope.extsrv = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.extsrv.length / $scope.pageSize);
+        }
+    });
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.uploadBerkasLogo = function($files) {
+        // console.log('INIT');
+        // console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        // for (var i = 0; i < $files.length; i++) {
+        //     var $file = $files[i];
+        //     (function(index) {
+        //         $scope.berkas_logo = encodeImageFileAsURL($file);
+        //     })(i);
+        // }
+        // console.log($scope.berkas_logo);
+    }
+
+    var HapusExtsrvDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusExtsrvDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusExtsrvDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var EditExtsrvDialogModel = function() {
+        this.visible = false;
+    };
+
+    EditExtsrvDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    EditExtsrvDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var InfoExtsrvDialogModel = function() {
+        this.visible = false;
+    };
+
+
+    $scope.hapusExtsrv = new HapusExtsrvDialogModel();
+    $scope.editExtsrv = new EditExtsrvDialogModel();
+    $scope.extsrventry = {}
+    $scope.extsrventry.extsrv = ''
+
+    $scope.tambahGSExtsrv = function() {
+        var params = $scope.extsrventry;
+        params.name = encodeURIComponent(params.name)
+        params.url = encodeURIComponent(params.url)
+        params.type = encodeURIComponent(params.type)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'extsrv/add', data).success(function(data, status) {
+            pesan = data;
+            params.name = decodeURIComponent(params.name)
+            params.url = decodeURIComponent(params.url)
+            params.type = decodeURIComponent(params.type)
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.editGSExtsrv = function(item) {
+        var params = item;
+        params.name = encodeURIComponent(params.name)
+        params.url = encodeURIComponent(params.url)
+        params.type = encodeURIComponent(params.type)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'extsrv/edit', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            params.name = decodeURIComponent(params.name)
+            params.url = decodeURIComponent(params.url)
+            params.type = decodeURIComponent(params.type)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.hapusGSExtsrv = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'extsrv/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('extsrvHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/extsrv_hapus.html'
+    };
+}]);
+
+nodeManager.directive('extsrvEditDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/extsrv_edit.html'
+    };
+}]);
+
+
+nodeManager.controller('BasemapsCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
+        $scope.kodesimpul = data;
+    });
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.basemaps = [];
+
+    $http.get(CONFIG.api_url + 'basemaps/list').success(function(data) {
+        $scope.basemaps = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.basemaps.length / $scope.pageSize);
+        }
+    });
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.uploadBerkasLogo = function($files) {
+        // console.log('INIT');
+        // console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        // for (var i = 0; i < $files.length; i++) {
+        //     var $file = $files[i];
+        //     (function(index) {
+        //         $scope.berkas_logo = encodeImageFileAsURL($file);
+        //     })(i);
+        // }
+        // console.log($scope.berkas_logo);
+    }
+
+    var HapusBasemapsDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusBasemapsDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusBasemapsDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var EditBasemapsDialogModel = function() {
+        this.visible = false;
+    };
+
+    EditBasemapsDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    EditBasemapsDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var InfoBasemapsDialogModel = function() {
+        this.visible = false;
+    };
+
+
+    $scope.hapusBasemaps = new HapusBasemapsDialogModel();
+    $scope.editBasemaps = new EditBasemapsDialogModel();
+    $scope.basemapsentry = {}
+    $scope.basemapsentry.basemaps = ''
+
+    $scope.tambahGSBasemaps = function() {
+        var params = $scope.basemapsentry;
+        params.name = encodeURIComponent(params.name)
+        params.url = encodeURIComponent(params.url)
+        params.type = encodeURIComponent(params.type)
+        params.params = encodeURIComponent(params.params)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'basemaps/add', data).success(function(data, status) {
+            pesan = data;
+            params.name = decodeURIComponent(params.name)
+            params.url = decodeURIComponent(params.url)
+            params.type = decodeURIComponent(params.type)
+            params.params = decodeURIComponent(params.params)
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.editGSBasemaps = function(item) {
+        var params = item;
+        params.name = encodeURIComponent(params.name)
+        params.url = encodeURIComponent(params.url)
+        params.type = encodeURIComponent(params.type)
+        params.params = encodeURIComponent(params.params)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'basemaps/edit', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            params.name = decodeURIComponent(params.name)
+            params.url = decodeURIComponent(params.url)
+            params.type = decodeURIComponent(params.type)
+            params.params = decodeURIComponent(params.params)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.hapusGSBasemaps = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'basemaps/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('basemapsHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/basemaps_hapus.html'
+    };
+}]);
+
+nodeManager.directive('basemapsEditDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/basemaps_edit.html'
+    };
+}]);
+
+nodeManager.controller('PhotosCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    // $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
+    //     $scope.kodesimpul = data;
+    // });
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.photosentry = {}
+
+    $scope.tambahGSPhotos = function() {
+        var params = $scope.photosentry;
+        // console.log(params)
+        params.lon = $("#lon").text();
+        params.lat = $("#lat").text();
+        params.nama = encodeURIComponent($("#photosentrynama").val())
+        params.remark = encodeURIComponent($("#photosentryremark").val())
+        params.photo = $scope.berkas_logo
+        params.uploader = $rootScope.currentUser['user']
+        params.ugroup = $rootScope.currentUser['grup']
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'photos/add', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG);
+            refreshOL();
+        })
+    }
+
+    $scope.hapusGSPhotos = function() {
+        params = {}
+        params.id = $("#idphoto").text()
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'photos/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG);
+            refreshOL();
+        })
+    }
+
+});
+
+nodeManager.controller('LinkwebCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.linkweb = [];
+
+    $http.get(CONFIG.api_url + 'linkweb/list').success(function(data) {
+        $scope.linkweb = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.linkweb.length / $scope.pageSize);
+        }
+    });
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.uploadBerkasLogo = function($files) {
+        // console.log('INIT');
+        // console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        // for (var i = 0; i < $files.length; i++) {
+        //     var $file = $files[i];
+        //     (function(index) {
+        //         $scope.berkas_logo = encodeImageFileAsURL($file);
+        //     })(i);
+        // }
+        // console.log($scope.berkas_logo);
+    }
+
+    var HapusLinkwebDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusLinkwebDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusLinkwebDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var EditLinkwebDialogModel = function() {
+        this.visible = false;
+    };
+
+    EditLinkwebDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    EditLinkwebDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var InfoLinkwebDialogModel = function() {
+        this.visible = false;
+    };
+
+
+    $scope.hapusLinkweb = new HapusLinkwebDialogModel();
+    $scope.editLinkweb = new EditLinkwebDialogModel();
+    $scope.linkwebentry = {}
+    $scope.linkwebentry.nama = ''
+
+    $scope.tambahGSLinkweb = function() {
+        var params = $scope.linkwebentry;
+        params.nama = encodeURIComponent(params.nama)
+        params.url = encodeURIComponent(params.url)
+        params.image = $scope.berkas_logo;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'linkweb/add', data).success(function(data, status) {
+            pesan = data;
+            params.nama = decodeURIComponent(params.nama)
+            params.url = decodeURIComponent(params.url)
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.editGSLinkweb = function(item) {
+        var params = item;
+        params.nama = encodeURIComponent(params.nama)
+        params.url = encodeURIComponent(params.url)
+        params.image = $scope.berkas_logo;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'linkweb/edit', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            params.nama = decodeURIComponent(params.nama)
+            params.url = decodeURIComponent(params.url)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.hapusGSLinkweb = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'linkweb/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('linkwebHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/linkweb_hapus.html'
+    };
+}]);
+
+nodeManager.directive('linkwebEditDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/linkweb_edit.html'
+    };
+}]);
+
+nodeManager.controller('KontakCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.kontak = [];
+
+    $http.get(CONFIG.api_url + 'kontak/list').success(function(data) {
+        $scope.kontak = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.kontak.length / $scope.pageSize);
+        }
+    });
+
+
+    var HapusKontakDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusKontakDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusKontakDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.hapusKontak = new HapusKontakDialogModel();
+    $scope.kontakentry = {}
+    $scope.kontakentry.kontak = ''
+
+    $scope.hapusGSKontak = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'kontak/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('kontakHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/kontak_hapus.html'
+    };
+}]);
+
+var editisi;
+
+nodeManager.controller('BeritaCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.berita = [];
+
+    $http.get(CONFIG.api_url + 'berita/listall').success(function(data) {
+        $scope.berita = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.berita.length / $scope.pageSize);
+        }
+    });
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.uploadBerkasLogo = function($files) {
+        // console.log('INIT');
+        // console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        // for (var i = 0; i < $files.length; i++) {
+        //     var $file = $files[i];
+        //     (function(index) {
+        //         $scope.berkas_logo = encodeImageFileAsURL($file);
+        //     })(i);
+        // }
+        // console.log($scope.berkas_logo);
+    }
+
+    var HapusBeritaDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusBeritaDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusBeritaDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var EditBeritaDialogModel = function() {
+        this.visible = false;
+    };
+
+    EditBeritaDialogModel.prototype.open = function(item) {
+        this.item = item;
+        this.item.tgl = new Date(item.tanggal)
+        console.log(item);
+        window.editisi = this.item.isiberita;
+        this.visible = true;
+    };
+
+    EditBeritaDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var InfoBeritaDialogModel = function() {
+        this.visible = false;
+    };
+
+
+    $scope.hapusBerita = new HapusBeritaDialogModel();
+    $scope.editBerita = new EditBeritaDialogModel();
+    $scope.beritaentry = {}
+        // $scope.beritaentry.nama = ''
+
+    $scope.tambahGSBerita = function() {
+        var params = $scope.beritaentry;
+        params.judul = encodeURIComponent(params.judul)
+        markupStr = $('#isiberita').summernote('code');
+        params.isiberita = encodeURIComponent(markupStr)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'berita/add', data).success(function(data, status) {
+            pesan = data;
+            $scope.beritaentry.judul = decodeURIComponent(params.judul)
+            markupStr = $('#isiberita').summernote('code');
+            $scope.beritaentry.isiberita = decodeURIComponent(markupStr)
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.editGSBerita = function(item) {
+        var params = item;
+        params.judul = encodeURIComponent(params.judul)
+        markupStr = $('#editisiberita').summernote('code');
+        params.isiberita = encodeURIComponent(markupStr)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'berita/edit', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            params.nama = decodeURIComponent(params.nama)
+            params.url = decodeURIComponent(params.url)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.hapusGSBerita = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'berita/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('beritaHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/berita_hapus.html'
+    };
+}]);
+
+nodeManager.directive('beritaEditDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                console.log(scope.model);
+                $('#editisiberita').summernote('destroy');
+                $('#editisiberita').empty();
+                $('#editisiberita').append(scope.model.item.isiberita);
+                $('#editisiberita').summernote({
+                    height: 430
+                });
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                    // $('#editisiberita').summernote('code', $('#isinyaberita').html());
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/berita_edit.html'
     };
 }]);

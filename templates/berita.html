@@ -1,0 +1,130 @@
+<div id="BeritaView" ng-app="nodeManager" ng-controller="BeritaCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Berita
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#berita_tambah"><span class="glyphicon glyphicon-upload"></span> Tambah Berita</button></div>
+        <div class="panel-body">
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariBerita">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <td>
+                            <a href="#/berita" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+            Tanggal 
+            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                            <td>Judul</td>
+                        </td>
+
+                        <td>
+
+                            Aksi
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="item in berita | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
+                        <td style="width: 152px">{{ item.tanggal }}</td>
+                        <td>{{ item.judul }}</td>
+                        <td style="width: 152px">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-warning" ng-click="editBerita.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>
+                                <button type="button" class="btn btn-danger" ng-click="hapusBerita.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <berita-edit-dialog model="editBerita "></berita-edit-dialog>
+            <berita-tambah-dialog model="tambahBerita "></berita-tambah-dialog>
+            <berita-hapus-dialog model="hapusBerita "></berita-hapus-dialog>
+
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="berita_tambah" class="modal fade" role="dialog" ng-controller="BeritaCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Tambah Berita</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Tanngal</strong></td>
+                        <td><input class="form-control input-sm" type="date" style="width: 500" ng-model="beritaentry.tanggal"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px">
+                            <strong>Judul</strong>
+                        </td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="beritaentry.judul"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px;height: 450px;"><strong>Isi Berita</strong></td>
+                        <td>
+                            <div id='isiberita'></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnBeritaTambah" ng-click="tambahGSBerita()" ng-disabled="!beritaentry.tanggal && !beritaentry.judul">Tambah!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#berita_tambah').on('hidden.bs.modal', function() {
+        angular.element($("#BeritaView")).scope().reloadView();
+    })
+    $(document).ready(function() {
+        $('#isiberita').summernote({
+            height: 430
+        });
+    });
+</script>
