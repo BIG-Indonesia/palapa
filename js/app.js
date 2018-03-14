@@ -2633,7 +2633,24 @@ nodeManager.directive('linkHapusDialog', [function() {
     };
 }]);
 
-nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+nodeManager.controller('MetakugiCtrl', function ($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+
+            $scope.datakeyword = function () {
+                 $http.get(CONFIG.api_url + 'keyword/list', {
+                                        cache: false
+                                    }).success(function (data) {
+                                        $scope.keywords = data;
+                                       // console.log($scope.keywords);       
+                                        
+
+                 });
+
+                           
+            }
+
+    $scope.datakeyword();
+
+
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariMetalinks = ''; // set the default search/filter term
@@ -2647,7 +2664,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.theuser = $rootScope.currentUser['user']
     $scope.curwrk = $rootScope.currentUser['grup']
     $scope.curgrup = $rootScope.currentUser['kelas']
-    $scope.cekgrup = function(user) {
+    $scope.cekgrup = function (user) {
         if ($scope.curgrup == 'admin' || user == $scope.curwrk) {
             return false;
         } else {
@@ -2655,7 +2672,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
         }
     }
 
-    $scope.cekadmin = function() {
+    $scope.cekadmin = function () {
         if ($scope.curgrup == 'admin') {
             return false;
         } else {
@@ -2663,7 +2680,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
         }
     }
 
-    $scope.reloadView = function() {
+    $scope.reloadView = function () {
         $state.transitionTo($state.current, $stateParams, {
             reload: true,
             inherit: false,
@@ -2675,75 +2692,185 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.pageSize = 10;
     $scope.grup = [];
 
-    $http.get(CONFIG.api_url + 'metakugi/list').success(function(data) {
+    $http.get(CONFIG.api_url + 'metakugi/list').success(function (data) {
         $scope.grup = data;
-        $scope.numberOfPages = function() {
+        $scope.numberOfPages = function () {
             return Math.ceil($scope.grup.length / $scope.pageSize);
         }
     });
 
     $scope.selectedsimpul = [];
 
-    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
+    $http.get(CONFIG.api_url + 'kodesimpul', {
+        cache: true
+    }).success(function (data) {
         $scope.kodesimpul = data;
     });
 
-    var TambahKugiDialogModel = function() {
+
+    parameters = {};
+
+
+    $scope.simpan_metakugi = function () {
+
+        var tanggal2 = ($scope.tanggalku.toString()); 
+        console.log((tanggal2.split('GMT')[0]).trim());
+
+        parameters.tanggal = encodeURIComponent((tanggal2.split('GMT')[0]).trim());
+        parameters.WORKSPACE = 'KUGI';
+        parameters.JENISDATABASE = 'PUB';
+        parameters.ABSTRACT = encodeURIComponent($scope.layer_abstract);
+        parameters.ID = encodeURIComponent($scope.layer_id);
+
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+        
+        if (!$scope.akses.value){
+            $scope.akses.value = "PUBLIC";
+        }
+
+        if (!$scope.keyword_item){
+            $scope.keyword_item = "Batas Wilayah";
+        }
+
+
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+
+
+        parameters.AKSES = encodeURIComponent($scope.akses.value);
+        parameters.KEYWORD = encodeURIComponent($scope.keyword_item);
+
+        // //Contac
+        parameters.individualName = encodeURIComponent($scope.individualName);
+        parameters.organisationName = encodeURIComponent($scope.organisationName);
+        parameters.positionName = encodeURIComponent($scope.positionName);
+        parameters.phone = encodeURIComponent($scope.phone);
+        parameters.facsimile = encodeURIComponent($scope.facsimile);
+        parameters.deliveryPoint = encodeURIComponent($scope.deliveryPoint);
+        parameters.city = encodeURIComponent($scope.city);
+        parameters.postalCode = encodeURIComponent($scope.postalCode);
+        parameters.country = encodeURIComponent($scope.country);
+        parameters.electronicMailAddress = encodeURIComponent($scope.electronicMailAddress);
+        
+        parameters.linkage = encodeURIComponent($scope.linkage);
+        
+        parameters.hoursOfService = encodeURIComponent($scope.hoursOfService);
+        parameters.contactInstructions = encodeURIComponent($scope.contactInstructions);
+
+
+        // //Identification Info
+        parameters.title_identification = encodeURIComponent($scope.title_identification);
+        
+        // //Distributor
+        parameters.Distributor_individualName = encodeURIComponent($scope.Distributor_individualName);
+        parameters.Distributor_organisationName = encodeURIComponent($scope.Distributor_organisationName);
+        parameters.Distributor_positionName = encodeURIComponent($scope.Distributor_positionName);
+        parameters.Distributor_phone = encodeURIComponent($scope.Distributor_phone);
+        parameters.Distributor_facsimile = encodeURIComponent($scope.Distributor_facsimile);
+        parameters.Distributor_deliveryPoint = encodeURIComponent($scope.Distributor_deliveryPoint);
+        parameters.Distributor_city = encodeURIComponent($scope.Distributor_city);
+        parameters.Distributor_postalCode = encodeURIComponent($scope.Distributor_postalCode);
+        parameters.Distributor_country = encodeURIComponent($scope.Distributor_country);
+        parameters.Distributor_electronicMailAddress = encodeURIComponent($scope.Distributor_electronicMailAddress);
+        
+        parameters.dataSetURI = encodeURIComponent($scope.dataSetURI)
+        
+        parameters.Distributor_hoursOfService = encodeURIComponent($scope.Distributor_hoursOfService);
+        parameters.Distributor_contactInstructions = encodeURIComponent($scope.Distributor_contactInstructions);
+            
+
+         // //MetadataConstrains
+            
+        //parameters.usernote = encodeURIComponent($scope.akses.value);
+
+
+        console.log(parameters);
+
+
+            var data = $.param({
+                    json: JSON.stringify({
+                        pubdata: parameters
+                    })
+            });
+
+
+            $http.post(CONFIG.api_url + 'lengkapmetakugi', data).success(function (data, status) {
+                pesan = data;
+                console.log(pesan);
+                bootbox.alert(pesan.MSG);
+            });
+
+
+       
+     }
+
+
+
+
+
+
+
+    var TambahKugiDialogModel = function () {
         this.visible = false;
     };
 
-    TambahKugiDialogModel.prototype.open = function(item) {
+    TambahKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         this.item.db = 'pub';
         console.log(item);
         this.visible = true;
     };
 
-    TambahKugiDialogModel.prototype.close = function() {
+    TambahKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var LihatKugiDialogModel = function() {
+    var LihatKugiDialogModel = function () {
         this.visible = false;
     };
 
-    LihatKugiDialogModel.prototype.open = function(item) {
+    LihatKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
         $http({
-            url: CONFIG.api_url + 'metakugi/view',
+            url: CONFIG.api_url + 'metakugi/view_json',
             method: 'GET',
-            params: { identifier: item.identifier }
-        }).success(function(data) {
-            setTimeout(function() {
-                $scope.$apply(function() {
+            params: {
+                identifier: item.identifier
+            }
+        }).success(function (data) {
+            setTimeout(function () {
+                $scope.$apply(function () {
                     $scope.lihatKugi.item.xml = data
                 });
             })
         });
-        console.log(this.xml)
+            //console.log(this.xml)
     };
 
-    LihatKugiDialogModel.prototype.close = function() {
+    LihatKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var PublishKugiDialogModel = function() {
+    var PublishKugiDialogModel = function () {
         this.visible = false;
     };
 
-    PublishKugiDialogModel.prototype.open = function(item) {
+    PublishKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
         $http({
             url: CONFIG.api_url + 'metakugi/view',
             method: 'GET',
-            params: { identifier: item.identifier }
-        }).success(function(data) {
-            setTimeout(function() {
-                $scope.$apply(function() {
+            params: {
+                identifier: item.identifier
+            }
+        }).success(function (data) {
+            setTimeout(function () {
+                $scope.$apply(function () {
                     $scope.publishKugi.item.xml = data
                 });
             })
@@ -2751,21 +2878,21 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
         console.log(this.xml)
     };
 
-    PublishKugiDialogModel.prototype.close = function() {
+    PublishKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var HapusKugiDialogModel = function() {
+    var HapusKugiDialogModel = function () {
         this.visible = false;
     };
 
-    HapusKugiDialogModel.prototype.open = function(item) {
+    HapusKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
     };
 
-    HapusKugiDialogModel.prototype.close = function() {
+    HapusKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
@@ -2778,7 +2905,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.linkntry.enabled = ''
     $scope.linkntry.akses = ''
 
-    $scope.tambahGSKugi = function() {
+    $scope.tambahGSKugi = function () {
         var params = $scope.model.item;
         console.log(params)
         var data = $.param({
@@ -2786,13 +2913,13 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'metakugi/link/' + param.db, data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'metakugi/link/' + param.db, data).success(function (data, status) {
             $scope.test = data;
             console.log($scope.test);
         })
     }
 
-    $scope.publishGSKugi = function() {
+    $scope.publishGSKugi = function () {
         var params = $scope.model.item;
         params.xml = encodeURIComponent(params.xml)
         console.log(params)
@@ -2801,14 +2928,14 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'pycswRecord/insert', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'pycswRecord/insert', data).success(function (data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
             console.log(pesan);
         })
     }
 
-    $scope.hapusMDKUGI = function(identifier) {
+    $scope.hapusMDKUGI = function (identifier) {
         var params = {
             identifier: identifier,
             workspace: 'KUGI'
@@ -2819,14 +2946,14 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'pycswRecord/delete', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'pycswRecord/delete', data).success(function (data, status) {
             pesan = data;
             bootbox.alert(pesan.MSG)
             console.log(pesan);
         })
     }
 
-    $scope.FileSelect = function($files, identifier, akses, skema, fitur, db) {
+    $scope.FileSelect = function ($files, identifier, akses, skema, fitur, db) {
         console.log('INIT');
         console.log($files);
         if (akses == 'GOVERNMENT') {
@@ -2843,22 +2970,28 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
         //$files: an array of files selected, each file has name, size, and type.
         for (var i = 0; i < $files.length; i++) {
             var $file = $files[i];
-            (function(index) {
+            (function (index) {
                 $scope.upload[index] = $upload.upload({
                     url: CONFIG.api_url + 'metakugi/link/' + db, // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
                     file: $file,
-                    params: { identifier: identifier, akses: akses, skema: skema, fitur: fitur, workspace: $scope.curwrk }
-                }).progress(function(evt) {
+                    params: {
+                        identifier: identifier,
+                        akses: akses,
+                        skema: skema,
+                        fitur: fitur,
+                        workspace: $scope.curwrk
+                    }
+                }).progress(function (evt) {
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-                }).success(function(data, status, headers, config) {
+                }).success(function (data, status, headers, config) {
                     $scope.response = data;
                     // file is uploaded successfully
                     console.log(data);
-                }).error(function(data, status, headers, config) {
+                }).error(function (data, status, headers, config) {
                     // file failed to upload
                     $scope.response = data;
                     console.log(data);
@@ -2869,57 +3002,1369 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
 
 });
 
-nodeManager.directive('kugiTambahDialog', [function() {
+
+nodeManager.directive('kugiLihatDialog', [function () {
     return {
         restrict: 'E',
         scope: {
             model: '=',
         },
-        link: function(scope, element, attributes) {
-            scope.$watch('model.visible', function(newValue) {
+        link: function (scope, element, attributes) {
+            scope.$watch('model.visible', function (newValue) {
                 var modalElement = element.find('.modal');
                 modalElement.modal(newValue ? 'show' : 'hide');
             });
-            element.on('shown.bs.modal', function() {
-                scope.$apply(function() {
+            element.on('shown.bs.modal', function () {
+                scope.$apply(function () {
                     scope.model.visible = true;
+                    
+                    try {
+                        scope.tanggalku2 = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:dateStamp"]["gco:DateTime"]);
+                        scope.tanggalku = new Date(scope.tanggalku2);
+                    }  catch (err) {
+                        scope.tanggalku = new Date();
+                    }    
+
+                    console.log(scope.tanggalku);
+
+                    try {
+                        scope.layer_id = scope.model.item.identifier; 
+                    } catch (err)
+                    {
+                        scope.layer_id = (Math.random());
+                    }
+
+                    console.log(scope.layer_id);
+
+                    scope.workspace_kugi = scope.model.item.workspace;
+                    
+                    console.log(scope.workspace_kugi);
+
+                    
+
+                    try {
+                        scope.layer_abstract = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:abstract"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.layer_abstract = "Data Tidak Ada";
+                    }
+                    
+                    console.log(scope.layer_abstract)
+
+                    try {
+                        scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.keyword_item ="";
+                    }
+                    console.log(scope.keyword_item);
+
+                    
+                    try {
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                    } catch (err)
+                    {
+                        scope.datausernote = "";
+                    } 
+
+                      console.log(scope.datausernote);                                                         
+                     
+
+
+                    scope.akses = {  
+                            "value": scope.datausernote, 
+                            "values": [ "PUBLIC", "GOVERNMENT", "PRIVATE", "IGSTRATEGIS"] 
+                          };
+ // Contact                  
+        try { 
+            scope.individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.individualName = ""; 
+        }  
+
+        console.log(scope.individualName);
+
+        try { 
+             scope.organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.organisationName = ""; 
+        } 
+
+        console.log(scope.organisationName);
+
+        try {
+            scope.positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        }  catch (err)
+        {
+            scope.positionName = ""; 
+        } 
+
+         console.log(scope.positionName) ;       
+        
+        try {
+           scope.phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+           scope.phone = ""; 
+        }
+
+         console.log(scope.phone);         
+        
+        try {
+            scope.facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.facsimile = ""; 
+        }  
+
+          console.log(scope.facsimile) ;      
+        
+        try {
+            scope.deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.deliveryPoint = ""; 
+        }   
+
+          console.log(scope.deliveryPoint) ;     
+        
+        try {
+           scope.city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.city = ""; 
+        }  
+
+            console.log(scope.city) 
+
+        try {
+           scope.postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.postalCode = ""; 
+        } 
+
+             console.log(scope.postalCode);
+
+        try {
+            scope.country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.country = ""; 
+        } 
+
+             console.log(scope.country);        
+        
+        try {
+           scope.electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.electronicMailAddress = ""; 
+        }  
+
+             console.log(scope.electronicMailAddress);
+
+        
+        try {
+            scope.linkage = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"]);
+        } catch (err)
+        {
+            scope.linkage = ""; 
+        }     
+
+             console.log(scope.linkage);    
+        
+        try {
+            scope.hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.hoursOfService = ""; 
+        } 
+
+             console.log(scope.hoursOfService);        
+        
+        try {
+            scope.contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.contactInstructions = ""; 
+        }  
+
+             console.log(scope.contactInstructions) ;      
+        
+
+
+         // //Identification Info
+        try {
+            scope.title_identification = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:citation"]["gmd:CI_Citation"]["gmd:title"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.title_identification = ""; 
+        }         
+        
+          console.log(scope.title_identification) ; 
+        
+        // //Distributor
+        
+        try { 
+            scope.Distributor_individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_individualName = ""; 
+        }    
+
+              console.log(scope.Distributor_individualName) ;      
+        
+        try {
+            scope.Distributor_organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_organisationName = ""; 
+        }  
+
+                  console.log(scope.organisationName) ;        
+        
+        try {
+            scope.Distributor_positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+                scope.Distributor_positionName = ""; 
+        }   
+
+                  console.log(scope.Distributor_positionName) ;       
+        
+        try {
+            scope.Distributor_phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_phone = ""; 
+        }    
+
+                  console.log(scope.Distributor_phone) ;      
+        
+        try {
+            scope.Distributor_facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_facsimile = ""; 
+        }       
+
+                  console.log(scope.Distributor_facsimile) ;   
+        
+        try {
+            scope.Distributor_deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_deliveryPoint = ""; 
+        }      
+
+                  console.log(scope.Distributor_deliveryPoint) ;    
+        
+        try {
+            scope.Distributor_city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_city = ""; 
+        }    
+
+                  console.log(scope.Distributor_city) ;      
+        
+        try {
+            scope.Distributor_postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_postalCode = ""; 
+        }    
+
+                  console.log(scope.Distributor_postalCode) ;      
+        
+        try {
+            scope.Distributor_country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_country = ""; 
+        }     
+
+                    console.log(scope.Distributor_country) ;                   
+        
+        try {
+            scope.Distributor_electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_electronicMailAddress = ""; 
+        }         
+        
+        try {
+            scope.dataSetURI = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"])
+        } catch (err)
+        {
+            scope.dataSetURI = ""; 
+        }    
+
+                     console.log(scope.dataSetURI) ;           
+        
+        try {
+            scope.Distributor_hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_hoursOfService = ""; 
+        }    
+
+                     console.log(scope.Distributor_hoursOfService) ;           
+        
+
+        try {
+            scope.Distributor_contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);      
+        } catch (err)
+        {
+            scope.Distributor_contactInstructions = ""; 
+        }         
+            
+        console.log(scope.Distributor_contactInstructions) ;         
+
+
+                     //$scope.datakeyword()
+      
+
+
                 });
             });
-            element.on('hidden.bs.modal', function() {
-                scope.$apply(function() {
+            element.on('hidden.bs.modal', function () {
+                scope.$apply(function () {
                     scope.model.visible = false;
                 });
             });
         },
-        templateUrl: 'templates/metakugi_link.html'
+        templateUrl: 'templates/metakugi_view_edit.html'
+        //controller: 'MetakugiCtrl'
     };
 }]);
 
-nodeManager.directive('kugiLihatDialog', [function() {
+
+nodeManager.directive('kugiLihatdevDialog', [function () {
     return {
         restrict: 'E',
         scope: {
             model: '=',
         },
-        link: function(scope, element, attributes) {
-            scope.$watch('model.visible', function(newValue) {
+        link: function (scope, element, attributes) {
+            scope.$watch('model.visible', function (newValue) {
                 var modalElement = element.find('.modal');
                 modalElement.modal(newValue ? 'show' : 'hide');
             });
-            element.on('shown.bs.modal', function() {
-                scope.$apply(function() {
+            element.on('shown.bs.modal', function () {
+                scope.$apply(function () {
                     scope.model.visible = true;
+                    
+                    try {
+                        scope.tanggalku2 = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:dateStamp"]["gco:DateTime"]);
+                        scope.tanggalku = new Date(scope.tanggalku2);
+                    }  catch (err) {
+                        scope.tanggalku = new Date();
+                    }    
+
+                    console.log(scope.tanggalku);
+
+                    try {
+                        scope.layer_id = scope.model.item.identifier; 
+                    } catch (err)
+                    {
+                        scope.layer_id = (Math.random());
+                    }
+
+                    console.log(scope.layer_id);
+
+                    scope.workspace_kugi = scope.model.item.workspace;
+                    
+                    console.log(scope.workspace_kugi);
+
+                    
+
+                    try {
+                        scope.layer_abstract = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:abstract"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.layer_abstract = "Data Tidak Ada";
+                    }
+                    
+                    console.log(scope.layer_abstract)
+
+                    try {
+                        scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.keyword_item ="";
+                    }
+                    console.log(scope.keyword_item);
+
+                    
+                    try {
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                    } catch (err)
+                    {
+                        scope.datausernote = "";
+                    } 
+
+                      console.log(scope.datausernote);                                                         
+                     
+
+
+                    scope.akses = {  
+                            "value": scope.datausernote, 
+                            "values": [ "PUBLIC", "GOVERNMENT", "PRIVATE", "IGSTRATEGIS"] 
+                          };
+ // Contact                  
+        try { 
+            scope.individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.individualName = ""; 
+        }  
+
+        console.log(scope.individualName);
+
+        try { 
+             scope.organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.organisationName = ""; 
+        } 
+
+        console.log(scope.organisationName);
+
+        try {
+            scope.positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        }  catch (err)
+        {
+            scope.positionName = ""; 
+        } 
+
+         console.log(scope.positionName) ;       
+        
+        try {
+           scope.phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+           scope.phone = ""; 
+        }
+
+         console.log(scope.phone);         
+        
+        try {
+            scope.facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.facsimile = ""; 
+        }  
+
+          console.log(scope.facsimile) ;      
+        
+        try {
+            scope.deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.deliveryPoint = ""; 
+        }   
+
+          console.log(scope.deliveryPoint) ;     
+        
+        try {
+           scope.city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.city = ""; 
+        }  
+
+            console.log(scope.city) 
+
+        try {
+           scope.postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.postalCode = ""; 
+        } 
+
+             console.log(scope.postalCode);
+
+        try {
+            scope.country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.country = ""; 
+        } 
+
+             console.log(scope.country);        
+        
+        try {
+           scope.electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.electronicMailAddress = ""; 
+        }  
+
+             console.log(scope.electronicMailAddress);
+
+        
+        try {
+            scope.linkage = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"]);
+        } catch (err)
+        {
+            scope.linkage = ""; 
+        }     
+
+             console.log(scope.linkage);    
+        
+        try {
+            scope.hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.hoursOfService = ""; 
+        } 
+
+             console.log(scope.hoursOfService);        
+        
+        try {
+            scope.contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.contactInstructions = ""; 
+        }  
+
+             console.log(scope.contactInstructions) ;      
+        
+
+
+         // //Identification Info
+        try {
+            scope.title_identification = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:citation"]["gmd:CI_Citation"]["gmd:title"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.title_identification = ""; 
+        }         
+        
+          console.log(scope.title_identification) ; 
+        
+        // //Distributor
+        
+        try { 
+            scope.Distributor_individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_individualName = ""; 
+        }    
+
+              console.log(scope.Distributor_individualName) ;      
+        
+        try {
+            scope.Distributor_organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_organisationName = ""; 
+        }  
+
+                  console.log(scope.organisationName) ;        
+        
+        try {
+            scope.Distributor_positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+                scope.Distributor_positionName = ""; 
+        }   
+
+                  console.log(scope.Distributor_positionName) ;       
+        
+        try {
+            scope.Distributor_phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_phone = ""; 
+        }    
+
+                  console.log(scope.Distributor_phone) ;      
+        
+        try {
+            scope.Distributor_facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_facsimile = ""; 
+        }       
+
+                  console.log(scope.Distributor_facsimile) ;   
+        
+        try {
+            scope.Distributor_deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_deliveryPoint = ""; 
+        }      
+
+                  console.log(scope.Distributor_deliveryPoint) ;    
+        
+        try {
+            scope.Distributor_city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_city = ""; 
+        }    
+
+                  console.log(scope.Distributor_city) ;      
+        
+        try {
+            scope.Distributor_postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_postalCode = ""; 
+        }    
+
+                  console.log(scope.Distributor_postalCode) ;      
+        
+        try {
+            scope.Distributor_country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_country = ""; 
+        }     
+
+                    console.log(scope.Distributor_country) ;                   
+        
+        try {
+            scope.Distributor_electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_electronicMailAddress = ""; 
+        }         
+        
+        try {
+            scope.dataSetURI = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"])
+        } catch (err)
+        {
+            scope.dataSetURI = ""; 
+        }    
+
+                     console.log(scope.dataSetURI) ;           
+        
+        try {
+            scope.Distributor_hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_hoursOfService = ""; 
+        }    
+
+                     console.log(scope.Distributor_hoursOfService) ;           
+        
+
+        try {
+            scope.Distributor_contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);      
+        } catch (err)
+        {
+            scope.Distributor_contactInstructions = ""; 
+        }         
+            
+        console.log(scope.Distributor_contactInstructions) ;         
+
+
+                     //$scope.datakeyword()
+      
+
+
                 });
             });
-            element.on('hidden.bs.modal', function() {
-                scope.$apply(function() {
+            element.on('hidden.bs.modal', function () {
+                scope.$apply(function () {
                     scope.model.visible = false;
                 });
             });
         },
-        templateUrl: 'templates/metakugi_view.html'
+        templateUrl: 'templates/metakugi_view_dev_edit.html'
+       
     };
 }]);
+
+
+
+nodeManager.directive('kugiLihatprodDialog', [function () {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function (scope, element, attributes) {
+            scope.$watch('model.visible', function (newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.model.visible = true;
+                    
+                    try {
+                        scope.tanggalku2 = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:dateStamp"]["gco:DateTime"]);
+                        scope.tanggalku = new Date(scope.tanggalku2);
+                    }  catch (err) {
+                        scope.tanggalku = new Date();
+                    }    
+
+                    console.log(scope.tanggalku);
+
+                    try {
+                        scope.layer_id = scope.model.item.identifier; 
+                    } catch (err)
+                    {
+                        scope.layer_id = (Math.random());
+                    }
+
+                    console.log(scope.layer_id);
+
+                    scope.workspace_kugi = scope.model.item.workspace;
+                    
+                    console.log(scope.workspace_kugi);
+
+                    
+
+                    try {
+                        scope.layer_abstract = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:abstract"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.layer_abstract = "Data Tidak Ada";
+                    }
+                    
+                    console.log(scope.layer_abstract)
+
+                    try {
+                        scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.keyword_item ="";
+                    }
+                    console.log(scope.keyword_item);
+
+                    
+                    try {
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                    } catch (err)
+                    {
+                        scope.datausernote = "";
+                    } 
+
+                      console.log(scope.datausernote);                                                         
+                     
+
+
+                    scope.akses = {  
+                            "value": scope.datausernote, 
+                            "values": [ "PUBLIC", "GOVERNMENT", "PRIVATE", "IGSTRATEGIS"] 
+                          };
+ // Contact                  
+        try { 
+            scope.individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.individualName = ""; 
+        }  
+
+        console.log(scope.individualName);
+
+        try { 
+             scope.organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.organisationName = ""; 
+        } 
+
+        console.log(scope.organisationName);
+
+        try {
+            scope.positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        }  catch (err)
+        {
+            scope.positionName = ""; 
+        } 
+
+         console.log(scope.positionName) ;       
+        
+        try {
+           scope.phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+           scope.phone = ""; 
+        }
+
+         console.log(scope.phone);         
+        
+        try {
+            scope.facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.facsimile = ""; 
+        }  
+
+          console.log(scope.facsimile) ;      
+        
+        try {
+            scope.deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.deliveryPoint = ""; 
+        }   
+
+          console.log(scope.deliveryPoint) ;     
+        
+        try {
+           scope.city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.city = ""; 
+        }  
+
+            console.log(scope.city) 
+
+        try {
+           scope.postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.postalCode = ""; 
+        } 
+
+             console.log(scope.postalCode);
+
+        try {
+            scope.country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.country = ""; 
+        } 
+
+             console.log(scope.country);        
+        
+        try {
+           scope.electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.electronicMailAddress = ""; 
+        }  
+
+             console.log(scope.electronicMailAddress);
+
+        
+        try {
+            scope.linkage = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"]);
+        } catch (err)
+        {
+            scope.linkage = ""; 
+        }     
+
+             console.log(scope.linkage);    
+        
+        try {
+            scope.hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.hoursOfService = ""; 
+        } 
+
+             console.log(scope.hoursOfService);        
+        
+        try {
+            scope.contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.contactInstructions = ""; 
+        }  
+
+             console.log(scope.contactInstructions) ;      
+        
+
+
+         // //Identification Info
+        try {
+            scope.title_identification = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:citation"]["gmd:CI_Citation"]["gmd:title"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.title_identification = ""; 
+        }         
+        
+          console.log(scope.title_identification) ; 
+        
+        // //Distributor
+        
+        try { 
+            scope.Distributor_individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_individualName = ""; 
+        }    
+
+              console.log(scope.Distributor_individualName) ;      
+        
+        try {
+            scope.Distributor_organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_organisationName = ""; 
+        }  
+
+                  console.log(scope.organisationName) ;        
+        
+        try {
+            scope.Distributor_positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+                scope.Distributor_positionName = ""; 
+        }   
+
+                  console.log(scope.Distributor_positionName) ;       
+        
+        try {
+            scope.Distributor_phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_phone = ""; 
+        }    
+
+                  console.log(scope.Distributor_phone) ;      
+        
+        try {
+            scope.Distributor_facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_facsimile = ""; 
+        }       
+
+                  console.log(scope.Distributor_facsimile) ;   
+        
+        try {
+            scope.Distributor_deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_deliveryPoint = ""; 
+        }      
+
+                  console.log(scope.Distributor_deliveryPoint) ;    
+        
+        try {
+            scope.Distributor_city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_city = ""; 
+        }    
+
+                  console.log(scope.Distributor_city) ;      
+        
+        try {
+            scope.Distributor_postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_postalCode = ""; 
+        }    
+
+                  console.log(scope.Distributor_postalCode) ;      
+        
+        try {
+            scope.Distributor_country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_country = ""; 
+        }     
+
+                    console.log(scope.Distributor_country) ;                   
+        
+        try {
+            scope.Distributor_electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_electronicMailAddress = ""; 
+        }         
+        
+        try {
+            scope.dataSetURI = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"])
+        } catch (err)
+        {
+            scope.dataSetURI = ""; 
+        }    
+
+                     console.log(scope.dataSetURI) ;           
+        
+        try {
+            scope.Distributor_hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_hoursOfService = ""; 
+        }    
+
+                     console.log(scope.Distributor_hoursOfService) ;           
+        
+
+        try {
+            scope.Distributor_contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);      
+        } catch (err)
+        {
+            scope.Distributor_contactInstructions = ""; 
+        }         
+            
+        console.log(scope.Distributor_contactInstructions) ;         
+
+
+                     //$scope.datakeyword()
+      
+
+
+                });
+            });
+            element.on('hidden.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/metakugi_view_prod_edit.html'
+       
+    };
+}]);
+
+
+
+
+nodeManager.directive('kugiLihatpubDialog', [function () {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function (scope, element, attributes) {
+            scope.$watch('model.visible', function (newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.model.visible = true;
+                    
+                    try {
+                        scope.tanggalku2 = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:dateStamp"]["gco:DateTime"]);
+                        scope.tanggalku = new Date(scope.tanggalku2);
+                    }  catch (err) {
+                        scope.tanggalku = new Date();
+                    }    
+
+                    console.log(scope.tanggalku);
+
+                    try {
+                        scope.layer_id = scope.model.item.identifier; 
+                    } catch (err)
+                    {
+                        scope.layer_id = (Math.random());
+                    }
+
+                    console.log(scope.layer_id);
+
+                    scope.workspace_kugi = scope.model.item.workspace;
+                    
+                    console.log(scope.workspace_kugi);
+
+                    
+
+                    try {
+                        scope.layer_abstract = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:abstract"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.layer_abstract = "Data Tidak Ada";
+                    }
+                    
+                    console.log(scope.layer_abstract)
+
+                    try {
+                        scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.keyword_item ="";
+                    }
+                    console.log(scope.keyword_item);
+
+                    
+                    try {
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                    } catch (err)
+                    {
+                        scope.datausernote = "";
+                    } 
+
+                      console.log(scope.datausernote);                                                         
+                     
+
+
+                    scope.akses = {  
+                            "value": scope.datausernote, 
+                            "values": [ "PUBLIC", "GOVERNMENT", "PRIVATE", "IGSTRATEGIS"] 
+                          };
+ // Contact                  
+        try { 
+            scope.individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.individualName = ""; 
+        }  
+
+        console.log(scope.individualName);
+
+        try { 
+             scope.organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.organisationName = ""; 
+        } 
+
+        console.log(scope.organisationName);
+
+        try {
+            scope.positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        }  catch (err)
+        {
+            scope.positionName = ""; 
+        } 
+
+         console.log(scope.positionName) ;       
+        
+        try {
+           scope.phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+           scope.phone = ""; 
+        }
+
+         console.log(scope.phone);         
+        
+        try {
+            scope.facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.facsimile = ""; 
+        }  
+
+          console.log(scope.facsimile) ;      
+        
+        try {
+            scope.deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.deliveryPoint = ""; 
+        }   
+
+          console.log(scope.deliveryPoint) ;     
+        
+        try {
+           scope.city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.city = ""; 
+        }  
+
+            console.log(scope.city) 
+
+        try {
+           scope.postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.postalCode = ""; 
+        } 
+
+             console.log(scope.postalCode);
+
+        try {
+            scope.country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.country = ""; 
+        } 
+
+             console.log(scope.country);        
+        
+        try {
+           scope.electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.electronicMailAddress = ""; 
+        }  
+
+             console.log(scope.electronicMailAddress);
+
+        
+        try {
+            scope.linkage = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"]);
+        } catch (err)
+        {
+            scope.linkage = ""; 
+        }     
+
+             console.log(scope.linkage);    
+        
+        try {
+            scope.hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.hoursOfService = ""; 
+        } 
+
+             console.log(scope.hoursOfService);        
+        
+        try {
+            scope.contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.contactInstructions = ""; 
+        }  
+
+             console.log(scope.contactInstructions) ;      
+        
+
+
+         // //Identification Info
+        try {
+            scope.title_identification = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:citation"]["gmd:CI_Citation"]["gmd:title"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.title_identification = ""; 
+        }         
+        
+          console.log(scope.title_identification) ; 
+        
+        // //Distributor
+        
+        try { 
+            scope.Distributor_individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_individualName = ""; 
+        }    
+
+              console.log(scope.Distributor_individualName) ;      
+        
+        try {
+            scope.Distributor_organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_organisationName = ""; 
+        }  
+
+                  console.log(scope.organisationName) ;        
+        
+        try {
+            scope.Distributor_positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+                scope.Distributor_positionName = ""; 
+        }   
+
+                  console.log(scope.Distributor_positionName) ;       
+        
+        try {
+            scope.Distributor_phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_phone = ""; 
+        }    
+
+                  console.log(scope.Distributor_phone) ;      
+        
+        try {
+            scope.Distributor_facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_facsimile = ""; 
+        }       
+
+                  console.log(scope.Distributor_facsimile) ;   
+        
+        try {
+            scope.Distributor_deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_deliveryPoint = ""; 
+        }      
+
+                  console.log(scope.Distributor_deliveryPoint) ;    
+        
+        try {
+            scope.Distributor_city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_city = ""; 
+        }    
+
+                  console.log(scope.Distributor_city) ;      
+        
+        try {
+            scope.Distributor_postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_postalCode = ""; 
+        }    
+
+                  console.log(scope.Distributor_postalCode) ;      
+        
+        try {
+            scope.Distributor_country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_country = ""; 
+        }     
+
+                    console.log(scope.Distributor_country) ;                   
+        
+        try {
+            scope.Distributor_electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_electronicMailAddress = ""; 
+        }         
+        
+        try {
+            scope.dataSetURI = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"])
+        } catch (err)
+        {
+            scope.dataSetURI = ""; 
+        }    
+
+                     console.log(scope.dataSetURI) ;           
+        
+        try {
+            scope.Distributor_hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_hoursOfService = ""; 
+        }    
+
+                     console.log(scope.Distributor_hoursOfService) ;           
+        
+
+        try {
+            scope.Distributor_contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);      
+        } catch (err)
+        {
+            scope.Distributor_contactInstructions = ""; 
+        }         
+            
+        console.log(scope.Distributor_contactInstructions) ;         
+
+
+                     //$scope.datakeyword()
+      
+
+
+                });
+            });
+            element.on('hidden.bs.modal', function () {
+                scope.$apply(function () {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/metakugi_view_pub_edit.html'
+       
+    };
+}]);
+
 
 nodeManager.directive('kugiPublishDialog', [function() {
     return {
@@ -3009,7 +4454,12 @@ nodeManager.controller('testCtrl', function($scope, CONFIG, LAYER, $http, $base6
     }
 });
 
-nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER, $window, $http, $base64, $upload, $timeout, $state, $stateParams, USER_ROLES) {
+nodeManager.controller('ctrl_dbdev', function ($rootScope, $scope, CONFIG, LAYER, $window, $http, $base64, $upload, $timeout, $state, $stateParams, USER_ROLES) {
+
+
+
+    
+
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariFitur = ''; // set the default search/filter term
@@ -3020,14 +4470,118 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
 
     $scope.loader_work = false
 
-    $scope.showloader = function() {
+    
+    parameters = {};
+
+
+    $scope.simpan_metakugi = function () {
+
+        var tanggal2 = ($scope.tanggalku.toString()); 
+        console.log((tanggal2.split('GMT')[0]).trim());
+
+        parameters.tanggal = encodeURIComponent((tanggal2.split('GMT')[0]).trim());
+        parameters.WORKSPACE = 'KUGI';
+        parameters.JENISDATABASE = 'DEV';
+        parameters.ABSTRACT = encodeURIComponent($scope.layer_abstract);
+        parameters.ID = encodeURIComponent($scope.layer_id);
+
+        
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+
+        if (!$scope.akses.value){
+            $scope.akses.value = "PUBLIC";
+        }
+
+        if (!$scope.keyword_item){
+            $scope.keyword_item = "Batas Wilayah";
+        }
+
+
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+
+
+        parameters.AKSES = encodeURIComponent($scope.akses.value);
+        parameters.KEYWORD = encodeURIComponent($scope.keyword_item);
+
+        // //Contac
+        parameters.individualName = encodeURIComponent($scope.individualName);
+        parameters.organisationName = encodeURIComponent($scope.organisationName);
+        parameters.positionName = encodeURIComponent($scope.positionName);
+        parameters.phone = encodeURIComponent($scope.phone);
+        parameters.facsimile = encodeURIComponent($scope.facsimile);
+        parameters.deliveryPoint = encodeURIComponent($scope.deliveryPoint);
+        parameters.city = encodeURIComponent($scope.city);
+        parameters.postalCode = encodeURIComponent($scope.postalCode);
+        parameters.country = encodeURIComponent($scope.country);
+        parameters.electronicMailAddress = encodeURIComponent($scope.electronicMailAddress);
+        
+        parameters.linkage = encodeURIComponent($scope.linkage);
+        
+        parameters.hoursOfService = encodeURIComponent($scope.hoursOfService);
+        parameters.contactInstructions = encodeURIComponent($scope.contactInstructions);
+
+
+        // //Identification Info
+        parameters.title_identification = encodeURIComponent($scope.title_identification);
+        
+        // //Distributor
+        parameters.Distributor_individualName = encodeURIComponent($scope.Distributor_individualName);
+        parameters.Distributor_organisationName = encodeURIComponent($scope.Distributor_organisationName);
+        parameters.Distributor_positionName = encodeURIComponent($scope.Distributor_positionName);
+        parameters.Distributor_phone = encodeURIComponent($scope.Distributor_phone);
+        parameters.Distributor_facsimile = encodeURIComponent($scope.Distributor_facsimile);
+        parameters.Distributor_deliveryPoint = encodeURIComponent($scope.Distributor_deliveryPoint);
+        parameters.Distributor_city = encodeURIComponent($scope.Distributor_city);
+        parameters.Distributor_postalCode = encodeURIComponent($scope.Distributor_postalCode);
+        parameters.Distributor_country = encodeURIComponent($scope.Distributor_country);
+        parameters.Distributor_electronicMailAddress = encodeURIComponent($scope.Distributor_electronicMailAddress);
+        
+        parameters.dataSetURI = encodeURIComponent($scope.dataSetURI)
+        
+        parameters.Distributor_hoursOfService = encodeURIComponent($scope.Distributor_hoursOfService);
+        parameters.Distributor_contactInstructions = encodeURIComponent($scope.Distributor_contactInstructions);
+            
+
+         // //MetadataConstrains
+            
+        //parameters.usernote = encodeURIComponent($scope.akses.value);
+
+
+        console.log(parameters);
+
+
+            var data = $.param({
+                    json: JSON.stringify({
+                        pubdata: parameters
+                    })
+            });
+
+
+            $http.post(CONFIG.api_url + 'lengkapmetakugi', data).success(function (data, status) {
+                pesan = data;
+                console.log(pesan);
+                bootbox.alert(pesan.MSG);
+            });
+
+
+       
+     }
+
+
+
+
+
+
+    $scope.showloader = function () {
         $scope.loader.loading = true;
     }
-    $scope.hideloader = function() {
+    $scope.hideloader = function () {
         $scope.loader.loading = false;
     }
 
-    $scope.cek_meta = function(identifier) {
+    $scope.cek_meta = function (identifier) {
         if ($scope.metadevlist.indexOf(identifier) === -1) {
             return true
         } else {
@@ -3035,11 +4589,11 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         }
     }
 
-    $http.get(CONFIG.api_url + 'cekmeta/metakugi_dev').success(function(data) {
+    $http.get(CONFIG.api_url + 'cekmeta/metakugi_dev').success(function (data) {
         $scope.metadevlist = data;
     });
 
-    $scope.reloadView = function() {
+    $scope.reloadView = function () {
         $state.transitionTo($state.current, $stateParams, {
             reload: true,
             inherit: false,
@@ -3047,8 +4601,10 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         });
     }
 
-    $scope.cekprod = function(identifier) {
-        $http.get(CONFIG.api_url + 'cekprod/' + identifier, { cache: true }).success(function(data) {
+    $scope.cekprod = function (identifier) {
+        $http.get(CONFIG.api_url + 'cekprod/' + identifier, {
+            cache: true
+        }).success(function (data) {
             if (data.Result == true) {
                 return false
             } else {
@@ -3057,7 +4613,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         });
     }
 
-    $scope.reloadDBView = function(dbkugi) {
+    $scope.reloadDBView = function (dbkugi) {
         db = {}
         db.dbkugi = dbkugi
         var params = db;
@@ -3068,71 +4624,73 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
             })
         });
         $http.post(CONFIG.api_url + 'refresh_dbmetaview', data)
-            .success(function(data, status) {
+            .success(function (data, status) {
                 $scope.test = data;
                 $scope.reloadView();
                 console.log($scope.test);
             })
     }
 
-    var EksporDevprodDialogModel = function() {
+    var EksporDevprodDialogModel = function () {
         this.visible = false;
     };
 
-    EksporDevprodDialogModel.prototype.open = function(item) {
+    EksporDevprodDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
     };
 
-    EksporDevprodDialogModel.prototype.close = function() {
+    EksporDevprodDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var HapusDevprodDialogModel = function() {
+    var HapusDevprodDialogModel = function () {
         this.visible = false;
     };
 
-    HapusDevprodDialogModel.prototype.open = function(item) {
+    HapusDevprodDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
     };
 
-    HapusDevprodDialogModel.prototype.close = function() {
+    HapusDevprodDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var TambahKugiDialogModel = function() {
+    var TambahKugiDialogModel = function () {
         this.visible = false;
     };
 
-    TambahKugiDialogModel.prototype.open = function(item) {
+    TambahKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         this.item.db = 'dev';
         console.log(item);
         this.visible = true;
     };
 
-    TambahKugiDialogModel.prototype.close = function() {
+    TambahKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var LihatKugiDialogModel = function() {
+    var LihatKugiDialogModel = function () {
         this.visible = false;
     };
 
-    LihatKugiDialogModel.prototype.open = function(item) {
+    LihatKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
         $http({
-            url: CONFIG.api_url + 'metakugi_dev/view',
+            url: CONFIG.api_url + 'metakugi_dev/view_json',
             method: 'GET',
-            params: { identifier: item.identifier }
-        }).success(function(data) {
-            setTimeout(function() {
-                $scope.$apply(function() {
+            params: {
+                identifier: item.identifier
+            }
+        }).success(function (data) {
+            setTimeout(function () {
+                $scope.$apply(function () {
                     $scope.lihatKugi.item.xml = data
                 });
             })
@@ -3140,7 +4698,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         // console.log(this.xml)
     };
 
-    LihatKugiDialogModel.prototype.close = function() {
+    LihatKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
@@ -3149,7 +4707,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
     $scope.hapusDevprod = new HapusDevprodDialogModel();
     $scope.eksporDevprod = new EksporDevprodDialogModel();
 
-    $scope.eksporDEVPROD = function(item) {
+    $scope.eksporDEVPROD = function (item) {
         var params = item;
         params.source_db = $rootScope.currentUser.grup + '_DEV'
         params.dest_db = 'palapa_prod'
@@ -3159,7 +4717,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'kopitable', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'kopitable', data).success(function (data, status) {
             pesan = data;
             console.log(pesan);
             $scope.loader_work = false
@@ -3172,7 +4730,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         })
     }
 
-    $scope.hapusKUGI = function(skema, fitur, identifier, db) {
+    $scope.hapusKUGI = function (skema, fitur, identifier, db) {
         var params = {};
         params.skema = skema
         params.fitur = fitur
@@ -3185,7 +4743,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function (data, status) {
             pesan = data;
             console.log(pesan);
             bootbox.alert(pesan.MSG);
@@ -3202,9 +4760,9 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
     $scope.features = [];
 
     // create the list of sushi rolls 
-    $http.get(CONFIG.api_url + 'dbdevisifeature/' + $rootScope.currentUser.grup).success(function(data) {
+    $http.get(CONFIG.api_url + 'dbdevisifeature/' + $rootScope.currentUser.grup).success(function (data) {
         $scope.features = data;
-        $scope.numberOfPages = function() {
+        $scope.numberOfPages = function () {
             return Math.ceil($scope.features.length / $scope.pageSize);
         }
     });
@@ -3262,7 +4820,122 @@ nodeManager.directive('hapusDevprodDialog', [function() {
     };
 }]);
 
-nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+nodeManager.controller('ctrl_dbprod', function ($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+    
+    $scope.datakeyword = function () {
+             $http.get(CONFIG.api_url + 'keyword/list', {
+                                    cache: false
+                                }).success(function (data) {
+                                    $scope.keywords = data;
+                                   // console.log($scope.keywords);       
+                                    
+
+             });
+
+                       
+    }
+
+    $scope.datakeyword();
+
+    parameters = {};
+
+
+    $scope.simpan_metakugi = function () {
+
+        var tanggal2 = ($scope.tanggalku.toString()); 
+        console.log((tanggal2.split('GMT')[0]).trim());
+
+        parameters.tanggal = encodeURIComponent((tanggal2.split('GMT')[0]).trim());
+        parameters.WORKSPACE = 'KUGI';
+        parameters.JENISDATABASE = 'PROD';
+        parameters.ABSTRACT = encodeURIComponent($scope.layer_abstract);
+        parameters.ID = encodeURIComponent($scope.layer_id);
+
+
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+
+        if (!$scope.akses.value){
+            $scope.akses.value = "PUBLIC";
+        }
+
+        if (!$scope.keyword_item){
+            $scope.keyword_item = "Batas Wilayah";
+        }
+
+
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+
+
+        parameters.AKSES = encodeURIComponent($scope.akses.value);
+        parameters.KEYWORD = encodeURIComponent($scope.keyword_item);
+
+        // //Contac
+        parameters.individualName = encodeURIComponent($scope.individualName);
+        parameters.organisationName = encodeURIComponent($scope.organisationName);
+        parameters.positionName = encodeURIComponent($scope.positionName);
+        parameters.phone = encodeURIComponent($scope.phone);
+        parameters.facsimile = encodeURIComponent($scope.facsimile);
+        parameters.deliveryPoint = encodeURIComponent($scope.deliveryPoint);
+        parameters.city = encodeURIComponent($scope.city);
+        parameters.postalCode = encodeURIComponent($scope.postalCode);
+        parameters.country = encodeURIComponent($scope.country);
+        parameters.electronicMailAddress = encodeURIComponent($scope.electronicMailAddress);
+        
+        parameters.linkage = encodeURIComponent($scope.linkage);
+        
+        parameters.hoursOfService = encodeURIComponent($scope.hoursOfService);
+        parameters.contactInstructions = encodeURIComponent($scope.contactInstructions);
+
+
+        // //Identification Info
+        parameters.title_identification = encodeURIComponent($scope.title_identification);
+        
+        // //Distributor
+        parameters.Distributor_individualName = encodeURIComponent($scope.Distributor_individualName);
+        parameters.Distributor_organisationName = encodeURIComponent($scope.Distributor_organisationName);
+        parameters.Distributor_positionName = encodeURIComponent($scope.Distributor_positionName);
+        parameters.Distributor_phone = encodeURIComponent($scope.Distributor_phone);
+        parameters.Distributor_facsimile = encodeURIComponent($scope.Distributor_facsimile);
+        parameters.Distributor_deliveryPoint = encodeURIComponent($scope.Distributor_deliveryPoint);
+        parameters.Distributor_city = encodeURIComponent($scope.Distributor_city);
+        parameters.Distributor_postalCode = encodeURIComponent($scope.Distributor_postalCode);
+        parameters.Distributor_country = encodeURIComponent($scope.Distributor_country);
+        parameters.Distributor_electronicMailAddress = encodeURIComponent($scope.Distributor_electronicMailAddress);
+        
+        parameters.dataSetURI = encodeURIComponent($scope.dataSetURI)
+        
+        parameters.Distributor_hoursOfService = encodeURIComponent($scope.Distributor_hoursOfService);
+        parameters.Distributor_contactInstructions = encodeURIComponent($scope.Distributor_contactInstructions);
+            
+
+         // //MetadataConstrains
+            
+        //parameters.usernote = encodeURIComponent($scope.akses.value);
+
+
+        console.log(parameters);
+
+
+            var data = $.param({
+                    json: JSON.stringify({
+                        pubdata: parameters
+                    })
+            });
+
+
+            $http.post(CONFIG.api_url + 'lengkapmetakugi', data).success(function (data, status) {
+                pesan = data;
+                console.log(pesan);
+                bootbox.alert(pesan.MSG);
+            });
+
+
+       
+     }
+
+
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariFitur = ''; // set the default search/filter term
@@ -3273,14 +4946,14 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         loading: false,
     };
 
-    $scope.showloader = function() {
+    $scope.showloader = function () {
         $scope.loader.loading = true;
     }
-    $scope.hideloader = function() {
+    $scope.hideloader = function () {
         $scope.loader.loading = false;
     }
 
-    $scope.reloadView = function() {
+    $scope.reloadView = function () {
         $state.transitionTo($state.current, $stateParams, {
             reload: true,
             inherit: false,
@@ -3288,7 +4961,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         });
     }
 
-    $scope.reloadDBView = function(dbkugi) {
+    $scope.reloadDBView = function (dbkugi) {
         db = {}
         db.dbkugi = dbkugi
         var params = db;
@@ -3298,14 +4971,14 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'refresh_dbmetaview', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'refresh_dbmetaview', data).success(function (data, status) {
             $scope.test = data;
             $scope.reloadView();
             console.log($scope.test);
         })
     }
 
-    $scope.cek_meta = function(identifier) {
+    $scope.cek_meta = function (identifier) {
         try {
             if ($scope.metadevlist.indexOf(identifier) === -1) {
                 return true
@@ -3317,7 +4990,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         }
     }
 
-    $scope.cekadmin = function() {
+    $scope.cekadmin = function () {
         if ($scope.curkelas == 'admin') {
             return false;
         } else {
@@ -3325,7 +4998,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         }
     }
 
-    $scope.cekuser = function(user) {
+    $scope.cekuser = function (user) {
         if ($scope.theuser == user || $scope.curgrup == 'admin') {
             return false;
         } else {
@@ -3333,8 +5006,10 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         }
     }
 
-    $scope.cekpub = function(identifier) {
-        $http.get(CONFIG.api_url + 'cekpub/' + identifier, { cache: true }).success(function(data) {
+    $scope.cekpub = function (identifier) {
+        $http.get(CONFIG.api_url + 'cekpub/' + identifier, {
+            cache: true
+        }).success(function (data) {
             console.log(data)
             if (data.Result == true) {
                 return false
@@ -3344,81 +5019,83 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         });
     }
 
-    $scope.saverow = function(database, item) {
+    $scope.saverow = function (database, item) {
         console.log(item)
         $.fileDownload(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier)
-            // $http.get(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier).success(function(data) {
-            //     var anchor = angular.element('<a/>');
-            //     anchor.attr({
-            //         href: 'data:application/gml+xml;charset=utf-8,' + encodeURI(data),
-            //         target: '_blank',
-            //         download: item.feature + '_' + identifier + '.gml'
-            //     })[0].click();
-            // });
+        // $http.get(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier).success(function(data) {
+        //     var anchor = angular.element('<a/>');
+        //     anchor.attr({
+        //         href: 'data:application/gml+xml;charset=utf-8,' + encodeURI(data),
+        //         target: '_blank',
+        //         download: item.feature + '_' + identifier + '.gml'
+        //     })[0].click();
+        // });
     }
 
-    $http.get(CONFIG.api_url + 'cekmeta/metakugi_prod').success(function(data) {
+    $http.get(CONFIG.api_url + 'cekmeta/metakugi_prod').success(function (data) {
         $scope.metadevlist = data;
     });
 
-    var EksporProdpubDialogModel = function() {
+    var EksporProdpubDialogModel = function () {
         this.visible = false;
     };
 
-    EksporProdpubDialogModel.prototype.open = function(item) {
+    EksporProdpubDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
     };
 
-    EksporProdpubDialogModel.prototype.close = function() {
+    EksporProdpubDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var HapusProdpubDialogModel = function() {
+    var HapusProdpubDialogModel = function () {
         this.visible = false;
     };
 
-    HapusProdpubDialogModel.prototype.open = function(item) {
+    HapusProdpubDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
     };
 
-    HapusProdpubDialogModel.prototype.close = function() {
+    HapusProdpubDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var TambahKugiDialogModel = function() {
+    var TambahKugiDialogModel = function () {
         this.visible = false;
     };
 
-    TambahKugiDialogModel.prototype.open = function(item) {
+    TambahKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         this.item.db = 'prod';
         console.log(item);
         this.visible = true;
     };
 
-    TambahKugiDialogModel.prototype.close = function() {
+    TambahKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var LihatKugiDialogModel = function() {
+    var LihatKugiDialogModel = function () {
         this.visible = false;
     };
 
-    LihatKugiDialogModel.prototype.open = function(item) {
+    LihatKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
         $http({
-            url: CONFIG.api_url + 'metakugi_prod/view',
+            url: CONFIG.api_url + 'metakugi_prod/view_json',
             method: 'GET',
-            params: { identifier: item.identifier }
-        }).success(function(data) {
-            setTimeout(function() {
-                $scope.$apply(function() {
+            params: {
+                identifier: item.identifier
+            }
+        }).success(function (data) {
+            setTimeout(function () {
+                $scope.$apply(function () {
                     $scope.lihatKugi.item.xml = data
                 });
             })
@@ -3426,7 +5103,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         // console.log(this.xml)
     };
 
-    LihatKugiDialogModel.prototype.close = function() {
+    LihatKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
@@ -3436,7 +5113,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
     $scope.hapusProdpub = new HapusProdpubDialogModel();
     $scope.eksporProdpub = new EksporProdpubDialogModel();
 
-    $scope.eksporPRODPUB = function(item) {
+    $scope.eksporPRODPUB = function (item) {
         var params = item;
         params.source_db = 'palapa_prod'
         params.dest_db = 'palapa_pub'
@@ -3447,7 +5124,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'kopitable', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'kopitable', data).success(function (data, status) {
             pesan = data;
             console.log(pesan);
             $scope.loader.loading = false;
@@ -3460,7 +5137,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
         })
     }
 
-    $scope.hapusKUGI = function(skema, fitur, identifier, db) {
+    $scope.hapusKUGI = function (skema, fitur, identifier, db) {
         var params = {};
         params.skema = skema
         params.fitur = fitur
@@ -3473,7 +5150,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function (data, status) {
             pesan = data;
             console.log(pesan);
             bootbox.alert(pesan.MSG);
@@ -3490,9 +5167,9 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
     $scope.features = [];
 
     // create the list of sushi rolls 
-    $http.get(CONFIG.api_url + 'dbprodisifeature').success(function(data) {
+    $http.get(CONFIG.api_url + 'dbprodisifeature').success(function (data) {
         $scope.features = data;
-        $scope.numberOfPages = function() {
+        $scope.numberOfPages = function () {
             return Math.ceil($scope.features.length / $scope.pageSize);
         }
     });
@@ -3550,7 +5227,128 @@ nodeManager.directive('hapusProdpubDialog', [function() {
     };
 }]);
 
-nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+nodeManager.controller('ctrl_dbpub', function ($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+    
+
+    $scope.datakeyword = function () {
+             $http.get(CONFIG.api_url + 'keyword/list', {
+                                    cache: false
+                                }).success(function (data) {
+                                    $scope.keywords = data;
+                                   // console.log($scope.keywords);       
+                                    
+
+             });
+
+                       
+    }
+
+    $scope.datakeyword();
+
+
+    parameters = {};
+
+
+    $scope.simpan_metakugi = function () {
+
+        var tanggal2 = ($scope.tanggalku.toString()); 
+        console.log((tanggal2.split('GMT')[0]).trim());
+
+        parameters.tanggal = encodeURIComponent((tanggal2.split('GMT')[0]).trim());
+        parameters.WORKSPACE = 'KUGI';
+        parameters.JENISDATABASE = 'PUB';
+        parameters.ABSTRACT = encodeURIComponent($scope.layer_abstract);
+        parameters.ID = encodeURIComponent($scope.layer_id);
+
+        
+
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+
+        if (!$scope.akses.value){
+            $scope.akses.value = "PUBLIC";
+        }
+
+        if (!$scope.keyword_item){
+            $scope.keyword_item = "Batas Wilayah";
+        }
+
+
+        console.log($scope.akses.value)
+        console.log($scope.keyword_item)
+
+
+        parameters.AKSES = encodeURIComponent($scope.akses.value);
+        parameters.KEYWORD = encodeURIComponent($scope.keyword_item);
+
+        // //Contac
+        parameters.individualName = encodeURIComponent($scope.individualName);
+        parameters.organisationName = encodeURIComponent($scope.organisationName);
+        parameters.positionName = encodeURIComponent($scope.positionName);
+        parameters.phone = encodeURIComponent($scope.phone);
+        parameters.facsimile = encodeURIComponent($scope.facsimile);
+        parameters.deliveryPoint = encodeURIComponent($scope.deliveryPoint);
+        parameters.city = encodeURIComponent($scope.city);
+        parameters.postalCode = encodeURIComponent($scope.postalCode);
+        parameters.country = encodeURIComponent($scope.country);
+        parameters.electronicMailAddress = encodeURIComponent($scope.electronicMailAddress);
+        
+        parameters.linkage = encodeURIComponent($scope.linkage);
+        
+        parameters.hoursOfService = encodeURIComponent($scope.hoursOfService);
+        parameters.contactInstructions = encodeURIComponent($scope.contactInstructions);
+
+
+        // //Identification Info
+        parameters.title_identification = encodeURIComponent($scope.title_identification);
+        
+        // //Distributor
+        parameters.Distributor_individualName = encodeURIComponent($scope.Distributor_individualName);
+        parameters.Distributor_organisationName = encodeURIComponent($scope.Distributor_organisationName);
+        parameters.Distributor_positionName = encodeURIComponent($scope.Distributor_positionName);
+        parameters.Distributor_phone = encodeURIComponent($scope.Distributor_phone);
+        parameters.Distributor_facsimile = encodeURIComponent($scope.Distributor_facsimile);
+        parameters.Distributor_deliveryPoint = encodeURIComponent($scope.Distributor_deliveryPoint);
+        parameters.Distributor_city = encodeURIComponent($scope.Distributor_city);
+        parameters.Distributor_postalCode = encodeURIComponent($scope.Distributor_postalCode);
+        parameters.Distributor_country = encodeURIComponent($scope.Distributor_country);
+        parameters.Distributor_electronicMailAddress = encodeURIComponent($scope.Distributor_electronicMailAddress);
+        
+        parameters.dataSetURI = encodeURIComponent($scope.dataSetURI)
+        
+        parameters.Distributor_hoursOfService = encodeURIComponent($scope.Distributor_hoursOfService);
+        parameters.Distributor_contactInstructions = encodeURIComponent($scope.Distributor_contactInstructions);
+            
+
+         // //MetadataConstrains
+            
+        //parameters.usernote = encodeURIComponent($scope.akses.value);
+
+
+        console.log(parameters);
+
+
+            var data = $.param({
+                    json: JSON.stringify({
+                        pubdata: parameters
+                    })
+            });
+
+
+            $http.post(CONFIG.api_url + 'lengkapmetakugi', data).success(function (data, status) {
+                pesan = data;
+                console.log(pesan);
+                bootbox.alert(pesan.MSG);
+            });
+
+
+       
+     }
+
+
+
+
+
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariFitur = ''; // set the default search/filter term
@@ -3561,14 +5359,14 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
         loading: false,
     };
 
-    $scope.showloader = function() {
+    $scope.showloader = function () {
         $scope.loader.loading = true;
     }
-    $scope.hideloader = function() {
+    $scope.hideloader = function () {
         $scope.loader.loading = false;
     }
 
-    $scope.reloadView = function() {
+    $scope.reloadView = function () {
         $state.transitionTo($state.current, $stateParams, {
             reload: true,
             inherit: false,
@@ -3576,21 +5374,21 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
         });
     }
 
-    $scope.saverow = function(database, item) {
+    $scope.saverow = function (database, item) {
         console.log(item)
         $.fileDownload(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier)
-            // $http.get(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier).success(function(data) {
-            //     var anchor = angular.element('<a/>');
-            //     anchor.attr({
-            //         href: 'data:application/gml+xml;charset=utf-8,' + encodeURI(data),
-            //         target: '_blank',
-            //         download: item.feature + '_' + identifier + '.gml'
-            //     })[0].click();
-            // });
+        // $http.get(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier).success(function(data) {
+        //     var anchor = angular.element('<a/>');
+        //     anchor.attr({
+        //         href: 'data:application/gml+xml;charset=utf-8,' + encodeURI(data),
+        //         target: '_blank',
+        //         download: item.feature + '_' + identifier + '.gml'
+        //     })[0].click();
+        // });
     }
 
 
-    $scope.reloadDBView = function(dbkugi) {
+    $scope.reloadDBView = function (dbkugi) {
         db = {}
         db.dbkugi = dbkugi
         var params = db;
@@ -3600,14 +5398,14 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'refresh_dbmetaview', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'refresh_dbmetaview', data).success(function (data, status) {
             $scope.test = data;
             $scope.reloadView();
             console.log($scope.test);
         })
     }
 
-    $scope.cekadmin = function() {
+    $scope.cekadmin = function () {
         if ($scope.curkelas == 'admin') {
             return false;
         } else {
@@ -3615,7 +5413,7 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
         }
     }
 
-    $scope.cek_meta = function(identifier) {
+    $scope.cek_meta = function (identifier) {
         try {
             if ($scope.metadevlist.indexOf(identifier) === -1) {
                 return true
@@ -3627,68 +5425,70 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
         }
     }
 
-    $http.get(CONFIG.api_url + 'cekmeta/metakugi').success(function(data) {
+    $http.get(CONFIG.api_url + 'cekmeta/metakugi').success(function (data) {
         $scope.metadevlist = data;
     });
 
-    var PublishKugiDialogModel = function() {
+    var PublishKugiDialogModel = function () {
         this.visible = false;
     };
 
-    PublishKugiDialogModel.prototype.open = function(item) {
+    PublishKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
     };
 
-    PublishKugiDialogModel.prototype.close = function() {
+    PublishKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var HapusPubDialogModel = function() {
+    var HapusPubDialogModel = function () {
         this.visible = false;
     };
 
-    HapusPubDialogModel.prototype.open = function(item) {
+    HapusPubDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
     };
 
-    HapusPubDialogModel.prototype.close = function() {
+    HapusPubDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var TambahKugiDialogModel = function() {
+    var TambahKugiDialogModel = function () {
         this.visible = false;
     };
 
-    TambahKugiDialogModel.prototype.open = function(item) {
+    TambahKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         this.item.db = 'pub';
         console.log(item);
         this.visible = true;
     };
 
-    TambahKugiDialogModel.prototype.close = function() {
+    TambahKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
-    var LihatKugiDialogModel = function() {
+    var LihatKugiDialogModel = function () {
         this.visible = false;
     };
 
-    LihatKugiDialogModel.prototype.open = function(item) {
+    LihatKugiDialogModel.prototype.open = function (item) {
         this.item = item;
         console.log(item);
         this.visible = true;
         $http({
-            url: CONFIG.api_url + 'metakugi/view',
+            url: CONFIG.api_url + 'metakugi/view_json',
             method: 'GET',
-            params: { identifier: item.identifier }
-        }).success(function(data) {
-            setTimeout(function() {
-                $scope.$apply(function() {
+            params: {
+                identifier: item.identifier
+            }
+        }).success(function (data) {
+            setTimeout(function () {
+                $scope.$apply(function () {
                     $scope.lihatKugi.item.xml = data
                 });
             })
@@ -3696,7 +5496,7 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
         // console.log(this.xml)
     };
 
-    LihatKugiDialogModel.prototype.close = function() {
+    LihatKugiDialogModel.prototype.close = function () {
         this.visible = false;
     };
 
@@ -3706,7 +5506,7 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
     $scope.hapusPub = new HapusPubDialogModel();
     $scope.publishKugi = new PublishKugiDialogModel();
 
-    $scope.hapusKUGI = function(skema, fitur, identifier, db) {
+    $scope.hapusKUGI = function (skema, fitur, identifier, db) {
         var params = {};
         params.skema = skema
         params.fitur = fitur
@@ -3719,7 +5519,7 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function (data, status) {
             pesan = data;
             console.log(pesan);
             bootbox.alert(pesan.MSG);
@@ -3736,9 +5536,9 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
     $scope.features = [];
 
     // create the list of sushi rolls 
-    $http.get(CONFIG.api_url + 'dbpubisifeature').success(function(data) {
+    $http.get(CONFIG.api_url + 'dbpubisifeature').success(function (data) {
         $scope.features = data;
-        $scope.numberOfPages = function() {
+        $scope.numberOfPages = function () {
             return Math.ceil($scope.features.length / $scope.pageSize);
         }
     });
