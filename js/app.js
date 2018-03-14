@@ -2287,24 +2287,51 @@ nodeManager.directive('linkLihatDialog', [function ($http,$scope) {
                 scope.$apply(function () {
                     scope.model.visible = true;
                     console.log(scope.model);
-                    scope.tanggalku2 = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:dateStamp"]["gco:DateTime"]);
+                    
+                    try {
+                        scope.tanggalku2 = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:dateStamp"]["gco:DateTime"]);
+                    } catch (err)
+                    {
+                         scope.tanggalku2 = new Date();
+                    }
+                    
                     scope.tanggalku = new Date(scope.tanggalku2);
                     console.log(scope.tanggalku);
 
                     console.log(scope.model.item.identifier)
                     scope.layer_id = scope.model.item.identifier
                 
-
-                    scope.layer_abstract = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:abstract"]["gco:CharacterString"]); 
+                    try {
+                        scope.layer_abstract = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:abstract"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                         scope.layer_abstract ="";
+                    }
+                    
                     console.log(scope.layer_abstract)
 
 
+                    try  {
+                        scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
+                    } catch (err)
+                    {
+                        scope.keyword_item ="";
+                    }
+                    
                    
-                    scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
                     console.log(scope.keyword_item);
 
-                      scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
-                      console.log(scope.datausernote);                                                         
+                    try {
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                    } catch (err)
+                    {
+                        scope.datausernote ="";
+                    }
+                    
+                    
+
+                    console.log(scope.datausernote);                                                         
+                    
                       scope.akses = {  
                             "value": scope.datausernote, 
                             "values": [ "PUBLIC", "GOVERNMENT", "PRIVATE", "IGSTRATEGIS"] 
