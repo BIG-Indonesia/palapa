@@ -242,6 +242,85 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
     console.log($scope.init)
     $scope.uploadxml = false;
     $scope.minimalmeta = true;
+
+
+    //metadata lengkap
+
+           // $scope.sisteminfo = {};
+
+            $scope.lengkapmeta = false;
+            var params = {};
+
+            $scope.today = new Date();
+            console.log($scope.today);
+            
+
+
+             $http.get(CONFIG.api_url + 'sisteminfo').success(function (data) {
+
+                  
+
+
+                    $scope.sisteminfo = data ;
+                    $scope.dataSetURI = $scope.sisteminfo.url;
+                    $scope.Distributor_individualName = $scope.sisteminfo.organization;
+                    $scope.Distributor_organisationName = $scope.sisteminfo.organization;
+                    $scope.Distributor_positionName = $scope.sisteminfo.organization;
+                    $scope.Distributor_phone = $scope.sisteminfo.phone;
+                    $scope.Distributor_facsimile = $scope.sisteminfo.fax;
+                    $scope.Distributor_deliveryPoint = $scope.sisteminfo.address;
+                    $scope.Distributor_city = $scope.sisteminfo.city;
+                    $scope.Distributor_postalCode = $scope.sisteminfo.postalcode;
+                    $scope.Distributor_country = $scope.sisteminfo.country;
+                    $scope.Distributor_electronicMailAddress = $scope.sisteminfo.email;
+                    $scope.Distributor_hoursOfService = $scope.sisteminfo.hoursofservice;
+                    $scope.Distributor_contactInstructions = $scope.sisteminfo.contactinstruction;
+
+                    console.log($scope.sisteminfo);
+                   
+
+             });
+
+
+             $http.get(CONFIG.api_url + 'group/' + 'ADMIN').success(function (data) {
+
+                        $scope.groupinfo = data[0] ;
+
+                        console.log($scope.groupinfo);
+                        console.log($scope.groupinfo.organization);
+                       
+                        $scope.individualName = $scope.groupinfo.organization;
+                        $scope.organisationName = $scope.groupinfo.organization;
+                        $scope.positionName = $scope.groupinfo.organization;
+                        $scope.phone = $scope.groupinfo.phone;
+                        $scope.facsimile = $scope.groupinfo.fax;
+                        $scope.deliveryPoint = $scope.groupinfo.address;
+                        $scope.city = $scope.groupinfo.city;
+                        $scope.postalCode = $scope.groupinfo.postalcode;
+                        $scope.country = $scope.groupinfo.country;
+                        $scope.electronicMailAddress = $scope.groupinfo.email;
+                        
+                        
+                      
+
+
+             });   
+
+             
+
+              //$scope.dataSetURI = 'www.big.go.id'; 
+
+
+
+
+
+
+    //metadata lengkap 
+
+
+
+
+
     $scope.keywords = [];
 
     $scope.theuser = $rootScope.currentUser['user']
@@ -474,15 +553,38 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         }
     }
 
-    $scope.minmeta = function(bool) {
-        if (bool == true) {
-            $scope.uploadxml = false;
+    // $scope.minmeta = function(bool) {
+    //     if (bool == true) {
+    //         $scope.uploadxml = false;
+    //         $scope.minimalmeta = true;
+    //     } else {
+    //         $scope.uploadxml = true;
+    //         $scope.minimalmeta = false;
+    //     }
+    // }
+
+
+     //metadata lengkap
+    
+    $scope.value = '1';
+    $scope.$watch('value', function (value) {
+        if (value == '1') {
             $scope.minimalmeta = true;
-        } else {
-            $scope.uploadxml = true;
+            $scope.uploadxml = false;
+            $scope.lengkapmeta = false;
+
+        } else if (value == '2') {
             $scope.minimalmeta = false;
+            $scope.uploadxml = true;
+            $scope.lengkapmeta = false;
+        } else {
+            $scope.minimalmeta = false;
+            $scope.uploadxml = false;
+            $scope.lengkapmeta = true;
         }
-    }
+    });
+
+    //metadata lengkap   
 
     $scope.ingeoserver = false;
     $scope.inmetadata = false;
@@ -565,14 +667,42 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             parameters.AKSES = akses;
         }
         parameters.SELECTEDSIMPUL = $scope.govsimpul;
+        
+
+              //console.log(parameters);
+
+        console.log($scope.tanggal.toString());
+
+        var tanggal2 = ($scope.tanggal.toString()); 
+
+        console.log((tanggal2.split('GMT')[0]).trim());
+
+      
+
+        parameters.tanggal = encodeURIComponent((tanggal2.split('GMT')[0]).trim());
+        
+
+
+
         console.log(parameters);
+
+
+
+
+
+
+
         var data = $.param({
             json: JSON.stringify({
                 pubdata: parameters
             })
         });
+        
+
+
+
         if ($scope.minimalmeta == true) {
-            $http.post(CONFIG.api_url + 'minmetadata', data).success(function(data, status) {
+            $http.post(CONFIG.api_url + 'minmetadata', data).success(function (data, status) {
                 pesan = data;
                 console.log(pesan);
                 bootbox.alert(pesan.MSG);
@@ -584,12 +714,159 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
                 //
             }
 
-        } else {
+        } else if ($scope.uploadxml == true) {
             $scope.MetaFileSelect($scope.metaFile, id, akses);
             angular.element(document.getElementById('eWFin'))[0].disabled = false;
             $scope.BerkasSelect($scope.docFile, id);
+        } else if ($scope.lengkapmeta == true) {
+           //metadata lengkap
+
+            // parameters.metadataStandardName = encodeURIComponent($scope.metadataStandardName);
+            // parameters.metadataStandardVersion = encodeURIComponent($scope.metadataStandardVersion);
+            // parameters.datestamp = encodeURIComponent($scope.datestamp);
+
+            //parameters.dataSetURI = encodeURIComponent($scope.tanggal);
+            parameters.dataSetURI = encodeURIComponent($scope.dataSetURI);
+
+            // //Contac
+            parameters.individualName = encodeURIComponent($scope.individualName);
+            parameters.organisationName = encodeURIComponent($scope.organisationName);
+            parameters.positionName = encodeURIComponent($scope.positionName);
+            parameters.phone = encodeURIComponent($scope.phone);
+            parameters.facsimile = encodeURIComponent($scope.facsimile);
+            parameters.deliveryPoint = encodeURIComponent($scope.deliveryPoint);
+            parameters.city = encodeURIComponent($scope.city);
+            parameters.postalCode = encodeURIComponent($scope.postalCode);
+            parameters.country = encodeURIComponent($scope.country);
+            parameters.electronicMailAddress = encodeURIComponent($scope.electronicMailAddress);
+            parameters.linkage = encodeURIComponent($scope.linkage);
+            // parameters.protocol = encodeURIComponent($scope.protocol);
+            // parameters.function = encodeURIComponent($scope.function);
+            parameters.hoursOfService = encodeURIComponent($scope.hoursOfService);
+            parameters.contactInstructions = encodeURIComponent($scope.contactInstructions);
+            // parameters.rolecontact = encodeURIComponent($scope.rolecontact);
+
+            // //SpatialRepresentationinfo
+            // parameters.topologiLevel = encodeURIComponent($scope.topologiLevel);
+            // parameters.geometriObjects = encodeURIComponent($scope.geometriObjects);
+
+            // //ReferenceSystemInfo
+            // parameters.title_refsystem = encodeURIComponent($scope.title_refsystem);
+            // parameters.date_refsystem = encodeURIComponent($scope.date_refsystem);
+            // parameters.dateType_refsystem = encodeURIComponent($scope.dateType_refsystem);
+            // parameters.organisationName_refsystem = encodeURIComponent($scope.organisationName_refsystem);
+            // parameters.linkage_refsystem = encodeURIComponent($scope.linkage_refsystem);
+            // parameters.role_refsystem = encodeURIComponent($scope.role_refsystem);
+            // parameters.code_refsystem = encodeURIComponent($scope.code_refsystem);
+            // parameters.version_refsystem = encodeURIComponent($scope.version_refsystem);
+
+            // //Identification Info
+            parameters.title_identification = encodeURIComponent($scope.title_identification);
+            // parameters.date_identification = encodeURIComponent($scope.date_identification);
+            // parameters.dateType_identification = encodeURIComponent($scope.dateType_identification);
+            // parameters.abstract_identification=encodeURIComponent($scope.abstract_identification);
+            // parameters.resourceMaintenance_identification = encodeURIComponent($scope.resourceMaintenance_identification);
+            // parameters.descriptiveKeywords_identification = encodeURIComponent($scope.descriptiveKeywords_identification);
+            // parameters.resourceConstraints_identification = encodeURIComponent($scope.resourceConstraints_identification);
+            // parameters.spatialRepresentationType_identification = encodeURIComponent($scope.spatialRepresentationType_identification);
+            // parameters.language_identification = encodeURIComponent($scope.language_identification);
+            // parameters.CharacterSetCode_identification = encodeURIComponent($scope.CharacterSetCode_identification);
+            // parameters.topicCategory_identification=encodeURIComponent($scope.topicCategory_identification);
+            
+            // // parameters.westBoundLongitude_identification=encodeURIComponent($scope.westBoundLongitude_identification);
+            // // parameters.eastBoundLongitude_identification=encodeURIComponent($scope.eastBoundLongitude_identification);
+            // // parameters.southBoundLatitude_identification=encodeURIComponent($scope.southBoundLatitude_identification);
+            // // parameters.northBoundLatitude_identification=encodeURIComponent($scope.northBoundLatitude_identification);
+
+            // //distributionInfo
+            // //Distributor
+            parameters.Distributor_individualName = encodeURIComponent($scope.Distributor_individualName);
+            parameters.Distributor_organisationName = encodeURIComponent($scope.Distributor_organisationName);
+            parameters.Distributor_positionName = encodeURIComponent($scope.Distributor_positionName);
+            parameters.Distributor_phone = encodeURIComponent($scope.Distributor_phone);
+            parameters.Distributor_facsimile = encodeURIComponent($scope.Distributor_facsimile);
+            parameters.Distributor_deliveryPoint = encodeURIComponent($scope.Distributor_deliveryPoint);
+            parameters.Distributor_city = encodeURIComponent($scope.Distributor_city);
+            parameters.Distributor_postalCode = encodeURIComponent($scope.Distributor_postalCode);
+            parameters.Distributor_country = encodeURIComponent($scope.Distributor_country);
+            parameters.Distributor_electronicMailAddress = encodeURIComponent($scope.Distributor_electronicMailAddress);
+            // parameters.Distributor_linkage = encodeURIComponent($scope.Distributor_linkage);
+            // parameters.Distributor_protocol = encodeURIComponent($scope.Distributor_protocol);
+            // parameters.Distributor_function = encodeURIComponent($scope.Distributor_function);
+            parameters.Distributor_hoursOfService = encodeURIComponent($scope.Distributor_hoursOfService);
+            parameters.Distributor_contactInstructions = encodeURIComponent($scope.Distributor_contactInstructions);
+            // parameters.Distributor_role = encodeURIComponent($scope.Distributor_role);
+
+            // //wfs
+            // parameters.wfs_linkage = encodeURIComponent($scope.wfs_linkage);
+            // parameters.wfs_protocol = encodeURIComponent($scope.wfs_protocol);
+            // parameters.wfs_name = encodeURIComponent($scope.wfs_name);
+            // parameters.wfs_description = encodeURIComponent($scope.wfs_description);
+            // parameters.wfs_function = encodeURIComponent($scope.wfs_function);
+
+            // //wms
+            // parameters.wms_linkage = encodeURIComponent($scope.wms_linkage);
+            // parameters.wms_protocol = encodeURIComponent($scope.wms_protocol);
+            // parameters.wms_name = encodeURIComponent($scope.wms_name);
+            // parameters.wms_description = encodeURIComponent($scope.wms_description);
+            // parameters.wms_function = encodeURIComponent($scope.wms_function);
+
+            // //zip
+            // parameters.zip_linkage = encodeURIComponent($scope.zip_linkage);
+            // parameters.zip_protocol = encodeURIComponent($scope.zip_protocol);
+            // parameters.zip_name = encodeURIComponent($scope.zip_name);
+            // parameters.zip_description = encodeURIComponent($scope.zip_description);
+            // parameters.zip_function = encodeURIComponent($scope.zip_function);
+
+            // //img
+            // parameters.img_linkage = encodeURIComponent($scope.img_linkage);
+            // parameters.img_protocol = encodeURIComponent($scope.img_protocol);
+            // parameters.img_name = encodeURIComponent($scope.img_name);
+            // parameters.img_description = encodeURIComponent($scope.img_description);
+            // parameters.img_function = encodeURIComponent($scope.img_function);
+
+            // //MetadataMaintenance
+            // parameters.maintenanceAndUpdateFrequency = encodeURIComponent($scope.maintenanceAndUpdateFrequency);
+            // parameters.maintenanceNote = encodeURIComponent($scope.maintenanceNote);
+
+            // //MetadataConstrains
+            // parameters.classification = encodeURIComponent($scope.classification);
+            // parameters.usernote = encodeURIComponent($scope.usernote);
+
+        
+
+
+           
+
+
+            console.log(parameters)
+
+            var data = $.param({
+                    json: JSON.stringify({
+                        pubdata: parameters
+                    })
+            });
+
+
+            console.log(data);
+
+            $http.post(CONFIG.api_url + 'lengkapmetadata', data).success(function (data, status) {
+                pesan = data;
+                console.log(pesan);
+                bootbox.alert(pesan.MSG);
+            });
+            
+            angular.element(document.getElementById('eWFin'))[0].disabled = false;
+            try {
+                $scope.BerkasSelect($scope.docFile, id);
+            } catch (err) {
+                //
+            }
+
+
         }
 
+        console.log(params);
     }
 
     $scope.publish = function() {
@@ -1634,6 +1911,24 @@ nodeManager.directive('grupInfoDialog', [function() {
 }]);
 
 nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+
+    $scope.datakeyword = function () {
+             $http.get(CONFIG.api_url + 'keyword/list', {
+                                    cache: false
+                                }).success(function (data) {
+                                    $scope.keywords = data;
+                                   // console.log($scope.keywords);       
+                                    
+
+             });
+
+                       
+    }
+
+    $scope.datakeyword();
+
+    $scope.metadata = {};
+
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariMetalinks = ''; // set the default search/filter term
@@ -1643,6 +1938,86 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
     $scope.progress = 0;
     $scope.response = '';
     $scope.xml = '';
+
+    parameters = {};
+
+
+     $scope.simpan_metadata = function () {
+
+        var tanggal2 = ($scope.tanggalku.toString()); 
+        console.log((tanggal2.split('GMT')[0]).trim());
+
+        parameters.tanggal = encodeURIComponent((tanggal2.split('GMT')[0]).trim());
+        parameters.WORKSPACE = encodeURIComponent($rootScope.currentUser['grup']);
+        parameters.ABSTRACT = encodeURIComponent($scope.layer_abstract);
+        parameters.ID = encodeURIComponent($scope.layer_id);
+        parameters.AKSES = encodeURIComponent($scope.akses.value);
+        parameters.KEYWORD = encodeURIComponent($scope.keyword_item);
+
+        // //Contac 
+        parameters.individualName = encodeURIComponent($scope.individualName);
+        parameters.organisationName = encodeURIComponent($scope.organisationName);
+        parameters.positionName = encodeURIComponent($scope.positionName);
+        parameters.phone = encodeURIComponent($scope.phone);
+        parameters.facsimile = encodeURIComponent($scope.facsimile);
+        parameters.deliveryPoint = encodeURIComponent($scope.deliveryPoint);
+        parameters.city = encodeURIComponent($scope.city);
+        parameters.postalCode = encodeURIComponent($scope.postalCode);
+        parameters.country = encodeURIComponent($scope.country);
+        parameters.electronicMailAddress = encodeURIComponent($scope.electronicMailAddress);
+        
+        parameters.linkage = encodeURIComponent($scope.linkage);
+        
+        parameters.hoursOfService = encodeURIComponent($scope.hoursOfService);
+        parameters.contactInstructions = encodeURIComponent($scope.contactInstructions);
+
+
+        // //Identification Info
+        parameters.title_identification = encodeURIComponent($scope.title_identification);
+        
+        // //Distributor
+        parameters.Distributor_individualName = encodeURIComponent($scope.Distributor_individualName);
+        parameters.Distributor_organisationName = encodeURIComponent($scope.Distributor_organisationName);
+        parameters.Distributor_positionName = encodeURIComponent($scope.Distributor_positionName);
+        parameters.Distributor_phone = encodeURIComponent($scope.Distributor_phone);
+        parameters.Distributor_facsimile = encodeURIComponent($scope.Distributor_facsimile);
+        parameters.Distributor_deliveryPoint = encodeURIComponent($scope.Distributor_deliveryPoint);
+        parameters.Distributor_city = encodeURIComponent($scope.Distributor_city);
+        parameters.Distributor_postalCode = encodeURIComponent($scope.Distributor_postalCode);
+        parameters.Distributor_country = encodeURIComponent($scope.Distributor_country);
+        parameters.Distributor_electronicMailAddress = encodeURIComponent($scope.Distributor_electronicMailAddress);
+        
+        parameters.dataSetURI = encodeURIComponent($scope.dataSetURI)
+        
+        parameters.Distributor_hoursOfService = encodeURIComponent($scope.Distributor_hoursOfService);
+        parameters.Distributor_contactInstructions = encodeURIComponent($scope.Distributor_contactInstructions);
+
+         // //MetadataConstrains
+            
+        //parameters.usernote = encodeURIComponent($scope.akses.value);
+
+
+        console.log(parameters);
+
+
+            var data = $.param({
+                    json: JSON.stringify({
+                        pubdata: parameters
+                    })
+            });
+
+
+            console.log(data);
+
+            $http.post(CONFIG.api_url + 'lengkapmetadata', data).success(function (data, status) {
+                pesan = data;
+                console.log(pesan);
+                bootbox.alert(pesan.MSG);
+            });
+
+
+       
+     }
 
     $scope.theuser = $rootScope.currentUser['user']
     $scope.curwrk = $rootScope.currentUser['grup']
@@ -1711,7 +2086,7 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
         console.log(item);
         this.visible = true;
         $http({
-            url: CONFIG.api_url + 'meta/view',
+            url: CONFIG.api_url + 'meta/view_json',
             method: 'GET',
             params: { identifier: item.identifier }
         }).success(function(data) {
@@ -1897,29 +2272,312 @@ nodeManager.directive('linkTambahDialog', [function() {
     };
 }]);
 
-nodeManager.directive('linkLihatDialog', [function() {
+nodeManager.directive('linkLihatDialog', [function ($http,$scope) {
     return {
         restrict: 'E',
         scope: {
             model: '=',
         },
-        link: function(scope, element, attributes) {
-            scope.$watch('model.visible', function(newValue) {
+        link: function (scope, element, attributes,$http,$scope) {
+            scope.$watch('model.visible', function (newValue) {
                 var modalElement = element.find('.modal');
                 modalElement.modal(newValue ? 'show' : 'hide');
             });
-            element.on('shown.bs.modal', function() {
-                scope.$apply(function() {
+            element.on('shown.bs.modal', function () {
+                scope.$apply(function () {
                     scope.model.visible = true;
+                    console.log(scope.model);
+                    scope.tanggalku2 = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:dateStamp"]["gco:DateTime"]);
+                    scope.tanggalku = new Date(scope.tanggalku2);
+                    console.log(scope.tanggalku);
+
+                    console.log(scope.model.item.identifier)
+                    scope.layer_id = scope.model.item.identifier
+                
+
+                    scope.layer_abstract = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:abstract"]["gco:CharacterString"]); 
+                    console.log(scope.layer_abstract)
+
+
+                   
+                    scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
+                    console.log(scope.keyword_item);
+
+                      scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                      console.log(scope.datausernote);                                                         
+                      scope.akses = {  
+                            "value": scope.datausernote, 
+                            "values": [ "PUBLIC", "GOVERNMENT", "PRIVATE", "IGSTRATEGIS"] 
+                          };
+
+                   
+                      
+       
+        // Contact                  
+        try { 
+            scope.individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.individualName = ""; 
+        }  
+
+        console.log(scope.individualName);
+
+        try { 
+             scope.organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.organisationName = ""; 
+        } 
+
+        console.log(scope.organisationName);
+
+        try {
+            scope.positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        }  catch (err)
+        {
+            scope.positionName = ""; 
+        } 
+
+         console.log(scope.positionName) ;       
+        
+        try {
+           scope.phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+           scope.phone = ""; 
+        }
+
+         console.log(scope.phone);         
+        
+        try {
+            scope.facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.facsimile = ""; 
+        }  
+
+          console.log(scope.facsimile) ;      
+        
+        try {
+            scope.deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.deliveryPoint = ""; 
+        }   
+
+          console.log(scope.deliveryPoint) ;     
+        
+        try {
+           scope.city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.city = ""; 
+        }  
+
+            console.log(scope.city) 
+
+        try {
+           scope.postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.postalCode = ""; 
+        } 
+
+             console.log(scope.postalCode);
+
+        try {
+            scope.country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.country = ""; 
+        } 
+
+             console.log(scope.country);        
+        
+        try {
+           scope.electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.electronicMailAddress = ""; 
+        }  
+
+             console.log(scope.electronicMailAddress);
+
+        
+        try {
+            scope.linkage = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"]);
+        } catch (err)
+        {
+            scope.linkage = ""; 
+        }     
+
+             console.log(scope.linkage);    
+        
+        try {
+            scope.hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.hoursOfService = ""; 
+        } 
+
+             console.log(scope.hoursOfService);        
+        
+        try {
+            scope.contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:contact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.contactInstructions = ""; 
+        }  
+
+             console.log(scope.contactInstructions) ;      
+        
+
+
+         // //Identification Info
+        try {
+            scope.title_identification = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:citation"]["gmd:CI_Citation"]["gmd:title"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.title_identification = ""; 
+        }         
+        
+          console.log(scope.title_identification) ; 
+        
+        // //Distributor
+        
+        try { 
+            scope.Distributor_individualName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:individualName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_individualName = ""; 
+        }    
+
+              console.log(scope.Distributor_individualName) ;      
+        
+        try {
+            scope.Distributor_organisationName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:organisationName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_organisationName = ""; 
+        }  
+
+                  console.log(scope.organisationName) ;        
+        
+        try {
+            scope.Distributor_positionName = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:positionName"]["gco:CharacterString"]);
+        } catch (err)
+        {
+                scope.Distributor_positionName = ""; 
+        }   
+
+                  console.log(scope.Distributor_positionName) ;       
+        
+        try {
+            scope.Distributor_phone = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:voice"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_phone = ""; 
+        }    
+
+                  console.log(scope.Distributor_phone) ;      
+        
+        try {
+            scope.Distributor_facsimile = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:phone"]["gmd:CI_Telephone"]["gmd:facsimile"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_facsimile = ""; 
+        }       
+
+                  console.log(scope.Distributor_facsimile) ;   
+        
+        try {
+            scope.Distributor_deliveryPoint = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:deliveryPoint"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_deliveryPoint = ""; 
+        }      
+
+                  console.log(scope.Distributor_deliveryPoint) ;    
+        
+        try {
+            scope.Distributor_city = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:city"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_city = ""; 
+        }    
+
+                  console.log(scope.Distributor_city) ;      
+        
+        try {
+            scope.Distributor_postalCode = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:postalCode"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_postalCode = ""; 
+        }    
+
+                  console.log(scope.Distributor_postalCode) ;      
+        
+        try {
+            scope.Distributor_country = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:country"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_country = ""; 
+        }     
+
+                    console.log(scope.Distributor_country) ;                   
+        
+        try {
+            scope.Distributor_electronicMailAddress = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:address"]["gmd:CI_Address"]["gmd:electronicMailAddress"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_electronicMailAddress = ""; 
+        }         
+        
+        try {
+            scope.dataSetURI = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:onlineResource"]["gmd:CI_OnlineResource"]["gmd:linkage"]["gmd:URL"])
+        } catch (err)
+        {
+            scope.dataSetURI = ""; 
+        }    
+
+                     console.log(scope.dataSetURI) ;           
+        
+        try {
+            scope.Distributor_hoursOfService = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:hoursOfService"]["gco:CharacterString"]);
+        } catch (err)
+        {
+            scope.Distributor_hoursOfService = ""; 
+        }    
+
+                     console.log(scope.Distributor_hoursOfService) ;           
+        
+
+        try {
+            scope.Distributor_contactInstructions = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:distributionInfo"]["gmd:MD_Distribution"]["gmd:distributor"]["gmd:MD_Distributor"]["gmd:distributorContact"]["gmd:CI_ResponsibleParty"]["gmd:contactInfo"]["gmd:CI_Contact"]["gmd:contactInstructions"]["gco:CharacterString"]);      
+        } catch (err)
+        {
+            scope.Distributor_contactInstructions = ""; 
+        }         
+            
+        console.log(scope.Distributor_contactInstructions) ;     
+
+
+                    //$scope.datakeyword()
+
                 });
             });
-            element.on('hidden.bs.modal', function() {
-                scope.$apply(function() {
+            element.on('hidden.bs.modal', function () {
+                scope.$apply(function () {
                     scope.model.visible = false;
                 });
             });
         },
-        templateUrl: 'templates/meta_view.html'
+
+        //templateUrl: 'templates/meta_view.html'
+        templateUrl: 'templates/metadata_edit.html'
+        
+
     };
 }]);
 
