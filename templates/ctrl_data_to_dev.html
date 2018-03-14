@@ -1,3 +1,11 @@
+<style type="text/css">
+        .modal-body {
+            max-height: calc(100vh - 210px);
+            overflow-y: auto;
+        }
+</style>
+
+
 <div ng-app="nodeManager" ng-controller="ctrl_data_to_dev">
 
     <ul class="breadcrumb">
@@ -236,7 +244,7 @@
 <!-- Modal Wizard content-->
 
 <div class="modal fade" id="layer_wizard" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" ng-controller="LayersCtrl">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document" [blockScroll]="true">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -264,7 +272,7 @@
                     <form class="form-horizontal" ng-submit="publish()">
                         <fieldset>
                             <table class="table table-hover">
-                                <tr>
+                                 <tr>
                                     <td style="width: 150px"><strong>Layer ID</strong></td>
                                     <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
                                 </tr>
@@ -311,19 +319,32 @@
                 <div class="wizard-step">
                     <h5>Informasi Metadata</h5>
                     <table class="table table-hover">
+                         <tr>
+                            <td>Tanggal</td>
+                            <td>
+                                <input type="date" class="form-control"   ng-model="tanggal" ng-init="tanggal=today" />      
+                            </td>    
+                        </tr>    
+
                         <tr>
                             <td style="width: 200px;">Tipe Metadata</td>
-                            <td>
+                             <td>
                                 <div class="radio">
                                     <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios1" ng-value="{{minimalmeta}}" ng-model="minimalmeta" ng-click="minmeta(true)">
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="value" value='1'>
                                         Minimal
                                     </label>
                                 </div>
                                 <div class="radio">
                                     <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios2" ng-value="{{uploadxml}}" ng-model="minimalmeta" ng-click="minmeta(false)">
+                                        <input type="radio" name="optionsRadios" id="optionsRadios2"  ng-model="value"  value='2' >
                                         Unggah Metadata
+                                    </label>
+                                </div>
+                                 <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios3"  ng-model="value"  value='3'>
+                                        Metadata Lengkap
                                     </label>
                                 </div>
                             </td>
@@ -376,6 +397,16 @@
                             <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files, response.LID)" required></td>
                             </td>
                         </tr>
+
+                         <tr ng-hide="lengkapmeta==false">
+                             
+                             <td colspan="2">
+                                  <!--  <input type="text" class="form-control" ng-model="metadataStandardName"  />
+                                  <br>   -->
+                                  <div ng-include="'templates/metadata.html'" ></div>    
+                              </td>  
+                         </tr>
+
                         <tr>
                             <td><button ng-disabled="linkntry.akses == '' && keyword_item == ''" class="btn btn-success" type="submit" ng-click="MetaUp(response.LID, response.TID, model.layer.layer_abstract, linkntry.akses, keyword_item)">Simpan Metadata</button></td>
                             <td></td>
