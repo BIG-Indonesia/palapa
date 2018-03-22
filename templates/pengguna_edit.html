@@ -23,7 +23,7 @@
                         <td style="width: 150px"><strong>Password</strong></td>
                         <td><input class="form-control input-sm" type="password" style="width: 500" ng-model="model.item.password"></td>
                     </tr>
-                    <tr>
+                    <tr ng-hide="cekadmin() || item.name == 'palapa'">
                         <td style="width: 150px"><strong>Grup</strong></td>
                         <td>
                             <select ng-model="model.selectedgrup" ng-options="obj.value as obj.text for obj in grup track by obj.value">
