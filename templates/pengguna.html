@@ -1,80 +1,61 @@
 <div id="PenggunaView" ng-app="nodeManager" ng-controller="PenggunaCtrl">
     <div class="panel panel-default">
-        <div class="panel-heading clearfix">Konfigurasi Pengguna
-            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
-            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#pengguna_tambah"><span class="glyphicon glyphicon-upload"></span> Tambah Pengguna</button></div>
+        <div class="panel-heading clearfix">
+            Konfigurasi Pengguna <button class="btn btn-info pull-right" ng-click="reloadView()" type="button">Refresh</button> <button class="btn btn-primary pull-right" data-target="#pengguna_tambah" data-toggle="modal" type="button" ng-hide="cekuser(item.name)">Tambah Pengguna</button>
+        </div>
         <div class="panel-body">
-
             <form>
                 <div style="height: 50px;">
                     <div class="form-group" id="sticky_cari_anchor">
                         <div class="input-group" id="sticky_cari">
-                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariPengguna">
+                            <div class="input-group-addon"></div><input class="form-control" ng-model="cariPengguna" placeholder="Cari" type="text">
                         </div>
                     </div>
                 </div>
             </form>
-
             <div class="row">
-                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                <div class="pull-left" id="jumlahPerHalaman" style="padding-left: 15px; vertical-align: middle">
                     <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
-                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+                    <select class="form-control" id="selpageSize" ng-init="pageSize = '10'" ng-model="pageSize">
+              <option value="10">
+                10
+              </option>
+              <option value="25">
+                25
+              </option>
+              <option value="50">
+                50
+              </option>
+              <option value="100">
+                100
+              </option>
+            </select>
                 </div>
-                <div id="" class="pull-right" style="padding-right: 15px;">
-                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-                    Sebelum
-                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
-                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
-                    Berikut
-                </button>
+                <div class="pull-right" id="" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-click="currentPage=currentPage-1" ng-disabled="currentPage == 0">Sebelum</button> {{currentPage+1}} dari {{numberOfPages()}} halaman <button class="btn btn-info-xs" ng-click="currentPage=currentPage+1"
+                        ng-disabled="currentPage+1 &gt;= numberOfPages()">Berikut</button>
                 </div>
             </div>
-
             <table class="table table-striped">
-
                 <thead>
                     <tr>
                         <td>
-                            <a href="#/pengguna" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-            Username 
-            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
-          </a>
+                            <a href="#/pengguna" ng-click="sortType = 'name'; sortReverse = !sortReverse">Username</a>
                         </td>
                         <td>
-                            <a href="#/pengguna" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-            Nama Lengkap 
-            <span ng-show="sortType == 'individualname' && !sortReverse" class="fa fa-caret-down"></span>
-            <span ng-show="sortType == 'individualname' && sortReverse" class="fa fa-caret-up"></span>
-          </a>
+                            <a href="#/pengguna" ng-click="sortType = 'name'; sortReverse = !sortReverse">Nama Lengkap</a>
                         </td>
                         <td>
-                            <a href="#/pengguna" ng-click="sortType = 'grup'; sortReverse = !sortReverse">
-            Grup 
-            <span ng-show="sortType == 'grup' && !sortReverse" class="fa fa-caret-down"></span>
-            <span ng-show="sortType == 'grup' && sortReverse" class="fa fa-caret-up"></span>
-          </a>
-                        </td>
+                            <a href="#/pengguna" ng-click="sortType = 'grup'; sortReverse = !sortReverse">Grup</a>
                         </td>
                         <td>
-                            <a href="#/pengguna" ng-click="sortType = 'rolename'; sortReverse = !sortReverse">
-            Role 
-            <span ng-show="sortType == 'rolename' && !sortReverse" class="fa fa-caret-down"></span>
-            <span ng-show="sortType == 'rolename' && sortReverse" class="fa fa-caret-up"></span>
-          </a>
+                            <a href="#/pengguna" ng-click="sortType = 'rolename'; sortReverse = !sortReverse">Role</a>
                         </td>
                         <!--<td>Aktif</td>-->
                     </tr>
                 </thead>
-
                 <tbody>
-                    <tr ng-repeat="item in pengguna | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize" ng-hide="cekuser(item.name)">
+                    <tr ng-hide="cekuser(item.name)" ng-repeat="item in pengguna | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ item.name }}</td>
                         <td>{{ item.individualname }}</td>
                         <td>{{ item.groupname }}</td>
@@ -84,53 +65,42 @@
                             <span ng-if="item.enabled!='Y'" class="fa fa-square-o"></span>
                         </td>-->
                         <td style="width: 120px">
-                            <div class="btn-group">
-                                <button ng-hide="cekgrup(item.groupname) || item.name == 'palapa'" type="button" class="btn btn-warning" ng-click="editPengguna.open(item)" tooltip-placement="left" uib-tooltip="Edit password."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button ng-hide="cekadmin() || item.name == 'palapa'" type="button" class="btn btn-danger" ng-click="hapusPengguna.open(item)" tooltip-placement="left" uib-tooltip="Hapus pengguna."><span class="glyphicon glyphicon-remove"></span></button>
-                            </div>
+                            <div class="btn-group"></div>
                         </td>
                     </tr>
                 </tbody>
-
             </table>
             <pengguna-edit-dialog model="editPengguna"></pengguna-edit-dialog>
             <pengguna-hapus-dialog model="hapusPengguna"></pengguna-hapus-dialog>
-
         </div>
     </div>
 </div>
-</div>
-
 <!-- Modal -->
-<div id="pengguna_tambah" class="modal fade" role="dialog" ng-controller="PenggunaCtrl">
+<div class="modal fade" id="pengguna_tambah" ng-controller="PenggunaCtrl" role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button class="close" data-dismiss="modal" type="button">&times;</button>
                 <h4 class="modal-title">Tambah Pengguna</h4>
             </div>
             <div class="modal-body">
                 <table class="table table-hover">
                     <tr>
                         <td style="width: 150px"><strong>Username</strong></td>
-                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="penggunaentry.name"></td>
+                        <td><input class="form-control input-sm" ng-model="penggunaentry.name" style="width: 500" type="text"></td>
                     </tr>
                     <tr>
                         <td style="width: 150px"><strong>Nama Lengkap</strong></td>
-                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="penggunaentry.individualname"></td>
+                        <td><input class="form-control input-sm" ng-model="penggunaentry.individualname" style="width: 500" type="text"></td>
                     </tr>
                     <tr>
                         <td style="width: 150px"><strong>Password</strong></td>
-                        <td><input class="form-control input-sm" type="password" style="width: 500" ng-model="penggunaentry.password"></td>
+                        <td><input class="form-control input-sm" ng-model="penggunaentry.password" style="width: 500" type="password"></td>
                     </tr>
                     <tr>
                         <td style="width: 150px"><strong>Grup</strong></td>
-                        <td>
-                            <select ng-model="penggunaentry.grup" ng-options="obj.value as obj.text for obj in grup">
-              </select>
-                        </td>
+                        <td></td>
                     </tr>
                     <!--<tr>
                         <td style="width: 150px"><strong>Role</strong></td>
@@ -141,11 +111,14 @@
                     </tr>-->
                     <tr>
                         <td style="width: 150px"><strong>Kelas</strong></td>
-                        <td><select ng-model="penggunaentry.kelas" ng-init="Y">
-                <option value='admin'>ADMIN</option>
-                <option value='member'>MEMBER</option>
-              </select>
-                        </td>
+                        <td><select ng-init="Y" ng-model="penggunaentry.kelas">
+                <option value='admin'>
+                  ADMIN
+                </option>
+                <option value='member'>
+                  MEMBER
+                </option>
+              </select></td>
                     </tr>
                     <!--<tr>
                         <td><strong>Aktif</strong></td>
@@ -158,16 +131,13 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="tambahGSPengguna()" ng-disabled="!penggunaentry.name || !penggunaentry.password || !penggunaentry.grup || !penggunaentry.kelas || !penggunaentry">Tambah!</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                <button class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="tambahGSPengguna()" ng-disabled="!penggunaentry.name || !penggunaentry.password || !penggunaentry.grup || !penggunaentry.kelas || !penggunaentry" type="button">Tambah!</button>                <button class="btn btn-default" data-dismiss="modal" type="button">Tutup</button>
             </div>
         </div>
-
     </div>
 </div>
-
 <script>
     $('#pengguna_tambah').on('hidden.bs.modal', function() {
         angular.element($("#PenggunaView")).scope().reloadView();
-    }) 
+    })
 </script>
