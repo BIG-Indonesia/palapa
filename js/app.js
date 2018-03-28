@@ -761,7 +761,20 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             // parameters.version_refsystem = encodeURIComponent($scope.version_refsystem);
 
             // //Identification Info
-            parameters.title_identification = encodeURIComponent($scope.title_identification);
+            try {
+                if (typeof $scope.title_identification == 'undefined') {
+                    parameters.title_identification = encodeURIComponent(title);
+                } else {
+                    parameters.title_identification = encodeURIComponent($scope.title_identification);
+                }
+            } catch (err) {
+                parameters.title_identification = encodeURIComponent(title);
+            }
+
+            console.log(parameters.title_identification);
+
+           
+            //parameters.title_identification = encodeURIComponent($scope.title_identification);
             // parameters.date_identification = encodeURIComponent($scope.date_identification);
             // parameters.dateType_identification = encodeURIComponent($scope.dateType_identification);
             // parameters.abstract_identification=encodeURIComponent($scope.abstract_identification);
