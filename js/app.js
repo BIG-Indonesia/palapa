@@ -2328,17 +2328,17 @@ nodeManager.directive('linkLihatDialog', [function ($http,$scope) {
                         scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
                     } catch (err)
                     {
-                        scope.keyword_item ="";
+                        scope.keyword_item ="Vegetasi";
                     }
                     
                    
                     console.log(scope.keyword_item);
 
                     try {
-                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstraints"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
                     } catch (err)
                     {
-                        scope.datausernote ="";
+                        scope.datausernote ="PUBLIC";
                     }
                     
                     
@@ -3095,16 +3095,16 @@ nodeManager.directive('kugiLihatDialog', [function () {
                         scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
                     } catch (err)
                     {
-                        scope.keyword_item ="";
+                        scope.keyword_item ="Vegetasi";
                     }
                     console.log(scope.keyword_item);
 
                     
                     try {
-                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstraints"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
                     } catch (err)
                     {
-                        scope.datausernote = "";
+                        scope.datausernote = "PUBLIC";
                     } 
 
                       console.log(scope.datausernote);                                                         
@@ -3435,16 +3435,16 @@ nodeManager.directive('kugiLihatdevDialog', [function () {
                         scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
                     } catch (err)
                     {
-                        scope.keyword_item ="";
+                        scope.keyword_item ="Vegetasi";
                     }
                     console.log(scope.keyword_item);
 
                     
                     try {
-                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstraints"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
                     } catch (err)
                     {
-                        scope.datausernote = "";
+                        scope.datausernote = "PUBLIC";
                     } 
 
                       console.log(scope.datausernote);                                                         
@@ -3776,16 +3776,16 @@ nodeManager.directive('kugiLihatprodDialog', [function () {
                         scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
                     } catch (err)
                     {
-                        scope.keyword_item ="";
+                        scope.keyword_item ="Vegetasi";
                     }
                     console.log(scope.keyword_item);
 
                     
                     try {
-                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstraints"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
                     } catch (err)
                     {
-                        scope.datausernote = "";
+                        scope.datausernote = "PUBLIC";
                     } 
 
                       console.log(scope.datausernote);                                                         
@@ -4118,16 +4118,16 @@ nodeManager.directive('kugiLihatpubDialog', [function () {
                         scope.keyword_item = (scope.model.item.xml["gmd:MD_Metadata"]["gmd:identificationInfo"]["gmd:MD_DataIdentification"]["gmd:descriptiveKeywords"]["gmd:MD_Keywords"]["gmd:keyword"]["gco:CharacterString"]); 
                     } catch (err)
                     {
-                        scope.keyword_item ="";
+                        scope.keyword_item ="Vegetasi";
                     }
                     console.log(scope.keyword_item);
 
                     
                     try {
-                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
+                        scope.datausernote =(scope.model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstraints"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]);
                     } catch (err)
                     {
-                        scope.datausernote = "";
+                        scope.datausernote = "PUBLIC";
                     } 
 
                       console.log(scope.datausernote);                                                         
@@ -4496,7 +4496,20 @@ nodeManager.controller('testCtrl', function($scope, CONFIG, LAYER, $http, $base6
 
 nodeManager.controller('ctrl_dbdev', function ($rootScope, $scope, CONFIG, LAYER, $window, $http, $base64, $upload, $timeout, $state, $stateParams, USER_ROLES) {
 
+       $scope.datakeyword = function () {
+                 $http.get(CONFIG.api_url + 'keyword/list', {
+                                        cache: false
+                                    }).success(function (data) {
+                                        $scope.keywords = data;
+                                       // console.log($scope.keywords);       
+                                        
 
+                 });
+
+                           
+            }
+
+    $scope.datakeyword();
 
     
 
