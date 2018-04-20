@@ -3068,7 +3068,7 @@ nodeManager.directive('kugiLihatDialog', [function () {
                     console.log(scope.tanggalku);
 
                     try {
-                        scope.layer_id = scope.model.item.identifier; 
+                        scope.layer_id = scope.model.item.fitur; 
                     } catch (err)
                     {
                         scope.layer_id = (Math.random());
@@ -3408,7 +3408,7 @@ nodeManager.directive('kugiLihatdevDialog', [function () {
                     console.log(scope.tanggalku);
 
                     try {
-                        scope.layer_id = scope.model.item.identifier; 
+                        scope.layer_id = scope.model.item.feature; 
                     } catch (err)
                     {
                         scope.layer_id = (Math.random());
@@ -3749,7 +3749,7 @@ nodeManager.directive('kugiLihatprodDialog', [function () {
                     console.log(scope.tanggalku);
 
                     try {
-                        scope.layer_id = scope.model.item.identifier; 
+                        scope.layer_id = scope.model.item.feature; 
                     } catch (err)
                     {
                         scope.layer_id = (Math.random());
@@ -4091,7 +4091,7 @@ nodeManager.directive('kugiLihatpubDialog', [function () {
                     console.log(scope.tanggalku);
 
                     try {
-                        scope.layer_id = scope.model.item.identifier; 
+                        scope.layer_id = scope.model.item.feature; 
                     } catch (err)
                     {
                         scope.layer_id = (Math.random());
