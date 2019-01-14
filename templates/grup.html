@@ -63,7 +63,7 @@
                     <tr ng-repeat="item in grup | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ item.name }}</td>
                         <td>{{ item.organization }}</td>
-                        <td><img style='height: 50px;' src='data:image/jpeg;base64,{{ item.logo }}' /></td>
+                        <td><img style='height: 50px;' src='{{ item.logo }}' /></td>
                         <!--<td>
                             <span ng-if="item.enabled=='Y'" class="fa fa-check-square-o"></span>
                             <span ng-if="item.enabled!='Y'" class="fa fa-square-o"></span>
@@ -103,7 +103,7 @@
                 <table class="table table-hover">
                     <tr class="warning">
                         <td style="width: 150px"><strong>Nama Grup</strong></td>
-                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.name"></td>
+                        <td><input id="grup_name" class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.name"></td>
                     </tr>
                     <tr class="warning">
                         <td style="width: 150px"><strong>Nama Organisasi</strong></td>
@@ -172,5 +172,14 @@
 <script>
     $('#grup_tambah').on('hidden.bs.modal', function() {
         angular.element($("#GrupView")).scope().reloadView();
-    })
+    });
+
+    $('#grup_name').keyup(function() {
+        var input = $(this)
+        var text = input.val().replace(/[^a-zA-Z-_\s]/g, "");
+        if(/_|\s/.test(text)) {
+            text = text.replace(/_|\s/g, "");
+        }
+        input.val(text);
+    });
 </script>

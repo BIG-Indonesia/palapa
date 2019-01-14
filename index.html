@@ -89,11 +89,11 @@
                             <div ng-if="currentUser" style="color: white;padding-left: 10px;"><b>Welcome, {{ currentUser.user }}!</b></div>
                         </li>-->
                             <br>
-                            <li ng-repeat="menu in menus" ng-class="{dropdown: menu.menus}">
+                            <li ng-repeat="menu in menus" ng-class="{dropdown: menu.menus}" >
                                 <!--<a class="sidemenu_main" href="{{menu.action}}" data-toggle="dropdown" ng-class="{'dropdown-toggle': menu.menus}"> {{menu.title}}</a>-->
-                                <a class="sidemenu_main" data-toggle="dropdown" ng-class="{'dropdown-toggle': menu.menus}"> {{menu.title}}</a>
-                                <ul class="nav nav-stacked" ng-if="menu.menus">
-                                    <li ng-repeat="submenu in menu.menus" ng-class="{dropdown: submenu.menus}">
+                                <a class="accordion-toggle sidemenu_main" data-toggle="dropdown" ng-class="{'dropdown-toggle': menu.menus}"> {{menu.title}}</a>
+                                <ul class="accordion-content nav nav-stacked" ng-if="menu.menus" >
+                                    <li ng-repeat="submenu in menu.menus" ng-class="{dropdown: submenu.menus}" >
                                         <a ng-hide="currentUser.kelas != submenu.level && currentUser.kelas != 'admin'" href="{{submenu.action}}" id="sidemenu_text" data-toggle="dropdown" ng-class="{'dropdown-toggle': submenu.menus}">&nbsp; <i class="{{submenu.icons}}" aria-hidden="true" ></i>&nbsp; &nbsp; {{submenu.title}}</a>
 
                                         <ul class="dropdown-menu" ng-if="submenu.menus">
@@ -187,7 +187,19 @@
             $("#flipup").click(function() {
                 $("#panelup").slideToggle("slow");
             });
+
+            $('#accordion').find('.accordion-toggle').click(function(){
+
+                //Expand or collapse this panel
+                $(this).next().slideToggle('fast');
+
+                //Hide the other panels
+                $(".accordion-content").not($(this).next()).slideUp('fast');
+
+            });
+
         });
+
     </script>
 
 </body>

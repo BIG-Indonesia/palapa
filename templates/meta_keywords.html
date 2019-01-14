@@ -63,7 +63,7 @@
                 <tbody>
                     <tr ng-repeat="item in keyword | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ item.keyword }}</td>
-                        <td><img style='height: 50px;' src='data:image/jpeg;base64,{{ item.logo }}' /></td>
+                        <td><img style='height: 50px;' src='{{ item.logo }}' /></td>
                         <td style="width: 152px">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-warning" ng-click="editKeyword.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>

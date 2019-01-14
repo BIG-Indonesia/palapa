@@ -66,7 +66,7 @@
                     <tr ng-repeat="item in linkweb | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ item.nama }}</td>
                         <td>{{ item.url }}</td>
-                        <td><img style='height: 50px;' src='data:image/jpeg;base64,{{ item.image }}' /></td>
+                        <td><img style='height: 50px;' src='{{ item.image }}' /></td>
                         <td style="width: 152px">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-warning" ng-click="editLinkweb.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>

@@ -14,6 +14,13 @@
                 </div>
                 <div ng-hide="model.layer.layer_aktif">
                     <p>Yakin akan mengaktifkan service layer <strong>{{ model.layer.layer_id }}</strong>???</p>
+                    <div ng-hide="model.layer.akses != 'PUBLIC'">
+                    <p>Aktifkan Pengunduhan untuk layer ini?</p>
+                    <select ng-model="model.layer.downloadable" id="donwloadable">
+                        <option value="N">Pengunduhan data tidak diperbolehkan</option>
+                        <option value="Y">Pengunduhan data diperbolehkan</option>
+                    </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
