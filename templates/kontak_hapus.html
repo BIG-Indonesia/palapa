@@ -1,0 +1,26 @@
+<!-- Modal -->
+<div class="modal fade" id="kontak_hapus" ng-controller="KontakCtrl" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button">&times;</button>
+                <h4 class="modal-title">Hapus Kontak Masuk{{ model.item.kontak }} ?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Yakin akan menghapus Kontak Masuk
+                    <strong>{{ model.item.kontak }}</strong>???</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal" id="btnKontakHapus" ng-click="hapusGSKontak()" type="button">Hapus!</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">Tutup</button>
+            </div>
+        </div>
+        <!-- rem -->
+    </div>
+</div>
+<script>
+    $('#kontak_hapus').on('hidden.bs.modal', function() {
+        angular.element($("#KontakView")).scope().reloadView();
+    });
+</script>

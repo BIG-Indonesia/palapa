@@ -1,0 +1,33 @@
+<!-- Modal -->
+<div class="modal fade"
+     id="berita_hapus"
+     ng-controller="BeritaCtrl"
+     role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close"
+                data-dismiss="modal"
+                type="button">&times;</button>
+        <h4 class="modal-title">Hapus Berita {{ model.item.judul }} ?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Yakin akan menghapus Berita 
+        <strong>{{ model.item.judul }}</strong>???</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger"
+                data-dismiss="modal"
+                id="btnBeritaHapus"
+                ng-click="hapusGSBerita()"
+                type="button">Hapus!</button>
+        <button class="btn btn-default"
+                data-dismiss="modal"
+                type="button">Tutup</button>
+      </div>
+    </div>
+    <!-- rem -->
+  </div>
+</div>
+<script>$('#berita_hapus').on('hidden.bs.modal', function() { angular.element($("#BeritaView")).scope().reloadView(); });</script>

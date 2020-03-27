@@ -1,0 +1,52 @@
+<div ng-app="nodeManager" ng-controller="SistemCtrl">
+
+    <ul class="breadcrumb">
+        <li><a href="#">Beranda</a></li>
+        <li class="active">DB PROD > DB PUB</li>
+    </ul>
+
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Migrasi data dari DB PRODUKSI ke DB PUBLIKASI</div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <tr>
+                    <td tyle="width: 150px">Skala</td>
+                    <td>
+                        <select id="skala" ng-model="sumberskala" ng-options="skala for (skala, kategori) in features" ng-change="GetSkala()">
+			                <option value=''>Pilih</option>
+			            </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td tyle="width: 150px">Kategori</td>
+                    <td>
+                        <select id="kategori" ng-disabled="!sumberskala" ng-model="sumberkategori" ng-options="dataset for (dataset, fitur) in sumberskala" ng-change="GetKategori()"><option value=''>Pilih</option>
+				        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td tyle="width: 150px">Fitur</td>
+                    <td>
+                        <select id="fitur" ng-disabled="!sumberkategori || !sumberskala" ng-model="fitur"><option value=''>Pilih</option>
+			                <option ng-repeat="fitur in sumberkategori | unique:'kategori' | orderBy:'kategori'" value='{{fitur}}'>{{fitur}}</option>
+			            </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td tyle="width: 150px"><label class="control-label">Pilih Berkas (ZIP)</label></td>
+                    <td>
+                        <input type="file" ng-file-select="FileSelect($files, dbschema, fitur, scale)" multiple required>
+                        <br>
+                        <div>
+                            <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                        </div>
+                        <div><span ng-bind="response.MSG"></span></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>

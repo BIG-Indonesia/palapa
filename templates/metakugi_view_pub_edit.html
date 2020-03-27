@@ -1,0 +1,839 @@
+
+<!--   <div class="row"> -->
+<style type="text/css">
+  .panel-title {
+    font-size: 12px;
+  }
+</style> 
+
+<!-- Modal -->
+<div id="lihat_link" class="modal fade" role="dialog" ng-controller="ctrl_dbpub">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">MetaPublikasi Berkas Metadata (XML) {{ model.item.identifier }}</h4>
+      </div>
+      <div class="modal-body">
+        
+
+                    <div class="container col-md-12">
+
+                          <form name="form_metadata" class="form-horizontal" role="form" >   
+                               
+
+
+                                <!-- PARENT PANEL GROUP -->
+                                  <div class="panel-group" id="accordion">
+
+                                    <!-- PARENT PANEL -->
+                                    <div class="panel panel-info">
+                                      <!-- PARENT PANEL HEADING -->
+                                      <div class="panel-heading" data-parent="#accordion" >
+                                        <h4 class="panel-title">
+                                          Metadata 
+                                          <!--<i class="fa fa-chevron-down fa pull-right"></i> -->
+                                         <!--  <i ng-class="{'fa fa-chevron-down': flag1, 'fa fa-chevron-right': !flag1}" class="pull-right"></i> -->
+                                        </h4>
+                                      </div>
+                                      <!-- PARENT PANEL COLLAPSE BODY -->
+                                      <div bs-collapse class="panel-collapse collapse in" id="collapseOne" role="tabpanel">
+                                        <div class="panel-body">
+
+
+
+                                         <!-- NESTED PANEL GROUP Informasi  Metadata -->
+                                                <div class="panel-group" id="accordion81">
+                                                  <!-- NESTED PANEL -->
+                                                  <div class="panel panel-info">
+                                                    <!-- NESTED PANEL HEADING -->
+                                                    <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse81" data-toggle="collapse" role="button" >
+                                                      <h4 class="panel-title">
+                                                     Informasi Metadata
+                                                         <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                      </h4>
+                                                    </div>
+                                                    <!-- NESTED PANEL COLLAPSE BoDY -->
+                                                    <div bs-collapse class="panel-collapse collapse" id="nestedCollapse81" role="tabpanel">
+                                                      <div class="panel-body">
+
+
+
+                                                              
+
+                                                                               <div class="form-group">
+                                                                                    <label class="control-label col-sm-3">Tanggal </label>
+                                                                                    <div class="col-sm-9">
+                                                                                            <input type="date" class="form-control" ng-model='tanggalku'/> 
+                                                                                           
+                                                                                    </div>        
+                                                                              </div>
+
+
+
+                                                                              <div class="form-group">
+                                                                                 <label class="control-label col-sm-3" >Abstract </label>
+                                                                                 <div class="col-sm-9">
+                                                                                       <td><textarea class="form-control input-sm" rows="5" type="text" ng-model="layer_abstract" ng-value="$parent.response.TID"></textarea></td>
+                                                                                  </div>      
+                                                                              </div>  
+
+                                                                          
+                                                                            <!--  <input type="hidden" class="form-control" ng-model='workspace_kugi' disabled="true">
+ -->
+                                                                             <input type="hidden" class="form-control" ng-model='workspace_kugi' disabled="true">
+                                                                             <input type="hidden" class="form-control" ng-model='layer_id' disabled="true">
+                                                                            
+
+
+                                                                              <div class="form-group">
+                                                                                 <label class="control-label col-sm-3" >Keyword</label>
+                                                                                 <div class="col-sm-9">
+                                                                                       <select ng-model="keyword_item" ng-options="k.keyword as k.keyword for k in keywords">Pilih Keyword</option>
+                                                                                       </select>
+                                                                                      
+                                                                                  </div>      
+                                                                              </div>  
+
+
+                                                                                <div class="form-group">
+                                                                                 <label class="control-label col-sm-3" >Informasi Data Constraint </label>
+                                                                                 <div class="col-sm-9">
+
+                                                                                  <select ng-model="akses.value" ng-options="v for v in akses.values">
+                                                                                  </select>
+
+                                                                                      <!--  <select ng-model="linkntry.akses" ng-init="">
+                                                                                              <option value='PUBLIC'>PUBLIC</option>
+                                                                                              <option value='GOVERNMENT'>GOVERNMENT</option>
+                                                                                              <option value='PRIVATE'>PRIVATE</option>
+                                                                                              <option value='IGSTRATEGIS'>IG STRATEGIS</option>
+                                                                                          </select> -->
+                                                                                      
+                                                                                  </div>      
+                                                                              </div>  
+                                                                    
+                                                      </div>
+                                                    </div>
+
+                                                  </div>
+                                                </div>
+                                                 <!-- NESTED PANEL GROUP Informasi  Metadata -->     
+                                        
+
+                                          <!-- NESTED PANEL GROUP Metadata -->
+                                       <!--    <div class="panel-group" id="accordion2"> -->
+                                            <!-- NESTED PANEL -->
+                                          <!--   <div class="panel panel-info"> -->
+                                              <!-- NESTED PANEL HEADING -->
+                                             <!--  <div class="panel-heading" data-parent="#accordion2" data-target="#nestedCollapseOne" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                                  Metadata
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div> -->
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                             <!--  <div bs-collapse class="panel-collapse collapse" id="nestedCollapseOne" role="tabpanel">
+                                                <div class="panel-body"> -->
+                          
+                                                       <!--  <div class="form-group">
+                                                              <label class="control-label col-sm-3" >Metadatastandardname</label>
+                                                              <div class="col-sm-9">
+                                                              <input type="text" class="form-control" ng-model="$parent.metadataStandardName" ng-init="$parent.metadataStandardName='ISO 19115:2003 - Geographic information - Metadata'" disabled="true" />   -->
+                                                              <!-- diperoleh dari CP-Indonesia/main.j2 -->
+                                                         <!--    </div>        
+                                                        </div>  -->
+
+                                                         <!-- <div class="form-group ">
+                                                              <label class="control-label col-sm-3">Metadatastandardversion</label>
+                                                              <div class="col-sm-9">
+                                                              <input type="text" class="form-control" ng-model="$parent.metadataStandardVersion" ng-init="$parent.metadataStandardVersion='ISO 19115:2003'" disabled="true" />  -->
+                                                               <!-- diperoleh dari CP-Indonesia/main.j2 -->
+                                                         <!--    </div>        
+                                                        </div>  -->
+                                                          
+                                                 
+                                                        <!--   <div class="form-group">
+                                                              <label class="control-label col-sm-3">Datestamp</label>
+                                                              <div class="col-sm-9">
+                                                              <input type="date" class="form-control"   ng-model="$parent.datestamp" ng-init="$parent.datestamp = today"  />
+                                                           </div>        
+                                                        </div> -->
+
+                                                       <!--    <div class="form-group">
+                                                              <label class="control-label col-sm-3">DataSetURI</label>
+                                                              <div class="col-sm-9">
+                                                              <input type="text" class="form-control"   ng-model= 'model.item.xml["gmd:MD_Metadata"]["gmd:dataSetURI"]["gco:CharacterString"]' />
+                                                           </div>        
+                                                        </div>
+                                                </div>
+                                              </div>
+
+                                            </div>
+                                          </div> -->
+                                           <!-- NESTED PANEL GROUP Metadata-->
+
+
+
+
+                                          <!-- NESTED PANEL GROUP Contact -->
+                                          <div class="panel-group" id="accordion3">
+                                            <!-- NESTED PANEL -->
+                                            <div class="panel panel-info">
+                                              <!-- NESTED PANEL HEADING -->
+                                              <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse3" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                                 Contact  <!-- dari api group -->
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div>
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                              <div bs-collapse class="panel-collapse collapse" id="nestedCollapse3" role="tabpanel">
+                                                <div class="panel-body">
+                                                        
+                                                          <div class="form-group">
+                                                                                <label class="control-label col-sm-3 " >IndividualName</label>
+                                                                                <div class="col-sm-9">
+                                                                                        <input type="text" class="form-control" ng-model='individualName' />
+                                                                                </div>        
+                                                                          </div>
+
+                                                                          <div class="form-group">
+                                                                             <label class="control-label col-sm-3" >OrganisationName</label>
+                                                                             <div class="col-sm-9">
+                                                                                   <input type="text" class="form-control" ng-model='organisationName' />
+                                                                              </div>      
+                                                                          </div>  
+
+
+                                                                         <div class="form-group">
+                                                                                <label class="control-label col-sm-3"  for="inputError">PositionName</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='positionName'/>
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                           <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >Phone</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='phone'  />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                          <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >Facsimile</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='facsimile'  />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                           <div class="form-group ">
+                                                                                <label class="control-label col-sm-3">DeliveryPoint</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='deliveryPoint'/>
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                          <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >City</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='city'  />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                            <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >PostalCode</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='postalCode'  />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                             <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >Country</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='country'  />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                            <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >ElectronicMailAddress</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='electronicMailAddress' />
+                                                                              </div>        
+                                                                          </div> 
+
+
+                                                                           <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >Linkage</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='linkage' />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                         <!--   <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >Protocol</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model="$parent.protocol"  />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                          <div class="form-group">
+                                                                                <label class="control-label col-sm-3" >Function</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model="$parent.function"  />
+                                                                              </div>        
+                                                                          </div>  -->
+
+                                                                           <div class="form-group ">
+                                                                                <label class="control-label col-sm-3">hoursOfService</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='hoursOfService' />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                          <div class="form-group ">
+                                                                                <label class="control-label col-sm-3">contactInstructions</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='contactInstructions' />
+                                                                              </div>        
+                                                                          </div> 
+
+                                                                        <!--    <div class="form-group ">
+                                                                                <label class="control-label col-sm-3">Role</label>
+                                                                                <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model="$parent.rolecontact"/>
+                                                                              </div>        
+                                                                          </div>  -->
+                                                </div>
+                                              </div>
+
+                                            </div>
+                                          </div>
+                                           <!-- NESTED PANEL GROUP Contact-->   
+
+
+
+                                          <!-- NESTED PANEL GROUP SpatialRepresentationInfo -->
+                                     <!--      <div class="panel-group" id="accordion4"> -->
+                                            <!-- NESTED PANEL -->
+                                          <!--   <div class="panel panel-info"> -->
+                                              <!-- NESTED PANEL HEADING -->
+                                             <!--  <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse4" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                                SpatialRepresentationInfo
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div> -->
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                            <!--   <div bs-collapse class="panel-collapse collapse" id="nestedCollapse4" role="tabpanel">
+                                                <div class="panel-body"> -->
+                                                        
+                                                                <!--    <div class="form-group">
+                                                                          <label class="control-label col-sm-3 " >TopologiLevel</label>
+                                                                          <div class="col-sm-9">
+                                                                                  <input type="text" class="form-control" ng-model="$parent.topologiLevel" ng-init="$parent.topologiLevel='geometryOnly'"/>
+                                                                          </div>        
+                                                                    </div> -->
+
+                                                                     <!-- diperoleh dari CP-minimal.mcf -->
+
+                                                                  <!--   <div class="form-group">
+                                                                       <label class="control-label col-sm-3" >GeometriObjects</label>
+                                                                       <div class="col-sm-9">
+                                                                             <input type="text" class="form-control" ng-model="$parent.geometriObjects" ng-init="$parent.geometriObjects='complex'" />
+                                                                        </div>      
+                                                                    </div>   -->
+
+                                                                     <!-- diperoleh dari CP-minimal.mcf -->
+                                                              
+                                             <!--    </div>
+                                              </div>
+
+                                            </div>
+                                          </div> -->
+                                           <!-- NESTED PANEL GROUP SpatialRepresentationInfo-->   
+
+
+
+                                          <!-- NESTED PANEL GROUP RefererenceSystemInfo -->
+                                       <!--    <div class="panel-group" id="accordion5"> -->
+                                            <!-- NESTED PANEL -->
+                                         <!--    <div class="panel panel-info"> -->
+                                              <!-- NESTED PANEL HEADING -->
+                                             <!--  <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse5" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                               RefererenceSystemInfo
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div> -->
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                           <!--    <div bs-collapse class="panel-collapse collapse" id="nestedCollapse5" role="tabpanel">
+                                                <div class="panel-body">
+                                                        
+                                                                 <div class="form-group">
+                                                                          <label class="control-label col-sm-3 " >Title</label>
+                                                                          <div class="col-sm-9">
+                                                                                  <input type="text" class="form-control" ng-model="$parent.title_refsystem" />
+                                                                          </div>        
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                       <label class="control-label col-sm-3" >Date</label>
+                                                                       <div class="col-sm-9">
+                                                                             <input type="date" class="form-control" ng-model="$parent.date_refsystem" ng-init="$parent.date_refsystem=today"/>
+                                                                        </div>      
+                                                                    </div>  
+
+                                                                     <div class="form-group">
+                                                                       <label class="control-label col-sm-3" >DateType</label>
+                                                                       <div class="col-sm-9">
+                                                                             <input type="text" class="form-control" ng-model="$parent.dateType_refsystem" />
+                                                                        </div>      
+                                                                    </div>  
+
+                                                                    <div class="form-group">
+                                                                       <label class="control-label col-sm-3" >OrganisationName</label>
+                                                                       <div class="col-sm-9">
+                                                                             <input type="text" class="form-control" ng-model="$parent.organisationName_refsystem" />
+                                                                        </div>      
+                                                                    </div>  
+
+
+                                                                   <div class="form-group">
+                                                                          <label class="control-label col-sm-3"  for="inputError">Linkage</label>
+                                                                          <div class="col-sm-9">
+                                                                          <input type="text" class="form-control" ng-model="$parent.linkage_refsystem"/>
+                                                                        </div>        
+                                                                    </div> 
+
+                                                                     <div class="form-group">
+                                                                          <label class="control-label col-sm-3" >Role</label>
+                                                                          <div class="col-sm-9">
+                                                                          <input type="text" class="form-control" ng-model="$parent.role_refsystem"  />
+                                                                        </div>        
+                                                                    </div> 
+
+                                                                     <div class="form-group">
+                                                                          <label class="control-label col-sm-3">Code</label>
+                                                                          <div class="col-sm-9">
+                                                                          <input type="text" class="form-control"   ng-model="$parent.code_refsystem" />
+                                                                       </div>        
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                          <label class="control-label col-sm-3">Version</label>
+                                                                          <div class="col-sm-9">
+                                                                          <input type="text" class="form-control"   ng-model="$parent.version_refsystem" />
+                                                                       </div>       
+                                                                    </div>
+                                                              
+                                                </div>
+                                              </div>
+
+                                            </div>
+                                          </div> -->
+                                           <!-- NESTED PANEL GROUP RefererenceSystemInfo--> 
+
+
+
+
+                                          <!-- NESTED PANEL GROUP IdentificatioonInfo-->
+                                          <div class="panel-group" id="accordion6">
+                                            <!-- NESTED PANEL -->
+                                            <div class="panel panel-info">
+                                              <!-- NESTED PANEL HEADING -->
+                                              <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse6" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                               IdentificationInfo
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div>
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                              <div bs-collapse class="panel-collapse collapse" id="nestedCollapse6" role="tabpanel">
+                                                <div class="panel-body">
+                                                        
+                                                                         <div class="form-group">
+                                                                                  <label class="control-label col-sm-3 " >Title</label>
+                                                                                  <div class="col-sm-9">
+                                                                                          <input type="text" class="form-control" ng-model='title_identification'  />
+                                                                                  </div>        
+                                                                            </div>
+                    <!-- 
+                                                                            <div class="form-group">
+                                                                               <label class="control-label col-sm-3" >Date</label>
+                                                                               <div class="col-sm-9">
+                                                                                     <input type="date" class="form-control" ng-model="$parent.date_identification" ng-init="$parent.date_identification=today" />
+                                                                                </div>      
+                                                                            </div> 
+                                                                            
+                                                                            <div class="form-group">
+                                                                                  <label class="control-label col-sm-3 " >DateType </label>
+                                                                                  <div class="col-sm-9">
+                                                                                          <input type="text" class="form-control" ng-model="$parent.dateType_identification" />
+                                                                                  </div>        
+                                                                            </div>
+
+
+                                                                             <div class="form-group" >
+                                                                                  <label class="control-label col-sm-3">Abstract </label>
+                                                                                  <div class="col-sm-9">
+                                                                                      <input type="text" class="form-control" ng-model="$parent.abstract_identification"/>
+                                                                                  </div>
+                                                                              </div>
+
+
+
+
+                                                                            <div class="form-group">
+                                                                               <label class="control-label col-sm-3" >ResourceMaintenance </label>
+                                                                               <div class="col-sm-9">
+                                                                                     <input type="text" class="form-control" ng-model="$parent.resourceMaintenance_identification" />
+                                                                                </div>      
+                                                                            </div>  
+                                                                            <div class="form-group">
+                                                                                  <label class="control-label col-sm-3 " >DescriptiveKeywords </label>
+                                                                                  <div class="col-sm-9">
+                                                                                          <input type="text" class="form-control" ng-model="$parent.descriptiveKeywords_identification" />
+                                                                                  </div>        
+                                                                            </div>
+
+                                                                            <div class="form-group">
+                                                                               <label class="control-label col-sm-3" >ResourceConstraints </label>
+                                                                               <div class="col-sm-9">
+                                                                                     <input type="text" class="form-control" ng-model="$parent.resourceConstraints_identification" />
+                                                                                </div>      
+                                                                            </div>  
+
+
+                                                                             <div class="form-group">
+                                                                                  <label class="control-label col-sm-3 " >SpatialRepresentationType </label>
+                                                                                  <div class="col-sm-9">
+                                                                                          <input type="text" class="form-control" ng-model="$parent.spatialRepresentationType_identification" />
+                                                                                  </div>        
+                                                                            </div>
+
+                                                                            <div class="form-group">
+                                                                               <label class="control-label col-sm-3" >Language_identification </label>
+                                                                               <div class="col-sm-9">
+                                                                                     <input type="text" class="form-control" ng-model="$parent.language_identification" />
+                                                                                </div>      
+                                                                            </div> 
+
+                                                                            <div class="form-group">
+                                                                               <label class="control-label col-sm-3" >CharacterSetCode </label>
+                                                                               <div class="col-sm-9">
+                                                                                     <input type="text" class="form-control" ng-model="$parent.CharacterSetCode_identification" />
+                                                                                </div>      
+                                                                            </div>  
+
+                                                                             <div class="form-group" >
+                                                                                  <label class="control-label col-sm-3 ">TopicCategory </label>
+                                                                                  <div class="col-sm-9">
+                                                                                      <input type="text" class="form-control" ng-model="$parent.topicCategory_identification"  />
+                                                                                  </div>
+                                                                              </div>
+                     -->
+
+                                                              
+                                                </div>
+                                              </div>
+
+                                            </div>
+                                          </div>
+                                           <!-- NESTED PANEL GROUP IdentificatioonInfo-->  
+
+
+
+                                            <!-- NESTED PANEL GROUP DistributionInfo -->
+                                          <div class="panel-group" id="accordion7">
+                                            <!-- NESTED PANEL -->
+                                            <div class="panel panel-info">
+                                              <!-- NESTED PANEL HEADING -->
+                                              <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse7" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                               DistributionInfo  <!-- Dari api systeminfo -->
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div>
+
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                              <div bs-collapse class="panel-collapse collapse" id="nestedCollapse7" role="tabpanel">
+                                                <div class="panel-body">
+                                                        
+                                                                    <!-- NESTED PANEL GROUP Distributor -->
+                                                                    <div class="panel-group" id="accordion71">
+                                                                      <!-- NESTED PANEL -->
+                                                                      <div class="panel panel-info">
+                                                                        <!-- NESTED PANEL HEADING -->
+                                                                        <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse71" data-toggle="collapse" role="button" >
+                                                                          <h4 class="panel-title">
+                                                                        Distributor
+                                                                             <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                                          </h4>
+                                                                        </div>
+                                                                        <!-- NESTED PANEL COLLAPSE BoDY -->
+                                                                        <div bs-collapse class="panel-collapse collapse" id="nestedCollapse71" role="tabpanel">
+                                                                          <div class="panel-body">
+                                                                                  
+                                                                                           
+                                                                  <div class="form-group">
+                                                                        <label class="control-label col-sm-3 " >IndividualName</label>
+                                                                        <div class="col-sm-9">
+                                                                                <input type="text" class="form-control" ng-model='Distributor_individualName' />
+                                                                        </div>        
+                                                                  </div>
+
+                                                                  <div class="form-group">
+                                                                     <label class="control-label col-sm-3" >OrganisationName</label>
+                                                                     <div class="col-sm-9">
+                                                                           <input type="text" class="form-control" ng-model='Distributor_organisationName' />
+                                                                      </div>      
+                                                                  </div>  
+
+
+                                                                 <div class="form-group">
+                                                                        <label class="control-label col-sm-3"  for="inputError">PositionName</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_positionName'/>
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                   <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >Phone</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_phone'  />
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                  <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >Facsimile</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_facsimile'  />
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                   <div class="form-group ">
+                                                                        <label class="control-label col-sm-3">DeliveryPoint</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_deliveryPoint'/>
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                  <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >City</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_city'  />
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                    <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >PostalCode</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_postalCode'  />
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                     <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >Country</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_country'  />
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                    <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >ElectronicMailAddress</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_electronicMailAddress'  />
+                                                                      </div>        
+                                                                  </div> 
+
+
+                                                                   <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >Linkage</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='dataSetURI'  />
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                <!--    <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >Protocol</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model="$parent.Distributor_protocol"  />
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                  <div class="form-group">
+                                                                        <label class="control-label col-sm-3" >Function</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model="$parent.Distributor_function"  />
+                                                                      </div>        
+                                                                  </div>  -->
+
+                                                                   <div class="form-group ">
+                                                                        <label class="control-label col-sm-3">hoursOfService</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_hoursOfService'/>
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                  <div class="form-group ">
+                                                                        <label class="control-label col-sm-3">contactInstructions</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model='Distributor_contactInstructions'/>
+                                                                      </div>        
+                                                                  </div> 
+
+                                                                  <!--  <div class="form-group ">
+                                                                        <label class="control-label col-sm-3">Role</label>
+                                                                        <div class="col-sm-9">
+                                                                        <input type="text" class="form-control" ng-model="$parent.Distributor_role"/>
+                                                                      </div>        
+                                                                  </div> 
+                     -->
+                                                                                        
+                                                        </div>
+                                                      </div>
+
+                                                    </div>
+                                                  </div>
+                                                <!-- NESTED PANEL GROUP Distributor-->   
+
+
+                                         <!-- NESTED PANEL GROUP Transfer Option -->
+                                        
+                                           <!-- NESTED PANEL GROUPTransfer Option-->   
+
+                                                              
+                                                </div>
+                                              </div>
+
+                                            </div>
+                                          </div>
+                                           <!-- NESTED PANEL GROUP DistributionInfo-->    
+
+
+
+                                          <!-- NESTED PANEL GROUP SpatialRepresentationInfo -->
+                                         <!--  <div class="panel-group" id="accordion8"> -->
+                                            <!-- NESTED PANEL -->
+                                            <!-- <div class="panel panel-info"> -->
+                                              <!-- NESTED PANEL HEADING -->
+                                             <!--  <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse8" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                               MetadataMaintenance
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div> -->
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                             <!--  <div bs-collapse class="panel-collapse collapse" id="nestedCollapse8" role="tabpanel">
+                                                <div class="panel-body">
+                                                        
+                                                                    <div class="form-group">
+                                                                              <label class="control-label col-sm-3">MaintenanceAndUpdateFrequency </label>
+                                                                              <div class="col-sm-9">
+                                                                                      <input type="text" class="form-control" ng-model="$parent.maintenanceAndUpdateFrequency" ng-init="$parent.maintenanceAndUpdateFrequency='asNeeded'" disabled="true" />  -->
+                                                                                      <!-- diperoleh dari CP-minimal.mcf -->
+                                                                              <!-- </div>        
+                                                                        </div>
+
+                                                                        <div class="form-group">
+                                                                           <label class="control-label col-sm-3" >MaintenanceNote </label>
+                                                                           <div class="col-sm-9">
+                                                                                 <input type="text" class="form-control" ng-model="$parent.maintenanceNote" ng-init="$parent.maintenanceNote='09:00 - 15:00 WIB'"   disabled="true"/>  -->
+                                                                                 <!-- diperoleh dari CP-Indonesia/main.j2 -->
+                                                                         <!--    </div>      
+                                                                        </div>  
+                                                              
+                                                </div>
+                                              </div>
+
+                                            </div>
+                                          </div> -->
+                                           <!-- NESTED PANEL GROUP MetadataMaintenance-->   
+
+
+
+                                          <!-- NESTED PANEL GROUP MetadataConstrains -->
+                                         <!--  <div class="panel-group" id="accordion9"> -->
+                                            <!-- NESTED PANEL -->
+                                           <!--  <div class="panel panel-info"> -->
+                                              <!-- NESTED PANEL HEADING -->
+                                             <!--  <div class="panel-heading" data-parent="#accordion3" data-target="#nestedCollapse9" data-toggle="collapse" role="button" >
+                                                <h4 class="panel-title">
+                                                MetadataConstrains
+                                                   <i ng-class="{'fa fa-chevron-down': flag2, 'fa fa-chevron-right': !flag2}" class="pull-right"></i>
+                                                </h4>
+                                              </div> -->
+                                              <!-- NESTED PANEL COLLAPSE BoDY -->
+                                             <!--  <div bs-collapse class="panel-collapse collapse" id="nestedCollapse9" role="tabpanel">
+                                                <div class="panel-body">
+                                                         -->
+                                                                  <!--  <div class="form-group">
+                                                                            <label class="control-label col-sm-3 " >Classification</label>
+                                                                            <div class="col-sm-9">
+                                                                                    <input type="text" class="form-control" ng-model="$parent.linkntry.akses"  disabled="true"/>
+                                                                            </div>        
+                                                                      </div> -->
+
+                                                                   <!--    <div class="form-group">
+                                                                         <label class="control-label col-sm-3" >UserNote</label>
+                                                                         <div class="col-sm-9">
+                                                                               <input type="text" class="form-control" ng-model='model.item.xml["gmd:MD_Metadata"]["gmd:metadataConstrains"]["gmd:MD_SecurityConstraints"]["gmd:userNote"]["gco:CharacterString"]'/>
+                                                                          </div>      
+                                                                      </div>  
+                                                              
+                                                </div>
+                                              </div>
+
+                                            </div>
+                                          </div> -->
+                                           <!-- NESTED PANEL GROUP MetadataConstrains-->   
+                      
+
+
+
+
+
+                                        </div>
+                                      </div>
+
+                                    </div>
+
+
+
+                                  </div>
+
+
+
+
+
+
+                        </form>
+
+
+                  </div> 
+
+    </div>
+      <div class="modal-footer">
+        <div class="row">
+           <div class="col-sm-6">
+              <button type="button" class="btn btn-success pull-left" ng-click="simpan_metakugi()" >Simpan</button>
+          </div>    
+          <div class="col-sm-6">
+              <button type="button" class="btn btn-default pull-right" data-dismiss="modal" align="right">Tutup</button>
+          </div>    
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- <script>
+    $('#lihat_link').on('hidden.bs.modal', function() {
+        angular.element($("#MetalinksView")).scope().reloadView();
+    });
+</script> -->
+   

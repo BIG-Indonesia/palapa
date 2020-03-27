@@ -1,0 +1,28 @@
+<!-- Modal -->
+<div id="publish_kugilink" class="modal fade" role="dialog" ng-controller="MetakugiCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Publish Metadata (XML) {{ model.item.identifier }}</h4>
+            </div>
+            <div class="modal-body">
+                {{ model.item.identifier }} {{ model.item.workspace }} {{ model.item.akses }}
+                <!--<pre style="height: 400px"></pre>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnLayerEdit" ng-click="publishGSKugi()">Publikasi Metadata</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#publish_kugilink').on('hidden.bs.modal', function() {
+        angular.element($("#MetakugiView")).scope().reloadView();
+    });
+</script>

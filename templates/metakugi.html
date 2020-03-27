@@ -1,0 +1,130 @@
+<div id="MetakugiView" ng-app="nodeManager" ng-controller="MetakugiCtrl">
+
+    <ul class="breadcrumb">
+        <li><a href="#">Beranda</a></li>
+        <li class="active">Metadata Non-KUGI</li>
+    </ul>
+
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Metadata List
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <!--<button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#grup_tambah"><span class="glyphicon glyphicon-upload"></span> Tambah Grup</button>-->
+        </div>
+        <div class="panel-body">
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariMetalinks">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <td>
+                            <a href="#/metalinks" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+								Workspace 
+								<span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+								<span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+							</a>
+                        </td>
+                        <td>
+                            <a href="#/metalinks" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+								Skema 
+								<span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+								<span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+							</a>
+                        </td>
+                        <td>
+                            <a href="#/metalinks" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+								Fitur 
+								<span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+								<span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+							</a>
+                        </td>
+                        <td>
+                            <a href="#/metalinks" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+								Identifier 
+								<span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+								<span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+							</a>
+                        </td>
+                        <td>Tipe Metadata</td>
+                        <td>Ada Metadata</td>
+                        <td>Tipe Akses</td>
+                        <td>Metadata Terpublikasi</td>
+                        <td>Aksi</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="item in grup | orderBy:sortType:sortReverse | filter:cariMetalinks | startFrom:currentPage*pageSize | limitTo:pageSize">
+                        <td>{{ item.workspace }}</td>
+                        <td>{{ item.skema }}</td>
+                        <td>{{ item.fitur }}</td>
+                        <td>{{ item.identifier }}</td>
+                        <td>{{ item.tipe }}</td>
+                        <td>
+                            <span ng-if="item.metatick=='Y'" class="fa fa-check-square-o"></span>
+                            <span ng-if="item.metatick!='Y'" class="fa fa-square-o"></span>
+                        </td>
+                        <td>{{ item.akses }}</td>
+                        <td>
+                            <span ng-if="item.published=='Y'" class="fa fa-check-square-o"></span>
+                            <span ng-if="item.published!='Y'" class="fa fa-square-o"></span>
+                        </td>
+                        <td style="width: 180px">
+                            <div class="btn-group">
+                                <button type="button" ng-disabled="item.metatick!='Y'" class="btn btn-success" ng-click="lihatKugi.open(item)" tooltip-placement="left" uib-tooltip="Raw XML metadata."><span class="glyphicon glyphicon-info-sign"></span></button>
+                                <button ng-hide="cekadmin()" type="button" ng-disabled="item.metatick!='Y'" class="btn btn-warning" ng-click="publishKugi.open(item)" tooltip-placement="top" uib-tooltip="Publikasi metadata ke servis CSW."><span class="glyphicon glyphicon-share"></span></button>
+                                <button ng-hide="cekgrup(item.workspace)" type="button" class="btn btn-warning" ng-click="tambahKugi.open(item)" tooltip-placement="right" uib-tooltip="Unggah/update berkas XML metadata."><span class="glyphicon glyphicon-edit"></span></button>
+                                <button ng-hide="cekadmin()" type="button" ng-disabled="item.metatick!='Y' || item.published!='Y'" class="btn btn-danger" ng-click="hapusKugi.open(item)" tooltip-placement="right" uib-tooltip="Hilangkan publikasi dari servis CSW."><span class=" glyphicon glyphicon-remove"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <kugi-tambah-dialog model="tambahKugi"></kugi-tambah-dialog>
+            <kugi-publish-dialog model="publishKugi"></kugi-publish-dialog>
+            <kugi-lihat-dialog model="lihatKugi"></kugi-lihat-dialog>
+            <kugi-hapus-dialog model="hapusKugi"></kugi-hapus-dialog>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    $('#metalinks_tambah').on('hidden.bs.modal', function() {
+        angular.element($("#MetakugiView")).scope().reloadView();
+    });
+    $('#metalinks_unpublish').on('hidden.bs.modal', function() {
+        angular.element($("#MetakugiView")).scope().reloadView();
+    });
+</script>

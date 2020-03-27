@@ -1,0 +1,79 @@
+<!-- Modal -->
+<div id="grup_edit" class="modal fade" data-backdrop="static" role="dialog" ng-controller="GrupCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Sunting Grup</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 150px"><strong>Nama Grup</strong></td>
+                        <td>{{ model.item.name }}</td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Nama Organisasi</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.organization"></td>
+                    </tr>
+                    <!--                    <tr class="warning">
+                        <td style="width: 150px"><strong>Kode Simpul</strong></td>
+                        <td><input type="text" ng-model="grupentry.kodesimpul" uib-typeahead="state for state in kodesimpul | filter:$viewValue | limitTo:8" class="form-control">
+                        </td>
+                    </tr>-->
+                    <tr>
+                        <td style="width: 150px"><strong>Alamat URL</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.url"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Telepon</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.phone"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Fax</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.fax"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Alamat</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.address"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Kota/Kabupaten</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.city"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Provinsi</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.administrativearea"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>Kode Pos</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.postalcode"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px"><strong>e-mail</strong></td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.item.email"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Logo</strong></td>
+                        <td><input id="grup_logo" type="file" ng-model="grup_logo" name="file_logo" ng-file-select="uploadLogo($files)" required></td>
+                    </tr>
+                    <!--<tr><td><strong>Layer REST URL</strong></td><td>{{ model.layer.layer_resource }}</td></tr>-->
+                    <!-- <tr>
+                        <td><strong>Aktif</strong></td>
+                        <td><select ng-model="model.item.enabled">
+                <option value='Y'>Ya</option>
+                <option value='N'>TIdak</option>
+              </select></td>
+                    </tr> -->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupEdit" ng-click="editGSGrup(model.item)">Simpan!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+        <!-- rem -->
+    </div>
+</div>

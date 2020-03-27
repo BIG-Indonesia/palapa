@@ -1,0 +1,145 @@
+<div id="SistemView" ng-app="nodeManager" ng-controller="SistemCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Informasi Simpul Jaringan
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#sisteminfo_edit"><span class="glyphicon glyphicon-upload"></span> Sunting Informasi</button>
+        </div>
+        <div class="panel-body">
+
+            <table class="table table-hover">
+                <tr>
+                    <td style="width: 150px">Organisasi</td>
+                    <td>{{ sisteminfo.organization }}</td>
+                </tr>
+                <tr>
+                    <td>Kode Simpul</td>
+                    <td>{{ sisteminfo.kodesimpul }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>URL</td>
+                    <td><a href="{{ sisteminfo.url }}">{{ sisteminfo.url }}</a></td>
+                </tr>
+                <tr>
+                    <td>Telepon</td>
+                    <td>{{ sisteminfo.phone }}</td>
+                </tr>
+                <tr>
+                    <td>Fax</td>
+                    <td>{{ sisteminfo.fax }}</td>
+                </tr>
+                <tr>
+                    <td>Alamat</td>
+                    <td>{{ sisteminfo.address }}</td>
+                </tr>
+                <tr>
+                    <td>Kota/Kabupaten</td>
+                    <td>{{ sisteminfo.city }}</td>
+                </tr>
+                <tr>
+                    <td>Provinsi</td>
+                    <td>{{ sisteminfo.administrativearea }}</td>
+                </tr>
+                <tr>
+                    <td>Kode Pos</td>
+                    <td>{{ sisteminfo.postalcode }}</td>
+                </tr>
+                <tr>
+                    <td>Negara</td>
+                    <td>{{ sisteminfo.country }}</td>
+                </tr>
+                <tr>
+                    <td>e-mail</td>
+                    <td><a href="mailto:{{ sisteminfo.email }}">{{ sisteminfo.email }}</a></td>
+                </tr>
+                <tr>
+                    <td>Logo</td>
+                    <td style="width: 120px;"><img style='height: 120px;' src='{{ sisteminfo.logo  }}' /></td>
+                </tr>
+                <tr>
+                    <td>Tentang Kami</td>
+                    <td>{{ sisteminfo.tentangkami }}</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="sisteminfo_edit" class="modal fade" role="dialog" ng-controller="SistemCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Identitas Simpul Jaringan</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td style="width: 150px">Organisasi</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.organization"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px"><strong>Kode Simpul</strong></td>
+                        <td><input type="text" ng-model="sisteminfo.kodesimpul" uib-typeahead="state for state in kodesimpul | filter:$viewValue | limitTo:8" class="form-control">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>URL</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.url"></td>
+                    </tr>
+                    <tr>
+                        <td>Telepon</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.phone"></td>
+                    </tr>
+                    <tr>
+                        <td>Fax</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.fax"></td>
+                    </tr>
+                    <tr>
+                        <td>Alamat</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.address"></td>
+                    </tr>
+                    <tr>
+                        <td>Kota/Kabupaten</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.city"></td>
+                    </tr>
+                    <tr>
+                        <td>Provinsi</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.administrativearea"></td>
+                    </tr>
+                    <tr>
+                        <td>Kode Pos</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.postalcode"></td>
+                    </tr>
+                    <tr>
+                        <td>e-mail</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.email"></td>
+                    </tr>
+                    <tr>
+                        <td>Tentang Kami</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.tentangkami"></td>
+                    </tr>
+                    <tr class="warning">
+                        <td style="width: 150px">Logo</td>
+                        <td><input id="sistem_file" type="file" ng-model="sistem_logo" name="file_photo" ng-file-select="uploadLogo($files)" required></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button ng-disabled="!sisteminfo.kodesimpul && !sistem_logo" type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="sisteminfoedit()">Sunting!</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#sisteminfo_edit').on('hidden.bs.modal', function() {
+        angular.element($("#SistemView")).scope().reloadView();
+    })
+</script>

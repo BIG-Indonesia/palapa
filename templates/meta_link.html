@@ -1,0 +1,60 @@
+<!-- Modal -->
+<div id="tambah_link" class="modal fade" role="dialog" ng-controller="MetalinksCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Berkas Metadata (XML) {{ model.item.identifier }}</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td><label class="control-label">Tipe Akses Data</label></td>
+                        <td><select ng-model="linkntry.akses" ng-init="">
+							<option value='PUBLIC'>PUBLIC</option>
+							<option value='GOVERNMENT'>GOVERNMENT</option>
+							<option value='PRIVATE'>PRIVATE</option>
+                            <option value='IGSTRATEGIS'>IG STRATEGIS</option>
+						</select>
+                            <br>
+                            <ui-select ng-model="selectedsimpul.selected" multiple theme="bootstrap" close-on-select="false" title="Pilih Simpul" ng-hide="linkntry.akses != 'GOVERNMENT'">
+                                <ui-select-match>{{$item}}</ui-select-match>
+                                <ui-select-choices repeat="state in kodesimpul | filter:$select.search">
+                                    {{state}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label">Pilih Berkas (XML)</label></td>
+                        <td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="FileSelect($files, model.item.identifier, linkntry.akses)" multiple required></td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <div>
+                            <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                        </div>
+                    </tr>
+                    <tr>
+                        <!--<div><span ng-bind="response.MSG"></span></div>-->
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#tambah_link').on('hidden.bs.modal', function() {
+        angular.element($("#MetalinksView")).scope().reloadView();
+    });
+</script>

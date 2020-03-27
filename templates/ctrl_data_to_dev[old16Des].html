@@ -1,0 +1,465 @@
+<style type="text/css">
+        .modal-body {
+            max-height: calc(100vh - 210px);
+            overflow-y: auto;
+        }
+</style>
+
+
+<div ng-app="nodeManager" ng-controller="ctrl_data_to_dev">
+
+    <ul class="breadcrumb">
+        <li><a href="#">Beranda</a></li>
+        <li><a href="#/db_dev">Database Pengembangan (DEV)</a></li>
+        <li class="active">Unggah Data ke Database Development (DEV)</li>
+    </ul>
+
+    <div ng-hide="!loader_work" class="animationload">
+        <div class="osahanloading"></div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Unggah Data ke Database Development (DEV)</div>
+        <div class="panel-body">
+            <uib-tabset active="activeJustified" justified="true">
+                <uib-tab index="0" heading="Data KUGI">
+                    <table class="table table-hover">
+                        <tr>
+                            <td style="width: 200px">Skala</td>
+                            <td>
+                                <select id="skala" ng-model="sumberskala" ng-options="skala for (skala, kategori) in features" ng-change="GetSkala()">
+			                <option value=''>Pilih</option>
+			            </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 200px">Kategori</td>
+                            <td>
+                                <select id="kategori" ng-disabled="!sumberskala" ng-model="sumberkategori" ng-options="dataset for (dataset, fitur) in sumberskala" ng-change="GetKategori()"><option value=''>Pilih</option>
+				        </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 200px">Fitur</td>
+                            <td>
+                                <select id="fitur" ng-disabled="!sumberkategori || !sumberskala" ng-model="fitur"><option value=''>Pilih</option>
+			                <option ng-repeat="fitur in sumberkategori | unique:'kategori' | orderBy:'kategori'" value='{{fitur}}'>{{fitur}}</option>
+			            </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 200px"><label class="control-label">Pilih Berkas (ZIP)</label></td>
+                            <td>
+                                <input ng-disabled="!fitur" type="file" ng-file-select="FileSelect($files, dbschema, fitur, scale)" multiple required>
+                                <br>
+                                <div>
+                                    <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                                </div>
+                                <div>
+                                    <button ng-show="loader.loading" class="btn btn-success">Sedang bekerja ...<i class="fa fa-spinner fa-spin"></i></button>
+                                </div>
+                                <!--<div><span ng-bind="response.MSG"></span></div>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 200px">Informasi Data Constraints</td>
+                            <td>
+                                <select ng-model="linkntry.akses" ng-init="">
+									<option value='PUBLIC'>PUBLIC</option>
+									<option value='GOVERNMENT'>GOVERNMENT</option>
+									<option value='PRIVATE'>PRIVATE</option>
+                                    <option value='IGSTRATEGIS'>IG STRATEGIS</option>
+								</select>
+                                <br>
+                                <ui-select ng-model="selectedsimpul.selected" multiple theme="bootstrap" close-on-select="false" title="Pilih Simpul" ng-hide="linkntry.akses != 'GOVERNMENT'">
+                                    <ui-select-match>{{$item}}</ui-select-match>
+                                    <ui-select-choices repeat="state in kodesimpul | filter:$select.search">
+                                        {{state}}
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                        </tr>
+                        <table class="table table-hover">
+                            <tr ng-repeat="iden in iden_unik">
+
+
+
+                                <td style="width: 200px"><label class="control-label">Pilih Berkas (XML)</label> </td>
+                                <td style="width: 200px">{{ iden }}</td>
+                                <td><input type="file" ng-file-select="KMetaFileSelect($files, fitur, iden, linkntry.akses, currentKode)" multiple required>
+                                    <!--<br>
+                                    <div>
+                                        <span style="display: block;" class="progress">
+                                        <div style="height: 24px; width:{{progress_mt}}%; background:#CDFF87; text-align: center;" ng-bind="progress_mt + '%'"></div>
+                                    </span>
+                                    </div>-->
+                                </td>
+                            </tr>
+
+                        </table>
+                        <table class="table table-hover">
+                            <tr>
+                                <td>
+                                    <button ng-disabled="savebtn" ng-model="savebtn" type="button" class="btn btn-success" ng-click="todbdev()" tooltip-placement="left" uib-tooltip="Simpan"><span class="glyphicon glyphicon glyphicon-floppy-save"></span> Simpan</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-hover">
+                            <tr>
+                                <td style="width: 100%; background-color: #669"></td>
+                            </tr>
+                        </table>
+                        <table class="table table-hover">
+                            <tr>
+                                <td style="width: 200px">Atau unggah usulan KUGI</td>
+                                <td>
+                                    <button ng-disabled="sumberskala" type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah ZIP (layer ter-arsip) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Usulan KUGI</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </table>
+                </uib-tab>
+                <!--<uib-tab index="1" heading="Usulan KUGI">
+                    <table ng-show="nstage1" class="table table-hover">
+                        <tr>
+                            <td style="width: 150px">
+                                <h5>Berkas Paket Data</h5>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">
+                                <label class="control-label">Pilih Berkas (ZIP)</label>
+                            </td>
+                            <td>
+                                <input ng-disabled="nstage1_shape" type="file" ng-file-select="NKFileSelect($files)" multiple required>
+                                <br>
+                                <span style="display: block;" class="progress">
+                                     <div style="height: 24px; width:{{progress_nk}}%; background:#CDFF87; text-align: center;" ng-bind="progress_nk + '%'"></div>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">
+                                <label class="control-label">Pilih Berkas Pendukung Usulan Skema</label>
+                            </td>
+                            <td>
+                                <input type="file" ng-file-select="BerkasSelect($files)" multiple required>
+                                <br>
+                                <span style="display: block;" class="progress">
+                                     <div style="height: 24px; width:{{progress_docs}}%; background:#CDFF87; text-align: center;" ng-bind="progress_docs + '%'"></div>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><button ng-disabled="nstage1_berkas" class="btn btn-success" ng-click="stage2()">Lanjut</button></td>
+                            <td></td>
+                        </tr>
+                    </table>
+
+                    <form ng-show="nstage2" class="form-horizontal" ng-submit="publish()">
+                        <fieldset>
+                            <table class="table table-hover">
+                                <tr>
+                                    <td style="width: 150px">
+                                        <h5>Isi Informasi Dasar</h5>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 150px">Layer ID</td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="nkresponse.LID" ng-value="nkresponse.LID" ng-disabled="true"></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 150px">Layer Title</td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="nkresponse.TID" ng-value="nkresponse.TID"></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 150px">Layer Abstract</td>
+                                    <td><textarea class="form-control input-sm" rows="5" type="text" ng-model="nkresponse.ID" ng-value="nkresponse.ID"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 150px">Kode EPSG</td>
+                                    <td><input type="text" ng-model="nkresponse.SEPSG" ng-value="nkresponse.SEPSG" uib-typeahead="kode for kode in kodeepsg | filter:$viewValue | limitTo:8" class="form-control">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><button ng-disabled="ingeoserver" class="btn btn-success" type="submit">Simpan Layer</button></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </form>
+
+                    <table ng-show="nstage3" class="table table-hover">
+                        <tr>
+                            <td style="width: 150px">
+                                <h5>Informasi Metadata</h5>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">Informasi Data Constraints</td>
+                            <td>
+                                <select ng-model="linkntry.akses" ng-init="">
+									<option value='PUBLIC'>PUBLIC</option>
+									<option value='GOVERNMENT'>GOVERNMENT</option>
+									<option value='PRIVATE'>PRIVATE</option>
+                            <option value='IGSTRATEGIS'>IG STRATEGIS</option>
+								</select>
+                                <br>
+                                <ui-select ng-model="selectedsimpul.selected" multiple theme="bootstrap" close-on-select="false" title="Pilih Simpul" ng-hide="linkntry.akses != 'GOVERNMENT'">
+                                    <ui-select-match>{{$item}}</ui-select-match>
+                                    <ui-select-choices repeat="state in kodesimpul | filter:$select.search">
+                                        {{state}}
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">Identifier Layer</td>
+                            <td><input class="form-control input-sm" type="text" ng-model="nkresponse.LID" ng-value="nkresponse.LID" ng-disabled="true"></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Pilih Berkas (XML)</label> </td>
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, nkresponse.LID, linkntry.akses, currentKode)" multiple required>
+                                <br>
+                                <div>
+                                    <span style="display: block;" class="progress">
+                                        <div style="height: 24px; width:{{progress_mt}}%; background:#CDFF87; text-align: center;" ng-bind="progress_mt + '%'"></div>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </uib-tab>-->
+            </uib-tabset>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<!-- Modal Wizard content-->
+
+<div class="modal fade" id="layer_wizard" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" ng-controller="LayersCtrl">
+    <div class="modal-dialog" role="document" [blockScroll]="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Tambah Layer</h4>
+            </div>
+            <div class="modal-body wizard-content">
+                <div class="wizard-step">
+                    <h5>Berkas Paket Data</h5> <br>
+                    <label class="control-label">Pilih Berkas (ZIP)</label>
+                    <input type="file" ng-file-select="FileSelect($files)" multiple required>
+                    <br>
+                    <div>
+                        <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                    </div>
+                    <!--<div><span ng-bind="response.MSG"></span></div>-->
+                </div>
+                <div class="wizard-step">
+                    <h5>Isi Informasi Dasar</h5> <br>
+                    <!--<tr>
+                        <pre>{{response}}</pre>
+                        <pre>{{model.layer}}</pre>
+                    </tr>-->
+                    <form class="form-horizontal" ng-submit="publish()">
+                        <fieldset>
+                            <table class="table table-hover">
+                                 <tr>
+                                    <td style="width: 150px"><strong>Layer ID</strong></td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Layer Title</strong></td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_name" ng-value="response.TID"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Layer Abstract</strong></td>
+                                    <td><textarea class="form-control input-sm" rows="5" type="text" ng-model="model.layer.layer_abstract" ng-value="$parent.response.TID"></textarea></td>
+                                </tr>
+                                <!--<tr>
+                                    <td><strong>Aktif</strong></td>
+                                    <td>
+                                        <select class="form-control input-sm" id="sel1">
+                                <option>Ya</option>
+                                <option>Tidak</option>
+                              </select>
+                                    </td>
+                                </tr>-->
+                                <!--<tr>
+                                    <td><strong>Layer SRS</strong></td>
+                                    <td>
+                                        <select class="form-control input-sm" id="srs" ng-value="response.EPSG">
+                                <option>EPSG:4326</option>
+                                <option>EPSG:3587</option>
+                                <option>EPSG:32749</option>
+                                <option>EPSG:32750</option>
+                                <option>EPSG:900913</option>
+                              </select>
+                                    </td>
+                                </tr>-->
+                                <tr>
+                                    <td style="width: 150px"><strong>Kode EPSG</strong></td>
+                                    <td><input type="text" ng-model="model.layer.layer_epsg" ng-value="response.SEPSG" uib-typeahead="kode for kode in kodeepsg | filter:$viewValue | limitTo:8" class="form-control">
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--<span ng-bind="response.MSG"></span>-->
+                        </fieldset>
+                        <button ng-disabled="ingeoserver" class="btn btn-success" type="submit">Simpan Layer</button>
+                    </form>
+                </div>
+                <div class="wizard-step">
+                    <h5>Informasi Metadata</h5>
+                    <table class="table table-hover">
+                         <tr>
+                            <td>Tanggal</td>
+                            <td>
+                                <input type="date" class="form-control"   ng-model="tanggal" ng-init="tanggal=today" />      
+                            </td>    
+                        </tr>    
+
+                        <tr>
+                            <td style="width: 200px;">Tipe Metadata</td>
+                             <td>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="value" value='1'>
+                                        Minimal
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios2"  ng-model="value"  value='2' >
+                                        Unggah Metadata
+                                    </label>
+                                </div>
+                                 <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios3"  ng-model="value"  value='3'>
+                                        Metadata Lengkap
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Identifier Layer</td>
+                            <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
+                        </tr>
+                        <tr>
+                            <td>Keyword</td>
+                            <td>
+                                <!-- <select ng-model="linkntry.akses" ng-init="">
+									<option value='PUBLIC'>PUBLIC</option>
+									<option value='GOVERNMENT'>GOVERNMENT</option>
+									<option value='PRIVATE'>PRIVATE</option>
+									<option value='IGSTRATEGIS'>IG STRATEGIS</option>
+								</select>
+                                <br> -->
+                                <select ng-model="keyword_item" ng-options="k.keyword for k in keywords">Pilih Keyword</option>
+                                        </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Informasi Data Constraints</td>
+                            <td>
+                                <select ng-model="linkntry.akses" ng-init="">
+									<option value='PUBLIC'>PUBLIC</option>
+									<option value='GOVERNMENT'>GOVERNMENT</option>
+									<option value='PRIVATE'>PRIVATE</option>
+									<option value='IGSTRATEGIS'>IG STRATEGIS</option>
+								</select>
+                                <br>
+                                <ui-select ng-model="selectedsimpul.selected" multiple theme="bootstrap" close-on-select="false" title="Pilih Simpul" ng-hide="linkntry.akses != 'GOVERNMENT'">
+                                    <ui-select-match>{{$item}}</ui-select-match>
+                                    <ui-select-choices repeat="state in kodesimpul | filter:$select.search">
+                                        {{state}}
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                        </tr>
+                        <tr ng-hide="uploadxml==false">
+                            <td><label class="control-label">Pilih Berkas (XML)</label> </td>
+                            <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="metaFile" name="fileMeta" ng-file-select="uploadMeta($files)" required></td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Pilih Berkas Pendukung Usulan KUGI</label> </td>
+                            <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files, response.LID)" required></td>
+                            </td>
+                        </tr>
+
+                         <tr ng-hide="lengkapmeta==false">
+                             
+                             <td colspan="2">
+                                  <!--  <input type="text" class="form-control" ng-model="metadataStandardName"  />
+                                  <br>   -->
+                                  <div ng-include="'templates/metadata.html'" ></div>    
+                              </td>  
+                         </tr>
+
+                        <tr>
+                            <td><button ng-disabled="linkntry.akses == '' && keyword_item == ''" class="btn btn-success" type="submit" ng-click="MetaUp(response.LID, response.TID, model.layer.layer_abstract, linkntry.akses, keyword_item)">Simpan Metadata</button></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <!--<table>
+                        <tr>
+                            <div>
+                                <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                            </div>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>-->
+                </div>
+            </div>
+            <div class="modal-footer wizard-buttons">
+                <!-- The wizard button will be inserted here. -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    angular.element(document).ready(function() {
+        $("#layer_wizard").wizard({
+            onfinish: function() {
+                // window.location.href = "#/state1";
+                console.log("Done!");
+            }
+        });
+    });
+
+    $('#layer_wizard').on('hidden.bs.modal', function() {
+        window.location.href = "#/state1";
+    })
+
+    // function sticky_relocate() {
+    //     var window_top = $(window).scrollTop();
+    //     var div_top = $('#sticky_cari_anchor').offset().top;
+    //     if (window_top > div_top) {
+    //         $('#sticky_cari').addClass('stick');
+    //         $('#sticky_cari_anchor').height($('#sticky_cari').outerHeight());
+    //     } else {
+    //         $('#sticky_cari').removeClass('stick');
+    //         $('#sticky_cari_anchor').height(0);
+    //     }
+    // }
+
+    // $(function() {
+    //     $(window).scroll(sticky_relocate);
+    //     sticky_relocate();
+    // });
+</script>

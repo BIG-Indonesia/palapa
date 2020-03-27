@@ -1,0 +1,125 @@
+<div id="DocsView" ng-app="nodeManager" ng-controller="DocsCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">Dokumen Usulan KUGI
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadView()" tooltip-placement="top" uib-tooltip="Refresh halaman ini."><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#docs_tambah" tooltip-placement="left" uib-tooltip="Upload"><span class="glyphicon glyphicon-upload"></span> Upload</button>
+        </div>
+        <div class="panel-body">
+
+            <form>
+                <div style="height: 50px;">
+                    <div class="form-group" id="sticky_cari_anchor">
+                        <div class="input-group" id="sticky_cari">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text" class="form-control" placeholder="Cari" ng-model="cariDocs">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <table class="table table-striped table-hover">
+
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="#/docs" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                    Nama Layer
+                                    <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                                </a>
+                        </th>
+                        <th>
+                            <a href="#/docs" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                Nama Dokumen 
+                                <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="#/docs" ng-click="sortType = 'size'; sortReverse = !sortReverse">
+                                Ukuran
+                                <span ng-show="sortType == 'size' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'size' && sortReverse" class="fa fa-caret-up"></span>
+                            </a>
+                        </th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="doc in docs | orderBy:sortType:sortReverse | filter:cariDocs">
+                        <td>{{ doc.name.split('-')[0] }}</td>
+                        <td>{{ doc.name }}</td>
+                        <td>{{ doc.size }}</td>
+                        <td style="width: 120px">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info" tooltip-placement="left" uib-tooltip="Unduh dokumen"><a target="_blank" href="documents/{{ doc.name }}"><span class="glyphicon glyphicon-eye-open"></span></a></button>
+                                <button type="button" class="btn btn-danger" ng-click="hapusDocs.open(doc)" tooltip-placement="left" uib-tooltip="Hapus"><span class="glyphicon glyphicon-remove"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <docs-hapus-dialog model="hapusDocs"></docs-hapus-dialog>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="docs_tambah" class="modal fade" role="dialog" ng-controller="DocsCtrl">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Unggah</h4>
+            </div>
+            <div class="modal-body">
+
+                <label class="layerid">Pilih Layer</label>
+                <select id="layerid" ng-model="layerid" ng-options="layer.layer_id for layer in layers | filter: { workspace: '!' +'KUGI'}">
+                                            <option value=''>Pilih Layer</option>
+                                        </select>
+                <br>
+                <label class="control-label">Pilih berkas</label>
+                <input type="file" ng-file-select="FileSelect($files)" multiple required>
+                <br>
+                <div>
+                    <span style="display: block;" class="progress">
+                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                        </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    function sticky_relocate() {
+        var window_top = $(window).scrollTop();
+        var div_top = $('#sticky_cari_anchor').offset().top;
+        if (window_top > div_top) {
+            $('#sticky_cari').addClass('stick');
+            $('#sticky_cari_anchor').height($('#sticky_cari').outerHeight());
+        } else {
+            $('#sticky_cari').removeClass('stick');
+            $('#sticky_cari_anchor').height(0);
+        }
+    }
+
+    $('#docs_tambah').on('hidden.bs.modal', function() {
+        angular.element($("#DocsView")).scope().reloadView();
+    })
+
+    $(function() {
+        $(window).scroll(sticky_relocate);
+        sticky_relocate();
+    });
+</script>

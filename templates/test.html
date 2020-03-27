@@ -1,0 +1,16 @@
+<div ng-app="nodeManager" ng-controller="testCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">TEST</div>
+        <div class="panel-body">
+
+            Placeholder
+            <input type="file" ng-file-select="FileSelect($files)" multiple>
+            <div>
+                <span style="display: block;" class="progress">
+                     <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+                 </span>
+            </div>
+
+        </div>
+    </div>
+</div>
