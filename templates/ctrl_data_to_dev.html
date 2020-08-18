@@ -115,9 +115,8 @@
                             <tr>
                                 <td style="width: 200px">Atau unggah data spasial</td>
                                 <td>
-                                    <button ng-disabled="sumberskala" type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah Vector (layer ter-arsip) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Data Vector</button>
-                                    <button ng-disabled="sumberskala" type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard_raster" tooltip-placement="left" uib-tooltip="Unggah ZIP (layer raster) ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Data Raster</button>
-								</td>
+                                    <button ng-disabled="sumberskala" type="button" class="btn btn-primary" data-toggle="modal" data-target="#layer_wizard" tooltip-placement="left" uib-tooltip="Unggah Data Spasial ke GeoServer."><span class="glyphicon glyphicon-upload"></span> Unggah Data Spasial</button>
+                                </td>
                             </tr>
                         </table>
                     </table>
@@ -241,197 +240,7 @@
     </div>
 </div>
 
-<!-- Modal Raster Modifikasi Yudha -->
-<div class="modal fade" id="layer_wizard_raster" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" ng-controller="LayersCtrl">
-    <div class="modal-dialog" role="document" [blockScroll]="true">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Tambah Layer Raster</h4>
-            </div>
-            <div class="modal-body wizard-content">
-                <div class="wizard-step">
-                    <h5>Berkas Paket Data</h5> <br>
-                    <label class="control-label">Pilih Berkas Raster(.tiff) Yang Sudah di ZIP (.zip)</label>
-                    <input type="file" ng-file-select="FileSelect($files)" multiple required>
-                    <br>
-                    <div>
-                        <span style="display: block;" class="progress">
-                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
-                        </span>
-                    </div>
-                    <!--<div><span ng-bind="response.MSG"></span></div>-->
-                </div>
-                <div class="wizard-step">
-                    <h5>Isi Informasi Dasar</h5> <br>
-                    <!--<tr>
-                        <pre>{{response}}</pre>
-                        <pre>{{model.layer}}</pre>
-                    </tr>-->
-                    <form class="form-horizontal" ng-submit="publish()">
-                        <fieldset>
-                            <table class="table table-hover">
-                                 <tr>
-                                    <td style="width: 150px"><strong>Layer ID</strong></td>
-                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Layer Title</strong></td>
-                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_name" ng-value="response.TID"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Layer Abstract</strong></td>
-                                    <td><textarea class="form-control input-sm" rows="5" type="text" ng-model="model.layer.layer_abstract" ng-value="$parent.response.TID"></textarea></td>
-                                </tr>
-                                <!--<tr>
-                                    <td><strong>Aktif</strong></td>
-                                    <td>
-                                        <select class="form-control input-sm" id="sel1">
-                                <option>Ya</option>
-                                <option>Tidak</option>
-                              </select>
-                                    </td>
-                                </tr>-->
-                                <!--<tr>
-                                    <td><strong>Layer SRS</strong></td>
-                                    <td>
-                                        <select class="form-control input-sm" id="srs" ng-value="response.EPSG">
-                                <option>EPSG:4326</option>
-                                <option>EPSG:3587</option>
-                                <option>EPSG:32749</option>
-                                <option>EPSG:32750</option>
-                                <option>EPSG:900913</option>
-                              </select>
-                                    </td>
-                                </tr>-->
-                                <tr>
-                                    <td style="width: 150px"><strong>Kode EPSG</strong></td>
-                                    <td><input type="text" ng-model="model.layer.layer_epsg" ng-value="response.SEPSG" uib-typeahead="kode for kode in kodeepsg | filter:$viewValue | limitTo:8" class="form-control">
-                                    </td>
-                                </tr>
-                            </table>
-                            <!--<span ng-bind="response.MSG"></span>-->
-                        </fieldset>
-                        <button ng-disabled="ingeoserver" class="btn btn-success" type="submit">Simpan Layer</button>
-                    </form>
-                </div>
-                <div class="wizard-step">
-                    <h5>Informasi Metadata</h5>
-                    <table class="table table-hover">
-                         <tr>
-                            <td>Tanggal</td>
-                            <td>
-                                <input type="date" class="form-control"   ng-model="tanggal" ng-init="tanggal=today" />      
-                            </td>    
-                        </tr>    
-
-                        <tr>
-                            <td style="width: 200px;">Tipe Metadata</td>
-                             <td>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="value" value='1'>
-                                        Minimal
-                                    </label>
-                                </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios2"  ng-model="value"  value='2' >
-                                        Unggah Metadata
-                                    </label>
-                                </div>
-                                 <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios3"  ng-model="value"  value='3'>
-                                        Metadata Lengkap
-                                    </label>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Identifier Layer</td>
-                            <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
-                        </tr>
-                        <tr>
-                            <td>Keyword</td>
-                            <td>
-                                <!-- <select ng-model="linkntry.akses" ng-init="">
-									<option value='PUBLIC'>PUBLIC</option>
-									<option value='GOVERNMENT'>GOVERNMENT</option>
-									<option value='PRIVATE'>PRIVATE</option>
-									<option value='IGSTRATEGIS'>IG STRATEGIS</option>
-								</select>
-                                <br> -->
-                                <select ng-model="keyword_item" ng-options="k.keyword for k in keywords">Pilih Keyword</option>
-                                        </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Informasi Data Constraints</td>
-                            <td>
-                                <select ng-model="linkntry.akses" ng-init="">
-									<option value='PUBLIC'>PUBLIC</option>
-									<option value='GOVERNMENT'>GOVERNMENT</option>
-									<option value='PRIVATE'>PRIVATE</option>
-									<option value='IGSTRATEGIS'>IG STRATEGIS</option>
-								</select>
-                                <br>
-                                <ui-select ng-model="selectedsimpul.selected" multiple theme="bootstrap" close-on-select="false" title="Pilih Simpul" ng-hide="linkntry.akses != 'GOVERNMENT'">
-                                    <ui-select-match>{{$item}}</ui-select-match>
-                                    <ui-select-choices repeat="state in kodesimpul | filter:$select.search">
-                                        {{state}}
-                                    </ui-select-choices>
-                                </ui-select>
-                            </td>
-                        </tr>
-                        <tr ng-hide="uploadxml==false">
-                            <td><label class="control-label">Pilih Berkas (XML)</label> </td>
-                            <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
-                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="metaFile" name="fileMeta" ng-file-select="uploadMeta($files)" required></td>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label class="control-label">Pilih Berkas Pendukung Usulan KUGI</label> </td>
-                            <!--<td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses)" multiple required>-->
-                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-model="docsFile" name="fileDoc" ng-file-select="uploadDoc($files, response.LID)" required></td>
-                            </td>
-                        </tr>
-
-                         <tr ng-hide="lengkapmeta==false">
-                             
-                             <td colspan="2">
-                                  <!--  <input type="text" class="form-control" ng-model="metadataStandardName"  />
-                                  <br>   -->
-                                  <div ng-include="'templates/metadata.html'" ></div>    
-                              </td>  
-                         </tr>
-
-                        <tr>
-                            <td><button ng-disabled="linkntry.akses == '' && keyword_item == ''" class="btn btn-success" type="submit" ng-click="MetaUp(response.LID, response.TID, model.layer.layer_abstract, linkntry.akses, keyword_item)">Simpan Metadata</button></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                    <!--<table>
-                        <tr>
-                            <div>
-                                <span style="display: block;" class="progress">
-                            <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
-                        </span>
-                            </div>
-                        </tr>
-                        <tr>
-                        </tr>
-                    </table>-->
-                </div>
-            </div>
-            <div class="modal-footer wizard-buttons">
-                <!-- The wizard button will be inserted here. -->
-            </div>
-        </div>
-    </div>
-</div>
-
-
+<!-- Modal -->
 <!-- Modal Wizard content-->
 
 <div class="modal fade" id="layer_wizard" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" ng-controller="LayersCtrl">
@@ -439,7 +248,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Tambah Layer Vector</h4>
+                <h4 class="modal-title" id="myModalLabel">Tambah Layer</h4>
             </div>
             <div class="modal-body wizard-content">
                 <div class="wizard-step">
@@ -452,53 +261,70 @@
                             <div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
                         </span>
                     </div>-->
-                    <h5>Nama File : {{ujicoba}}</h5>
+					<input type="radio" name="tab" value="igotnone" onclick="show1();" />
+					Unggah Data Per-File (Vector) &nbsp;&nbsp;&nbsp;
+					<input type="radio" name="tab" value="igottwo" onclick="show2();" />
+					Unggah Data Zip (Vector dan Raster)
+					<div id="div1" style="display:none">
+					  <h5>Nama File : {{ujicoba}}</h5>
                     <!--SHP-->
-                    <div ng-show="FormatFile==0">     
-                        <h4>Pilih Berkas Shapefile (.shp)<br>(1/4)</h4>
-                        <input type="file" ng-file-select="FileSelectShp($files)" multiple required> 
-                        <div>
-                            <span style="display: block;" class="progress">
-                                <div style="height: 24px; width:{{progress_shp}}%; background:#CDFF87; text-align: center;" ng-bind="progress_shp + '%'"></div>
-                            </span>
-                        </div>
-                        <br>
-                    </div>
-                    <!--SHX-->
-                    <div ng-show="FormatFile==1">
-                        <h4>Pilih Berkas Index (.shx)<br>(2/4)</h4>
-                        <input type="file" ng-file-select="FileSelectShx($files)" multiple required>
-                        <div>
-                            <span style="display: block;" class="progress">
-                                <div style="height: 24px; width:{{progress_shx}}%; background:#CDFF87; text-align: center;" ng-bind="progress_shx + '%'"></div>
-                            </span>
-                        </div>
-                        <br>
-                    </div>
+						<div ng-show="FormatFile==0">     
+							<h4>Pilih Berkas Shapefile (.shp)<br>(1/4)</h4>
+							<input type="file" ng-file-select="FileSelectShp($files)" multiple required> 
+							<div>
+								<span style="display: block;" class="progress">
+									<div style="height: 24px; width:{{progress_shp}}%; background:#CDFF87; text-align: center;" ng-bind="progress_shp + '%'"></div>
+								</span>
+							</div>
+							<br>
+						</div>
+						<!--SHX-->
+						<div ng-show="FormatFile==1">
+							<h4>Pilih Berkas Index (.shx)<br>(2/4)</h4>
+							<input type="file" ng-file-select="FileSelectShx($files)" multiple required>
+							<div>
+								<span style="display: block;" class="progress">
+									<div style="height: 24px; width:{{progress_shx}}%; background:#CDFF87; text-align: center;" ng-bind="progress_shx + '%'"></div>
+								</span>
+							</div>
+							<br>
+						</div>
 
-                    <!--DBF-->
-                    <div ng-show="FormatFile==2">
-                        <h4>Pilih Berkas DB File (.dbf)<br>(3/4)</h4>
-                        <input type="file" ng-file-select="FileSelectDbf($files)" multiple required>
-                        <div>
-                            <span style="display: block;" class="progress">
-                                <div style="height: 24px; width:{{progress_dbf}}%; background:#CDFF87; text-align: center;" ng-bind="progress_dbf + '%'"></div>
-                            </span>
-                        </div>
-                        <br>
-                    </div>
+						<!--DBF-->
+						<div ng-show="FormatFile==2">
+							<h4>Pilih Berkas DB File (.dbf)<br>(3/4)</h4>
+							<input type="file" ng-file-select="FileSelectDbf($files)" multiple required>
+							<div>
+								<span style="display: block;" class="progress">
+									<div style="height: 24px; width:{{progress_dbf}}%; background:#CDFF87; text-align: center;" ng-bind="progress_dbf + '%'"></div>
+								</span>
+							</div>
+							<br>
+						</div>
 
-                    <!--PRJ-->
-                    <div ng-show="FormatFile==3">
-                        <h4>Pilih Berkas Projection (.prj)<br>(4/4)</h4>
-                        <input type="file" ng-file-select="FileSelectPrj($files)" multiple required>
-                        <div>
-                            <span style="display: block;" class="progress">
-                                <div style="height: 24px; width:{{progress_prj}}%; background:#CDFF87; text-align: center;" ng-bind="progress_prj + '%'"></div>
-                            </span>
-                        </div>    
-                        <br>
-                    </div>
+						<!--PRJ-->
+						<div ng-show="FormatFile==3">
+							<h4>Pilih Berkas Projection (.prj)<br>(4/4)</h4>
+							<input type="file" ng-file-select="FileSelectPrj($files)" multiple required>
+							<div>
+								<span style="display: block;" class="progress">
+									<div style="height: 24px; width:{{progress_prj}}%; background:#CDFF87; text-align: center;" ng-bind="progress_prj + '%'"></div>
+								</span>
+							</div>    
+							<br>
+						</div>
+					</div>
+					<div id="div2" style="display:none">
+					    <h5>Pilih Berkas Vector(shp,shx,dbf,prj) atau Raster(.tiff) Yang Sudah di ZIP (.zip)</h5>
+						<input type="file" ng-file-select="FileSelect($files)" multiple required>
+						<br>
+						<div>
+							<span style="display: block;" class="progress">
+								<div style="height: 24px; width:{{progress}}%; background:#CDFF87; text-align: center;" ng-bind="progress + '%'"></div>
+							</span>
+						</div>
+					</div>
+                    
         
                     <!--<div><span ng-bind="response.MSG"></span></div>-->
                 </div>
@@ -683,20 +509,16 @@
 
     $('#layer_wizard').on('hidden.bs.modal', function() {
         window.location.href = "#/state1";
-    })
-	
-	angular.element(document).ready(function() {
-        $("#layer_wizard_raster").wizard({
-            onfinish: function() {
-                // window.location.href = "#/state1";
-                console.log("Done!");
-            }
-        });
     });
-
-    $('#layer_wizard_raster').on('hidden.bs.modal', function() {
-        window.location.href = "#/state1";
-    })
+				
+	function show1(){
+	  document.getElementById('div1').style.display ='block';
+	  document.getElementById('div2').style.display ='none';
+	}
+	function show2(){
+	  document.getElementById('div1').style.display ='none';
+	  document.getElementById('div2').style.display ='block';
+	}
 
     // function sticky_relocate() {
     //     var window_top = $(window).scrollTop();
